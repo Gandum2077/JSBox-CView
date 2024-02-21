@@ -1,15 +1,21 @@
 {
   "name": "jsbox-cview",
   "version": "1.0.0",
-  "description": "",
+  "description": "为 JSBox 设计的微型框架",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gandum2077/JSBox-CView"
+  },
+  "homepage": "https://github.com/Gandum2077/JSBox-CView",
+  "bugs": "https://github.com/Gandum2077/JSBox-CView/issues",
   "main": "index.js",
   "scripts": {
     "test": "tsc && node test.js",
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Gandum2077",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.17",
     "jsbox-types": "^1.0.19"
