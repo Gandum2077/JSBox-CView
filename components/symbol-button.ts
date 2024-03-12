@@ -15,11 +15,11 @@
 
 import { Base } from "./base";
 
-interface CunstomProps extends UiTypes.ButtonProps {
+interface SymbolButtonProps extends UiTypes.ButtonProps {
   insets: JBInsets
 }
 
-interface CunstomPropsOptional extends UiTypes.ButtonProps {
+interface SymbolButtonPropsOptional extends UiTypes.ButtonProps {
   insets?: JBInsets
 }
 /**
@@ -33,17 +33,15 @@ interface CunstomPropsOptional extends UiTypes.ButtonProps {
  *   - tapped
  */
 export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
-  _props: CunstomProps
-  _layout: (make: MASConstraintMaker, view: UIButtonView) => void
-  _events: UiTypes.BaseViewEvents<UIButtonView>
+  _props: SymbolButtonProps
   _defineView: () => UiTypes.ButtonOptions;
   constructor({ 
     props, 
     layout, 
     events = {} 
   }: {
-    props: CunstomPropsOptional;
-    layout: (make: MASConstraintMaker, view: UIButtonView) => void;
+    props: SymbolButtonPropsOptional;
+    layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
     events?: UiTypes.BaseViewEvents<UIButtonView>;
   }) {
     super();
@@ -52,8 +50,6 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
       tintColor: $color("primaryText"),
       ...props
     };
-    this._layout = layout;
-    this._events = events;
     this._defineView = () => {
       return {
         type: "button",
@@ -80,10 +76,8 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
             }
           }
         ],
-        layout: this._layout,
-        events: {
-          ...this._events
-        }
+        layout,
+        events
       };
     }
   }

@@ -35,7 +35,7 @@ class DialogSheet extends sheet_1.Sheet {
             if (!this._done && this.reject)
                 this.reject("cancel");
         };
-        const _navbar = new custom_navigation_bar_1.CustomNavigationBar({
+        this._navbar = new custom_navigation_bar_1.CustomNavigationBar({
             props: {
                 title: this._props.title,
                 leftBarButtonItems: [
@@ -53,7 +53,7 @@ class DialogSheet extends sheet_1.Sheet {
         };
         this._cview = new single_views_1.ContentView({
             props: { bgcolor: $color("clear") },
-            views: [_navbar.definition, this._props.cview.definition]
+            views: [this._navbar.definition, this._props.cview.definition]
         });
         super.present();
     }
@@ -62,6 +62,14 @@ class DialogSheet extends sheet_1.Sheet {
         if (this.resolve && this._props.doneHandler)
             this.resolve(this._props.doneHandler());
         this.dismiss();
+    }
+    get title() {
+        return this._props.title;
+    }
+    set title(title) {
+        this._props.title = title;
+        if (this._navbar)
+            this._navbar.title = title;
     }
 }
 exports.DialogSheet = DialogSheet;

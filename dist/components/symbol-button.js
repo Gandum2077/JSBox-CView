@@ -30,8 +30,6 @@ class SymbolButton extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
         this._props = Object.assign({ insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
-        this._layout = layout;
-        this._events = events;
         this._defineView = () => {
             return {
                 type: "button",
@@ -58,8 +56,8 @@ class SymbolButton extends base_1.Base {
                         }
                     }
                 ],
-                layout: this._layout,
-                events: Object.assign({}, this._events)
+                layout,
+                events
             };
         };
     }

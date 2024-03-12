@@ -28,6 +28,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     bgcolor?: UIColor;
   }
   _done: boolean;
+  private _navbar?: CustomNavigationBar;
   resolve?: (value: any) => void;
   reject?: (reason: any) => void;
 
@@ -55,7 +56,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     this._dismissalHandler = () => {
       if (!this._done && this.reject) this.reject("cancel");
     };
-    const _navbar = new CustomNavigationBar({
+    this._navbar = new CustomNavigationBar({
       props: {
         title: this._props.title,
         leftBarButtonItems: [
@@ -73,7 +74,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     };
     this._cview = new ContentView({
       props: { bgcolor: $color("clear") },
-      views: [_navbar.definition, this._props.cview.definition]
+      views: [this._navbar.definition, this._props.cview.definition]
     });
     super.present();
   }
@@ -83,5 +84,14 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     if (this.resolve && this._props.doneHandler)
       this.resolve(this._props.doneHandler());
     this.dismiss();
+  }
+
+  get title() {
+    return this._props.title;
+  }
+
+  set title(title: string) {
+    this._props.title = title;
+    if (this._navbar) this._navbar.title = title;
   }
 }
