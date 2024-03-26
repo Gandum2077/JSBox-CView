@@ -97,7 +97,7 @@ export interface NavigationBarProps {
 }
 
 interface BarButtonItem {
-  cview?: Base<AllUIView, UiTypes.AllViewOptions>;
+  cview?: Base<any, any>;
   width?: number;
   title?: string;
   symbol?: string;
