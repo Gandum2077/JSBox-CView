@@ -107,7 +107,9 @@ class CustomNavigationBar extends base_1.Base {
                 const views = [];
                 const chevronOptions = {
                     type: "view",
-                    props: {},
+                    props: {
+                        userInteractionEnabled: false
+                    },
                     layout: (make) => {
                         make.left.top.bottom.inset(0);
                         make.width.equalTo(35);

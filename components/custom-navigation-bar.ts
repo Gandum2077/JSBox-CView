@@ -163,7 +163,9 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
         const views = [];
         const chevronOptions: UiTypes.ViewOptions = {
           type: "view",
-          props: {},
+          props: {
+            userInteractionEnabled: false
+          },
           layout: (make: MASConstraintMaker) => {
             make.left.top.bottom.inset(0);
             make.width.equalTo(35);
