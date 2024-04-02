@@ -1,6 +1,6 @@
 {
   "name": "jsbox-cview",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "为 JSBox 设计的微型框架",
   "repository": {
     "type": "git",
