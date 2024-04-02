@@ -26,111 +26,25 @@
  */
 
 import { Base } from "./base";
+import { 
+  PreferenceSection,
+  PrefsRow,
+  PrefsRowString,
+  PrefsRowNumber,
+  PrefsRowInteger,
+  PrefsRowStepper,
+  PrefsRowBoolean,
+  PrefsRowSlider,
+  PrefsRowList,
+  PrefsRowTab,
+  PrefsRowInfo,
+  PrefsRowInteractiveInfo,
+  PrefsRowLink,
+  PrefsRowAction,
+  selectableTypes,
+  excludedTypes
+ } from "./static-preference-listview";
 
-interface PreferenceSection {
-  title: string;
-  rows: PrefsRow[]
-}
-
-type PreferenceCellTypes = "string" | "number" | "integer" | "stepper" | "boolean" | "slider" | "list" | "tab" | "info" | "link" | "action";
-
-type PrefsRow = PrefsRowString | PrefsRowNumber | PrefsRowInteger | PrefsRowStepper | PrefsRowBoolean | PrefsRowSlider | PrefsRowList | PrefsRowTab | PrefsRowInfo | PrefsRowLink | PrefsRowAction;
-
-interface PrefsRowBase {
-  type: PreferenceCellTypes;
-  key?: string;
-  title?: string;
-  titleColor?: UIColor;
-  changedEvent?: () => void;
-}
-
-interface PrefsRowString extends PrefsRowBase {
-  type: "string";
-  value?: string;
-  placeholder?: string;
-  textColor?: UIColor;
-}
-
-interface PrefsRowNumber extends PrefsRowBase {
-  type: "number";
-  value?: number;
-  placeholder?: string;
-  textColor?: UIColor;
-  min?: number;
-  max?: number;
-}
-
-interface PrefsRowInteger extends PrefsRowBase {
-  type: "integer";
-  value?: number;
-  placeholder?: string;
-  textColor?: UIColor;
-  min?: number;
-  max?: number;
-}
-
-interface PrefsRowStepper extends PrefsRowBase {
-  type: "stepper";
-  value?: number;
-  min?: number;
-  max?: number;
-}
-
-interface PrefsRowBoolean extends PrefsRowBase {
-  type: "boolean";
-  value?: boolean;
-  onColor?: UIColor;
-  thumbColor?: UIColor;
-}
-
-interface PrefsRowSlider extends PrefsRowBase {
-  type: "slider";
-  value?: number;
-  min?: number;
-  max?: number;
-  decimal?: number;
-  minColor?: UIColor;
-  maxColor?: UIColor;
-  thumbColor?: UIColor;
-}
-
-interface PrefsRowList extends PrefsRowBase {
-  type: "list";
-  value?: number;
-  items: string[];
-}
-
-interface PrefsRowTab extends PrefsRowBase {
-  type: "tab";
-  value?: number;
-  items: string[];
-}
-
-interface PrefsRowInfo extends PrefsRowBase {
-  type: "info";
-  value?: string;
-}
-
-interface PrefsRowLink extends PrefsRowBase {
-  type: "link";
-  value?: string;
-}
-
-interface PrefsRowAction extends PrefsRowBase {
-  type: "action";
-  value?: () => void;
-  destructive?: boolean;
-}
-
-const selectableTypes = [
-  "string",
-  "number",
-  "integer",
-  "stepper",
-  "list",
-  "link",
-  "action"
-];
 
 interface CunstomProps extends UiTypes.ListProps {
   stringLeftInset?: number;
@@ -468,6 +382,31 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                 });
                 break;
               }
+              case "interactive-info": {
+                if (row.copyable) {
+                  $ui.alert({
+                    title: row.title,
+                    message: row.value,
+                    actions: [
+                      {
+                        title: "取消"
+                      },
+                      {
+                        title: "复制",
+                        handler: () => {
+                          $clipboard.text = row.value || "";
+                        }
+                      }
+                    ]
+                  })
+                } else {
+                  $ui.alert({
+                    title: row.title,
+                    message: row.value
+                  });
+                }
+                break;
+              }
               case "link": {
                 if (row.value) $safari.open({ url: row.value });
                 break;
@@ -634,6 +573,14 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             };
             break;
           }
+          case "interactive-info": {
+            data.label_info_link = {
+              hidden: false,
+              textColor: $color("secondaryText"),
+              text: n.value
+            };
+            break;
+          }
           case "link": {
             data.label_info_link = {
               hidden: false,
@@ -669,7 +616,6 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
 
   get values() {
     const values: { [key: string]: any } = {};
-    const excludedTypes = ["action", "info", "link"];
     this._sections.forEach(section => {
       section.rows.forEach(row => {
         if (row.key && !excludedTypes.includes(row.type)) {

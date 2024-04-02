@@ -114,10 +114,10 @@
     "utils/*.ts",
     "components/*.ts",
     "components/*/*.ts",
-    "controller/*.ts"
+    "controller/*.ts",
+    "test/*.ts"
   ],
   "files": [
-    "test.ts",
     "index.ts"
   ]
 }

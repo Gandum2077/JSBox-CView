@@ -13,7 +13,7 @@
  *
  * - 通用:
  *
- *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper','boolean', 'slider', 'list', 'tab','info', 'link', 'action'
+ *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper','boolean', 'slider', 'list', 'tab', 'interactive-info', 'info', 'link', 'action'
  *     - key?: string 键. 如没有则不会返回其值.
  *     - title?: string 标题
  *     - value?: any 在下面专项里详解.
@@ -70,6 +70,11 @@
  *
  *     - value?: string
  *
+ * - interactive-info:
+ *
+ *    - value?: string
+ *    - copyable?: boolean = false
+ *
  * - link:
  *
  *     - value?: string url
@@ -89,9 +94,25 @@
  * - changed: values => {}
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PreferenceListView = void 0;
+exports.PreferenceListView = exports.excludedTypes = exports.selectableTypes = void 0;
 const base_1 = require("./base");
 const uitools_1 = require("../utils/uitools");
+exports.selectableTypes = [
+    "string",
+    "number",
+    "integer",
+    "stepper",
+    "list",
+    "interactive-info",
+    "link",
+    "action"
+];
+exports.excludedTypes = [
+    "info",
+    "interactive-info",
+    "link",
+    "action"
+];
 class Cell extends base_1.Base {
     constructor({ key, title, value, titleColor = $color("primaryText"), changedEvent }, values) {
         super();
@@ -101,20 +122,11 @@ class Cell extends base_1.Base {
         this._titleColor = titleColor;
         this._changedEvent = changedEvent;
         this._values = values;
-        const selectableTypes = [
-            "string",
-            "number",
-            "integer",
-            "stepper",
-            "list",
-            "link",
-            "action"
-        ];
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
-                    selectable: selectableTypes.includes(this._type),
+                    selectable: exports.selectableTypes.includes(this._type),
                     id: this.id
                 },
                 layout: $layout.fill,
@@ -577,6 +589,35 @@ class InfoCell extends Cell {
         return text;
     }
 }
+class InteractiveInfoCell extends Cell {
+    constructor(props, values) {
+        super(props, values);
+        this._type = "interactive-info";
+        const { copyable = false } = props;
+        this._copyable = copyable;
+    }
+    _defineValueView() {
+        return {
+            type: "label",
+            props: {
+                id: "label",
+                text: this._value,
+                textColor: $color("secondaryText"),
+                align: $align.right
+            },
+            layout: (make, view) => {
+                make.top.bottom.inset(0);
+                make.left.equalTo(view.prev.right).inset(10);
+                make.right.inset(15);
+            }
+        };
+    }
+    _handleValue(text) {
+        const label = this.view.get("label");
+        label.text = text;
+        return text;
+    }
+}
 class LinkCell extends Cell {
     constructor(props, values) {
         super(props, values);
@@ -659,10 +700,9 @@ class PreferenceListView extends base_1.Base {
         super();
         this._sections = sections;
         this._values = {};
-        const excludedTypes = ["action", "info", "link"];
         sections.forEach(section => {
             section.rows.forEach(row => {
-                if (row.key && !excludedTypes.includes(row.type)) {
+                if (row.key && !exports.excludedTypes.includes(row.type)) {
                     this._values[row.key] = row.value;
                 }
             });
@@ -739,6 +779,32 @@ class PreferenceListView extends base_1.Base {
                                 });
                                 break;
                             }
+                            case "interactive-info": {
+                                if (cell._copyable) {
+                                    $ui.alert({
+                                        title: cell._title,
+                                        message: cell.value,
+                                        actions: [
+                                            {
+                                                title: "取消"
+                                            },
+                                            {
+                                                title: "复制",
+                                                handler: () => {
+                                                    $clipboard.text = cell.value;
+                                                }
+                                            }
+                                        ]
+                                    });
+                                }
+                                else {
+                                    $ui.alert({
+                                        title: cell._title,
+                                        message: cell.value
+                                    });
+                                }
+                                break;
+                            }
                             case "link": {
                                 $safari.open({ url: cell.value });
                                 break;
@@ -775,6 +841,8 @@ class PreferenceListView extends base_1.Base {
                 return new TabCell(props, this._values);
             case "info":
                 return new InfoCell(props, this._values);
+            case "interactive-info":
+                return new InteractiveInfoCell(props, this._values);
             case "link":
                 return new LinkCell(props, this._values);
             case "action":

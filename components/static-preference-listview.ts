@@ -12,7 +12,7 @@
  * 
  * - 通用:
  * 
- *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper','boolean', 'slider', 'list', 'tab','info', 'link', 'action'
+ *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper','boolean', 'slider', 'list', 'tab', 'interactive-info', 'info', 'link', 'action'
  *     - key?: string 键. 如没有则不会返回其值.
  *     - title?: string 标题
  *     - value?: any 在下面专项里详解.
@@ -69,6 +69,11 @@
  * 
  *     - value?: string
  * 
+ * - interactive-info:
+ * 
+ *    - value?: string
+ *    - copyable?: boolean = false
+ * 
  * - link:
  * 
  *     - value?: string url
@@ -91,14 +96,14 @@
 import { Base } from "./base";
 import { getTextWidth } from "../utils/uitools";
 
-type PreferenceCellTypes = "string" | "number" | "integer" | "stepper" | "boolean" | "slider" | "list" | "tab" | "info" | "link" | "action";
+type PreferenceCellTypes = "string" | "number" | "integer" | "stepper" | "boolean" | "slider" | "list" | "tab" | "info" | "interactive-info" | "link" | "action";
 
 export interface PreferenceSection {
   title: string;
   rows: PrefsRow[]
 }
 
-type PrefsRow = PrefsRowString | PrefsRowNumber | PrefsRowInteger | PrefsRowStepper | PrefsRowBoolean | PrefsRowSlider | PrefsRowList | PrefsRowTab | PrefsRowInfo | PrefsRowLink | PrefsRowAction;
+export type PrefsRow = PrefsRowString | PrefsRowNumber | PrefsRowInteger | PrefsRowStepper | PrefsRowBoolean | PrefsRowSlider | PrefsRowList | PrefsRowTab | PrefsRowInfo | PrefsRowInteractiveInfo | PrefsRowLink | PrefsRowAction;
 
 interface PrefsRowBase {
   type: PreferenceCellTypes;
@@ -108,14 +113,14 @@ interface PrefsRowBase {
   changedEvent?: () => void;
 }
 
-interface PrefsRowString extends PrefsRowBase {
+export interface PrefsRowString extends PrefsRowBase {
   type: "string";
   value?: string;
   placeholder?: string;
   textColor?: UIColor;
 }
 
-interface PrefsRowNumber extends PrefsRowBase {
+export interface PrefsRowNumber extends PrefsRowBase {
   type: "number";
   value?: number;
   placeholder?: string;
@@ -124,7 +129,7 @@ interface PrefsRowNumber extends PrefsRowBase {
   max?: number;
 }
 
-interface PrefsRowInteger extends PrefsRowBase {
+export interface PrefsRowInteger extends PrefsRowBase {
   type: "integer";
   value?: number;
   placeholder?: string;
@@ -133,21 +138,21 @@ interface PrefsRowInteger extends PrefsRowBase {
   max?: number;
 }
 
-interface PrefsRowStepper extends PrefsRowBase {
+export interface PrefsRowStepper extends PrefsRowBase {
   type: "stepper";
   value?: number;
   min?: number;
   max?: number;
 }
 
-interface PrefsRowBoolean extends PrefsRowBase {
+export interface PrefsRowBoolean extends PrefsRowBase {
   type: "boolean";
   value?: boolean;
   onColor?: UIColor;
   thumbColor?: UIColor;
 }
 
-interface PrefsRowSlider extends PrefsRowBase {
+export interface PrefsRowSlider extends PrefsRowBase {
   type: "slider";
   value?: number;
   min?: number;
@@ -158,37 +163,61 @@ interface PrefsRowSlider extends PrefsRowBase {
   thumbColor?: UIColor;
 }
 
-interface PrefsRowList extends PrefsRowBase {
+export interface PrefsRowList extends PrefsRowBase {
   type: "list";
   value?: number;
   items: string[];
 }
 
-interface PrefsRowTab extends PrefsRowBase {
+export interface PrefsRowTab extends PrefsRowBase {
   type: "tab";
   value?: number;
   items: string[];
 }
 
-interface PrefsRowInfo extends PrefsRowBase {
+export interface PrefsRowInfo extends PrefsRowBase {
   type: "info";
   value?: string;
 }
 
-interface PrefsRowLink extends PrefsRowBase {
+export interface PrefsRowInteractiveInfo extends PrefsRowBase {
+  type: "interactive-info";
+  value?: string;
+  copyable?: boolean;
+}
+
+export interface PrefsRowLink extends PrefsRowBase {
   type: "link";
   value?: string;
 }
 
-interface PrefsRowAction extends PrefsRowBase {
+export interface PrefsRowAction extends PrefsRowBase {
   type: "action";
   value?: () => void;
   destructive?: boolean;
 }
 
+export const selectableTypes = [
+  "string",
+  "number",
+  "integer",
+  "stepper",
+  "list",
+  "interactive-info",
+  "link",
+  "action"
+];
+
+export const excludedTypes = [
+  "info",
+  "interactive-info",
+  "link",
+  "action"
+];
+
 type PreferenceValues = { [key: string]: any };
 
-type AllCells = StringCell | NumberCell | IntegerCell | StepperCell | BooleanCell | SliderCell | ListCell | TabCell | InfoCell | LinkCell | ActionCell;
+type AllCells = StringCell | NumberCell | IntegerCell | StepperCell | BooleanCell | SliderCell | ListCell | TabCell | InteractiveInfoCell | InfoCell | LinkCell | ActionCell;
 
 abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
   abstract _type: string;
@@ -221,15 +250,6 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
     this._titleColor = titleColor;
     this._changedEvent = changedEvent;
     this._values = values;
-    const selectableTypes = [
-      "string",
-      "number",
-      "integer",
-      "stepper",
-      "list",
-      "link",
-      "action"
-    ];
     this._defineView = () => {
       return {
         type: "view",
@@ -743,6 +763,39 @@ class InfoCell extends Cell {
   }
 }
 
+class InteractiveInfoCell extends Cell {
+  readonly _type = "interactive-info";
+  _copyable: boolean;
+  constructor(props: PrefsRowInteractiveInfo, values: PreferenceValues) {
+    super(props, values);
+    const { copyable = false } = props;
+    this._copyable = copyable;
+  }
+
+  _defineValueView(): UiTypes.LabelOptions {
+    return {
+      type: "label",
+      props: {
+        id: "label",
+        text: this._value,
+        textColor: $color("secondaryText"),
+        align: $align.right
+      },
+      layout: (make, view) => {
+        make.top.bottom.inset(0);
+        make.left.equalTo(view.prev.right).inset(10);
+        make.right.inset(15);
+      }
+    };
+  }
+
+  _handleValue(text: string) {
+    const label = this.view.get("label") as UILabelView;
+    label.text = text;
+    return text;
+  }
+}
+
 class LinkCell extends Cell {
   readonly _type = "link";
   constructor(props: PrefsRowLink, values: PreferenceValues) {
@@ -850,7 +903,6 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
     super();
     this._sections = sections;
     this._values = {};
-    const excludedTypes = ["action", "info", "link"];
     sections.forEach(section => {
       section.rows.forEach(row => {
         if (row.key && !excludedTypes.includes(row.type)) {
@@ -931,6 +983,31 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
                 });
                 break;
               }
+              case "interactive-info": {
+                if (cell._copyable) {
+                  $ui.alert({
+                    title: cell._title,
+                    message: cell.value,
+                    actions: [
+                      {
+                        title: "取消"
+                      },
+                      {
+                        title: "复制",
+                        handler: () => {
+                          $clipboard.text = cell.value;
+                        }
+                      }
+                    ]
+                  })
+                } else {
+                  $ui.alert({
+                    title: cell._title,
+                    message: cell.value
+                  });
+                }
+                break;
+              }
               case "link": {
                 $safari.open({ url: cell.value });
                 break;
@@ -968,6 +1045,8 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
         return new TabCell(props, this._values);
       case "info":
         return new InfoCell(props, this._values);
+      case "interactive-info":
+        return new InteractiveInfoCell(props, this._values);
       case "link":
         return new LinkCell(props, this._values);
       case "action":

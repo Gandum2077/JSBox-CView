@@ -28,15 +28,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DynamicPreferenceListView = void 0;
 const base_1 = require("./base");
-const selectableTypes = [
-    "string",
-    "number",
-    "integer",
-    "stepper",
-    "list",
-    "link",
-    "action"
-];
+const static_preference_listview_1 = require("./static-preference-listview");
 class DynamicPreferenceListView extends base_1.Base {
     constructor({ sections, props, layout, events = {} }) {
         super();
@@ -266,7 +258,7 @@ class DynamicPreferenceListView extends base_1.Base {
                 events: {
                     didSelect: (sender, indexPath, data) => {
                         const row = this._sections[indexPath.section].rows[indexPath.row];
-                        if (!selectableTypes.includes(row.type))
+                        if (!static_preference_listview_1.selectableTypes.includes(row.type))
                             return;
                         switch (row.type) {
                             case "string": {
@@ -334,6 +326,32 @@ class DynamicPreferenceListView extends base_1.Base {
                                 });
                                 break;
                             }
+                            case "interactive-info": {
+                                if (row.copyable) {
+                                    $ui.alert({
+                                        title: row.title,
+                                        message: row.value,
+                                        actions: [
+                                            {
+                                                title: "取消"
+                                            },
+                                            {
+                                                title: "复制",
+                                                handler: () => {
+                                                    $clipboard.text = row.value || "";
+                                                }
+                                            }
+                                        ]
+                                    });
+                                }
+                                else {
+                                    $ui.alert({
+                                        title: row.title,
+                                        message: row.value
+                                    });
+                                }
+                                break;
+                            }
                             case "link": {
                                 if (row.value)
                                     $safari.open({ url: row.value });
@@ -393,7 +411,7 @@ class DynamicPreferenceListView extends base_1.Base {
     _map(sections) {
         function generateDefaultRow(options) {
             return {
-                bgview: { hidden: selectableTypes.includes(options.type) }, // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
+                bgview: { hidden: static_preference_listview_1.selectableTypes.includes(options.type) }, // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
                 title: {
                     text: options.title,
                     textColor: options.titleColor || $color("primaryText")
@@ -502,6 +520,14 @@ class DynamicPreferenceListView extends base_1.Base {
                         };
                         break;
                     }
+                    case "interactive-info": {
+                        data.label_info_link = {
+                            hidden: false,
+                            textColor: $color("secondaryText"),
+                            text: n.value
+                        };
+                        break;
+                    }
                     case "link": {
                         data.label_info_link = {
                             hidden: false,
@@ -534,10 +560,9 @@ class DynamicPreferenceListView extends base_1.Base {
     }
     get values() {
         const values = {};
-        const excludedTypes = ["action", "info", "link"];
         this._sections.forEach(section => {
             section.rows.forEach(row => {
-                if (row.key && !excludedTypes.includes(row.type)) {
+                if (row.key && !static_preference_listview_1.excludedTypes.includes(row.type)) {
                     values[row.key] = row.value;
                 }
             });
