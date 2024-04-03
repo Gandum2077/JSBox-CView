@@ -942,6 +942,7 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
             switch (cell._type) {
               case "string": {
                 $input.text({
+                  text: cell.value,
                   type: $kbType.default,
                   placeholder: cell._placeholder,
                   handler: text => {
@@ -953,6 +954,7 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
               }
               case "number": {
                 $input.text({
+                  text: cell.value,
                   type: $kbType.decimal,
                   placeholder: cell._placeholder,
                   handler: text => {
@@ -964,6 +966,7 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
               }
               case "integer": {
                 $input.text({
+                  text: cell.value,
                   type: $kbType.number,
                   placeholder: cell._placeholder,
                   handler: text => {

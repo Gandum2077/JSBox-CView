@@ -329,6 +329,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             switch (row.type) {
               case "string": {
                 $input.text({
+                  text: row.value,
                   type: $kbType.default,
                   placeholder: row.placeholder,
                   handler: text => {
@@ -341,6 +342,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               }
               case "number": {
                 $input.text({
+                  text: row.value?.toString(),
                   type: $kbType.decimal,
                   placeholder: row.placeholder,
                   handler: text => {
@@ -357,6 +359,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               }
               case "integer": {
                 $input.text({
+                  text: row.value?.toString(),
                   type: $kbType.number,
                   placeholder: row.placeholder,
                   handler: text => {

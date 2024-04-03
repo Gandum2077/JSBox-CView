@@ -257,12 +257,14 @@ class DynamicPreferenceListView extends base_1.Base {
                 layout: this._layout,
                 events: {
                     didSelect: (sender, indexPath, data) => {
+                        var _a, _b;
                         const row = this._sections[indexPath.section].rows[indexPath.row];
                         if (!static_preference_listview_1.selectableTypes.includes(row.type))
                             return;
                         switch (row.type) {
                             case "string": {
                                 $input.text({
+                                    text: row.value,
                                     type: $kbType.default,
                                     placeholder: row.placeholder,
                                     handler: text => {
@@ -276,6 +278,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             }
                             case "number": {
                                 $input.text({
+                                    text: (_a = row.value) === null || _a === void 0 ? void 0 : _a.toString(),
                                     type: $kbType.decimal,
                                     placeholder: row.placeholder,
                                     handler: text => {
@@ -296,6 +299,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             }
                             case "integer": {
                                 $input.text({
+                                    text: (_b = row.value) === null || _b === void 0 ? void 0 : _b.toString(),
                                     type: $kbType.number,
                                     placeholder: row.placeholder,
                                     handler: text => {

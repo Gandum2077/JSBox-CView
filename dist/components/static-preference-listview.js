@@ -734,6 +734,7 @@ class PreferenceListView extends base_1.Base {
                         switch (cell._type) {
                             case "string": {
                                 $input.text({
+                                    text: cell.value,
                                     type: $kbType.default,
                                     placeholder: cell._placeholder,
                                     handler: text => {
@@ -746,6 +747,7 @@ class PreferenceListView extends base_1.Base {
                             }
                             case "number": {
                                 $input.text({
+                                    text: cell.value,
                                     type: $kbType.decimal,
                                     placeholder: cell._placeholder,
                                     handler: text => {
@@ -758,6 +760,7 @@ class PreferenceListView extends base_1.Base {
                             }
                             case "integer": {
                                 $input.text({
+                                    text: cell.value,
                                     type: $kbType.number,
                                     placeholder: cell._placeholder,
                                     handler: text => {
