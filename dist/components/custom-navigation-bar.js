@@ -256,18 +256,42 @@ class CustomNavigationBar extends base_1.Base {
                 },
                 views: this._props.toolView && [this._props.toolView.definition]
             });
+            if (this._props.bgcolor) {
+                this.cviews.bgview = new single_views_1.ContentView({
+                    props: {
+                        bgcolor: this._props.bgcolor
+                    },
+                    layout: $layout.fill
+                });
+            }
+            else {
+                this.cviews.bgview = new single_views_1.Blur({
+                    props: {
+                        style: 10
+                    },
+                    layout: $layout.fill
+                });
+            }
+            this.cviews.separator = new single_views_1.ContentView({
+                props: {
+                    bgcolor: $color("separatorColor")
+                },
+                layout: (make, view) => {
+                    make.bottom.left.right.inset(0);
+                    make.height.equalTo(0.5);
+                }
+            });
             return {
-                type: this._props.bgcolor ? "view" : "blur",
+                type: "view",
                 props: {
                     id: this.id,
-                    style: this._props.bgcolor ? undefined : 10,
-                    bgcolor: this._props.bgcolor
                 },
                 layout: navBarLayouts[this._props.style],
                 events: {
                     ready: () => (this.style = this.style)
                 },
                 views: [
+                    this.cviews.bgview.definition,
                     {
                         type: "view",
                         props: {},
@@ -277,16 +301,7 @@ class CustomNavigationBar extends base_1.Base {
                             this.cviews.toolViewWrapper.definition
                         ]
                     },
-                    {
-                        type: "view",
-                        props: {
-                            bgcolor: $color("separatorColor")
-                        },
-                        layout: (make, view) => {
-                            make.bottom.left.right.inset(0);
-                            make.height.equalTo(0.5);
-                        }
-                    }
+                    this.cviews.separator.definition
                 ]
             };
         };

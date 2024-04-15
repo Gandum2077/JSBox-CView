@@ -52,7 +52,7 @@
  */
 
 import { Base } from "./base";
-import { ContentView, Label, Button } from "./single-views";
+import { ContentView, Label, Button, Blur } from "./single-views";
 import { SymbolButton } from "./symbol-button";
 import { getTextWidth } from "../utils/uitools";
 
@@ -122,6 +122,8 @@ interface NavigationBarCViews {
   titleViewWrapper?: ContentView | Label;
   contentView?: ContentView;
   toolViewWrapper?: ContentView;
+  bgview?: ContentView | Blur;
+  separator?: ContentView;
 }
 
 export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
@@ -318,19 +320,41 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
         },
         views: this._props.toolView && [this._props.toolView.definition]
       });
-
+      if (this._props.bgcolor) {
+        this.cviews.bgview = new ContentView({
+          props: {
+            bgcolor: this._props.bgcolor
+          },
+          layout: $layout.fill
+        });
+      } else {
+        this.cviews.bgview = new Blur({
+          props: {
+            style: 10
+          },
+          layout: $layout.fill
+        });
+      }
+      this.cviews.separator = new ContentView({
+        props: {
+          bgcolor: $color("separatorColor")
+        },
+        layout: (make, view) => {
+          make.bottom.left.right.inset(0);
+          make.height.equalTo(0.5);
+        }
+      });
       return {
-        type: this._props.bgcolor ? "view" : "blur",
+        type: "view",
         props: {
           id: this.id,
-          style: this._props.bgcolor ? undefined : 10,
-          bgcolor: this._props.bgcolor
         },
         layout: navBarLayouts[this._props.style],
         events: {
           ready: () => (this.style = this.style)
         },
         views: [
+          this.cviews.bgview.definition,
           {
             type: "view",
             props: {},
@@ -340,16 +364,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
               this.cviews.toolViewWrapper.definition
             ]
           },
-          {
-            type: "view",
-            props: {
-              bgcolor: $color("separatorColor")
-            },
-            layout: (make, view) => {
-              make.bottom.left.right.inset(0);
-              make.height.equalTo(0.5);
-            }
-          }
+          this.cviews.separator.definition
         ]
       };
     }
