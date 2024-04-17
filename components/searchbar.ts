@@ -35,7 +35,7 @@ interface SearchBarProps {
   tintColor: UIColor;
   bgcolor: UIColor;
   style: 0 | 1 | 2;
-  accessoryCview?: Base<UIView, UiTypes.ViewOptions>;
+  accessoryCview?: Base<any, any>;
 }
 
 export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
@@ -80,12 +80,8 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
       style: 0,
       ...props
     };
-    const cancelButtonWidth = getTextWidth(this._props.cancelText, {
-      inset: 20
-    });
-    const placeholderWidth = getTextWidth(this._props.cancelText, {
-      inset: 20
-    });
+    const cancelButtonWidth = getTextWidth(this._props.cancelText, { inset: 20 });
+    const placeholderWidth = getTextWidth(this._props.placeholder, { inset: 20 });
     this._focused = false;
     this._layouts = this._defineLayouts(cancelButtonWidth, placeholderWidth);
     this.cviews = {} as {
@@ -205,13 +201,17 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     switch (this._props.style) {
       case 0: {
         const IconInputLayout = $layout.fill;
+        const IconInputLayoutFocused = (make: MASConstraintMaker, view: AllUIView) => {
+          make.left.top.bottom.inset(0);
+          make.right.inset(cancelButtonWidth);
+        }
         const cancelButtonLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.right.top.bottom.inset(0);
           make.width.equalTo(cancelButtonWidth);
         };
         const bgviewLayout = $layout.fill;
         return {
-          iconInput: { normal: IconInputLayout },
+          iconInput: { normal: IconInputLayout, focused: IconInputLayoutFocused },
           cancelButton: { normal: cancelButtonLayout },
           bgview: { normal: bgviewLayout }
         };
@@ -219,7 +219,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
       case 1: {
         const IconInputLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.left.top.bottom.inset(0);
-          make.right.inset(cancelButtonWidth);
+          make.right.equalTo(view.prev);
         };
         const cancelButtonLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.top.bottom.inset(0);
@@ -273,11 +273,13 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
 
   _onFocused() {
     this._focused = true;
+    if (this._layouts.iconInput.focused) this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
     switch (this._props.style) {
       case 0: {
         $ui.animate({
           duration: 0.2,
           animation: () => {
+            this.cviews.iconInput.view.relayout();
             this.cviews.cancelButton.view.alpha = 1;
           }
         });
@@ -314,11 +316,13 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
 
   _onBlurred() {
     this._focused = false;
+    this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.normal);
     switch (this._props.style) {
       case 0: {
         $ui.animate({
           duration: 0.2,
           animation: () => {
+            this.cviews.iconInput.view.relayout();
             this.cviews.cancelButton.view.alpha = 0;
           }
         });
@@ -336,7 +340,15 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
         break;
       }
       case 2: {
-        this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.normal);
+        const placeholderWidth = getTextWidth(this._props.placeholder, { inset: 20 });
+        const textWidth = getTextWidth(this.text, { inset: 20 });
+        const IconInputLayoutInputing = (make: MASConstraintMaker, view: AllUIView) => {
+          make.center.equalTo(view.super);
+          make.top.bottom.inset(0);
+          make.width.equalTo(Math.max(textWidth, placeholderWidth) + 50).priority(999);
+          make.width.lessThanOrEqualTo(view.super).priority(1000);
+        }
+        this.cviews.iconInput.view.remakeLayout(IconInputLayoutInputing);
         this.cviews.bgview.view.remakeLayout(this._layouts.bgview.normal);
         $ui.animate({
           duration: 0.2,

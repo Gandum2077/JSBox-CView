@@ -34,12 +34,8 @@ class SearchBar extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
         this._props = Object.assign({ placeholder: (0, l10n_1.l10n)("SEARCH"), cancelText: (0, l10n_1.l10n)("CANCEL"), tintColor: $color("systemLink"), bgcolor: colors_1.searchBarBgcolor, style: 0 }, props);
-        const cancelButtonWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, {
-            inset: 20
-        });
-        const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, {
-            inset: 20
-        });
+        const cancelButtonWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, { inset: 20 });
+        const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, { inset: 20 });
         this._focused = false;
         this._layouts = this._defineLayouts(cancelButtonWidth, placeholderWidth);
         this.cviews = {};
@@ -156,13 +152,17 @@ class SearchBar extends base_1.Base {
         switch (this._props.style) {
             case 0: {
                 const IconInputLayout = $layout.fill;
+                const IconInputLayoutFocused = (make, view) => {
+                    make.left.top.bottom.inset(0);
+                    make.right.inset(cancelButtonWidth);
+                };
                 const cancelButtonLayout = (make, view) => {
                     make.right.top.bottom.inset(0);
                     make.width.equalTo(cancelButtonWidth);
                 };
                 const bgviewLayout = $layout.fill;
                 return {
-                    iconInput: { normal: IconInputLayout },
+                    iconInput: { normal: IconInputLayout, focused: IconInputLayoutFocused },
                     cancelButton: { normal: cancelButtonLayout },
                     bgview: { normal: bgviewLayout }
                 };
@@ -170,7 +170,7 @@ class SearchBar extends base_1.Base {
             case 1: {
                 const IconInputLayout = (make, view) => {
                     make.left.top.bottom.inset(0);
-                    make.right.inset(cancelButtonWidth);
+                    make.right.equalTo(view.prev);
                 };
                 const cancelButtonLayout = (make, view) => {
                     make.top.bottom.inset(0);
@@ -223,11 +223,14 @@ class SearchBar extends base_1.Base {
     }
     _onFocused() {
         this._focused = true;
+        if (this._layouts.iconInput.focused)
+            this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
         switch (this._props.style) {
             case 0: {
                 $ui.animate({
                     duration: 0.2,
                     animation: () => {
+                        this.cviews.iconInput.view.relayout();
                         this.cviews.cancelButton.view.alpha = 1;
                     }
                 });
@@ -266,11 +269,13 @@ class SearchBar extends base_1.Base {
     }
     _onBlurred() {
         this._focused = false;
+        this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.normal);
         switch (this._props.style) {
             case 0: {
                 $ui.animate({
                     duration: 0.2,
                     animation: () => {
+                        this.cviews.iconInput.view.relayout();
                         this.cviews.cancelButton.view.alpha = 0;
                     }
                 });
@@ -288,7 +293,15 @@ class SearchBar extends base_1.Base {
                 break;
             }
             case 2: {
-                this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.normal);
+                const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, { inset: 20 });
+                const textWidth = (0, uitools_1.getTextWidth)(this.text, { inset: 20 });
+                const IconInputLayoutInputing = (make, view) => {
+                    make.center.equalTo(view.super);
+                    make.top.bottom.inset(0);
+                    make.width.equalTo(Math.max(textWidth, placeholderWidth) + 50).priority(999);
+                    make.width.lessThanOrEqualTo(view.super).priority(1000);
+                };
+                this.cviews.iconInput.view.remakeLayout(IconInputLayoutInputing);
                 this.cviews.bgview.view.remakeLayout(this._layouts.bgview.normal);
                 $ui.animate({
                     duration: 0.2,
