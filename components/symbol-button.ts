@@ -50,6 +50,7 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
       tintColor: $color("primaryText"),
       ...props
     };
+    this._layout = layout;
     this._defineView = () => {
       return {
         type: "button",
@@ -76,7 +77,7 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
             }
           }
         ],
-        layout,
+        layout: this._layout,
         events
       };
     }
