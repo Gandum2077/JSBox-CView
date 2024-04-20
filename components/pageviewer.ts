@@ -50,7 +50,6 @@ export class PageViewer extends Base<UIView, UiTypes.ViewOptions> {
     this._pageWidth = 0;
     this._floatPage = this._props.page;
     const contentViews = this._props.cviews.map(n => {
-      n._layout = $layout.fill;
       return new ContentView({
         views: [n.definition],
         layout: (make, view) => {
@@ -93,7 +92,7 @@ export class PageViewer extends Base<UIView, UiTypes.ViewOptions> {
       return {
         type: "view",
         props: { id: this.id },
-        layout: this._layout,
+        layout,
         views: [this.scroll.definition],
         events: {
           layoutSubviews: sender => {

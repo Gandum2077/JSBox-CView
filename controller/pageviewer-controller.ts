@@ -44,7 +44,7 @@ export class PageViewerController extends BaseController {
     };
     this.cviews.pageviewer = new PageViewer({
       props: {
-        page: this._props.index,
+        page: this._props.index || 0,
         cviews: this._props.items.map(n => n.controller.rootView)
       },
       layout: (make, view) => {
@@ -58,7 +58,7 @@ export class PageViewerController extends BaseController {
     this.cviews.titlebar = new PageViewerTitleBar({
       props: {
         items: this._props.items.map(n => n.title),
-        index: this._props.index
+        index: this._props.index || 0
       },
       layout: $layout.fill,
       events: {
