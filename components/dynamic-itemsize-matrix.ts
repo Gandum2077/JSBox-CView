@@ -165,11 +165,15 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
         Math.floor((totalWidth - spacing) / (minItemWidth + spacing)),
         maxColumns
       ),
-      1
+      1  // 最少一列
     );
+    const itemSizeWidth =  Math.max(
+      Math.floor((totalWidth - spacing * (columns + 1)) / columns), 
+      minItemWidth  // 最小宽度
+    )
     return {
       columns,
-      itemSizeWidth: Math.floor((totalWidth - spacing * (columns + 1)) / columns)
+      itemSizeWidth
     };
   }
 
@@ -186,5 +190,14 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
       ? this._events.itemHeight(itemSizeWidth)
       : this._props.fixedItemHeight;
     return rows * itemSizeHeight + (rows + 1) * this._props.spacing;
+  }
+
+  get data() {
+    return this.matrix.view.data;
+  }
+
+  set data(data) {
+    this._props.data = data;
+    this.matrix.view.data = data;
   }
 }

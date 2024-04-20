@@ -111,10 +111,13 @@ class DynamicItemSizeMatrix extends base_1.Base {
         const totalWidth = maxTotalWidth
             ? Math.min(maxTotalWidth, containerWidth)
             : containerWidth;
-        const columns = Math.max(Math.min(Math.floor((totalWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1);
+        const columns = Math.max(Math.min(Math.floor((totalWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
+        );
+        const itemSizeWidth = Math.max(Math.floor((totalWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
+        );
         return {
             columns,
-            itemSizeWidth: Math.floor((totalWidth - spacing * (columns + 1)) / columns)
+            itemSizeWidth
         };
     }
     heightToWidth(width) {
@@ -124,6 +127,13 @@ class DynamicItemSizeMatrix extends base_1.Base {
             ? this._events.itemHeight(itemSizeWidth)
             : this._props.fixedItemHeight;
         return rows * itemSizeHeight + (rows + 1) * this._props.spacing;
+    }
+    get data() {
+        return this.matrix.view.data;
+    }
+    set data(data) {
+        this._props.data = data;
+        this.matrix.view.data = data;
     }
 }
 exports.DynamicItemSizeMatrix = DynamicItemSizeMatrix;
