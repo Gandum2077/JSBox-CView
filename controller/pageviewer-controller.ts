@@ -16,7 +16,7 @@ import { CustomNavigationBar, NavigationBarProps } from "../components/custom-na
 
 interface PageViewerControllerProps extends BaseControllerProps {
   items: { controller: BaseController, title: string }[];
-  navBarProps?: NavigationBarProps;
+  navBarProps?: Partial<NavigationBarProps>;
   index?: number;
 }
 
