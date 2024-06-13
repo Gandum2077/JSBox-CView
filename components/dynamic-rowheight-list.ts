@@ -5,10 +5,11 @@
  * 
  * 核心策略为 list 的所有行均为 cview，且每一个 cview 需要实现一个方法：heightToWidth(width: number) => number  
  * 通过这个方法汇报自己在某个宽度的时候所需要的高度，这必须任何时候均立即可用；
- * 如果这个方法不可用，那么行高设为 44
  * 
  * 特别参数
  * sections: {title: string, rows: cview[]}[]
+ * rows: cview[]
+ * 两者不能同时存在，否则rows不起作用
  * 
  * 除了 props.data, props.template 和 events.rowHeight 不可用，其他均和 list 一致
  */
@@ -22,21 +23,27 @@ interface DynamicRowHeightListCView extends Base<any, any> {
 }
 
 export class DynamicRowHeightList extends Base<UIListView, UiTypes.ListOptions>{
-  _sections: {title: string, rows: DynamicRowHeightListCView[]}[];
   _defineView: () => UiTypes.ListOptions;
-  constructor({ sections, props, layout, events }: {
-    sections: {title: string, rows: DynamicRowHeightListCView[]}[];
+  constructor({ sections, rows, props, layout, events }: {
+    sections?: {title: string, rows: DynamicRowHeightListCView[]}[];
+    rows?: DynamicRowHeightListCView[];
     props: DynamicRowHeightListProps;
     layout: (make: MASConstraintMaker, view: UIListView) => void;
     events: DynamicRowHeightListEvents;
   }) {
     super();
-    this._sections = sections;
     this._defineView = () => {
-      const data = this._sections.map(n => ({
-        title: n.title,
-        rows: n.rows.map(r => r.definition)
-      }));
+      let data: any;
+      if (sections && sections.length > 0) {
+        data = sections.map(n => ({
+          title: n.title,
+          rows: n.rows.map(r => r.definition)
+        }));
+      } else if (rows && rows.length > 0) {
+        data = rows.map(r => r.definition);
+      } else {
+        throw new Error("sections or rows must be provided");
+      }
       return {
         type: "list",
         props: {
@@ -46,13 +53,14 @@ export class DynamicRowHeightList extends Base<UIListView, UiTypes.ListOptions>{
         layout,
         events: {
           rowHeight: (sender, indexPath) => {
-            const cview = this._sections[indexPath.section].rows[indexPath.row];
-            if (
-              cview.heightToWidth &&
-              typeof cview.heightToWidth === "function"
-            )
+            if (sections) {
+              const cview = sections[indexPath.section].rows[indexPath.row];
               return cview.heightToWidth(sender.frame.width);
-            else return 44;
+            } else if (rows) {
+              return rows[indexPath.row].heightToWidth(sender.frame.width);
+            } else {
+              throw new Error("sections or rows must be provided");
+            }
           },
           ...events
         }
