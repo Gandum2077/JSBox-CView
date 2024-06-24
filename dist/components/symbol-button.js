@@ -37,7 +37,8 @@ class SymbolButton extends base_1.Base {
                 props: {
                     radius: 0,
                     bgcolor: $color("clear"),
-                    id: this.id
+                    id: this.id,
+                    menu: this._props.menu,
                 },
                 views: [
                     {
