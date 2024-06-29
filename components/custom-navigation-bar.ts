@@ -103,7 +103,7 @@ interface BarButtonItem {
   symbol?: string;
   image?: UIImage;
   tintColor?: UIColor;
-  handler?: () => void;
+  handler?: (sender: UIButtonView) => void;
 }
 
 interface NavigationBarEvents {

@@ -8,6 +8,7 @@ const navbar = new CustomNavigationBar({
     rightBarButtonItems: [
       {
         symbol: "gear",
+        handler: (sender) => console.log(sender)
       }
     ]
   }
