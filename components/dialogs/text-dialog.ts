@@ -7,15 +7,17 @@
 import { Text } from "../single-views";
 import { DialogSheet } from "./dialog-sheet";
 
-export function textDialog({ title, text = "", placeholder = "" }: {
+export function textDialog({ title, text = "", placeholder = "", editable = true }: {
   title: string;
   text?: string;
   placeholder?: string;
+  editable?: boolean;
 }) {
   const textView = new Text({
     props: {
       text,
-      placeholder
+      placeholder,
+      editable
     },
     events: {
       ready: sender => sender.focus()
