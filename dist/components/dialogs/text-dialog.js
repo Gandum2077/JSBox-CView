@@ -8,14 +8,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.textDialog = void 0;
 const single_views_1 = require("../single-views");
 const dialog_sheet_1 = require("./dialog-sheet");
-function textDialog({ title, text = "", placeholder = "" }) {
+function textDialog({ title, text = "", placeholder = "", editable = true }) {
     const textView = new single_views_1.Text({
         props: {
             text,
-            placeholder
+            placeholder,
+            editable
         },
         events: {
-            ready: sender => sender.focus()
+            ready: sender => {
+                if (sender.editable)
+                    sender.focus();
+            }
         }
     });
     const sheet = new dialog_sheet_1.DialogSheet({

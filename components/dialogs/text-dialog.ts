@@ -20,7 +20,9 @@ export function textDialog({ title, text = "", placeholder = "", editable = true
       editable
     },
     events: {
-      ready: sender => sender.focus()
+      ready: sender => {
+        if (sender.editable) sender.focus()
+      }
     }
   });
 
