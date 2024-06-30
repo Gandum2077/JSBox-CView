@@ -52,14 +52,20 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
     };
     this._layout = layout;
     this._defineView = () => {
+      const props = this._props.menu 
+      ? {
+        radius: 0,
+        bgcolor: $color("clear"),
+        id: this.id,
+        menu: this._props.menu,
+      } : {
+        radius: 0,
+        bgcolor: $color("clear"),
+        id: this.id
+      } 
       return {
         type: "button",
-        props: {
-          radius: 0,
-          bgcolor: $color("clear"),
-          id: this.id,
-          menu: this._props.menu,
-        },
+        props,
         views: [
           {
             type: "image",

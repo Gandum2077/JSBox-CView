@@ -32,14 +32,20 @@ class SymbolButton extends base_1.Base {
         this._props = Object.assign({ insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
         this._layout = layout;
         this._defineView = () => {
-            return {
-                type: "button",
-                props: {
+            const props = this._props.menu
+                ? {
                     radius: 0,
                     bgcolor: $color("clear"),
                     id: this.id,
                     menu: this._props.menu,
-                },
+                } : {
+                radius: 0,
+                bgcolor: $color("clear"),
+                id: this.id
+            };
+            return {
+                type: "button",
+                props,
                 views: [
                     {
                         type: "image",
