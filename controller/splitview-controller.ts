@@ -176,6 +176,7 @@ interface SplitViewControllerProps extends BaseControllerProps {
 export class SplitViewController extends BaseController {
   private _screenEdgePanGestureObject: any;
   private _sideBarShown: boolean;
+  private _canShowSidebar: boolean;
   cviews: {
     primaryView: ContentView;
     secondaryView: SecondaryView;
@@ -193,6 +194,7 @@ export class SplitViewController extends BaseController {
       }, layout, events
     });
     this._sideBarShown = false;
+    this._canShowSidebar = true;
     this.cviews = {} as {
       primaryView: ContentView;
       secondaryView: SecondaryView;
@@ -231,7 +233,7 @@ export class SplitViewController extends BaseController {
       ]
     });
     this._screenEdgePanGestureObject = this._defineGestureObject(() => {
-      if (!this.sideBarShown) this.sideBarShown = true;
+      if (!this.sideBarShown && this._canShowSidebar) this.sideBarShown = true;
     });
     this.rootView.views = [this.cviews.secondaryView, this.cviews.primaryView];
   }
@@ -319,5 +321,13 @@ export class SplitViewController extends BaseController {
       this._hideSideBar();
     }
     this._sideBarShown = bool;
+  }
+
+  get canShowSidebar() {
+    return this._canShowSidebar;
+  }
+
+  set canShowSidebar(bool: boolean) {
+    this._canShowSidebar = bool;
   }
 }

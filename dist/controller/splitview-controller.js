@@ -138,6 +138,7 @@ class SplitViewController extends base_controller_1.BaseController {
             }, layout, events
         });
         this._sideBarShown = false;
+        this._canShowSidebar = true;
         this.cviews = {};
         this.cviews.secondaryView = new SecondaryView({
             props: {
@@ -172,7 +173,7 @@ class SplitViewController extends base_controller_1.BaseController {
             ]
         });
         this._screenEdgePanGestureObject = this._defineGestureObject(() => {
-            if (!this.sideBarShown)
+            if (!this.sideBarShown && this._canShowSidebar)
                 this.sideBarShown = true;
         });
         this.rootView.views = [this.cviews.secondaryView, this.cviews.primaryView];
@@ -247,6 +248,12 @@ class SplitViewController extends base_controller_1.BaseController {
             this._hideSideBar();
         }
         this._sideBarShown = bool;
+    }
+    get canShowSidebar() {
+        return this._canShowSidebar;
+    }
+    set canShowSidebar(bool) {
+        this._canShowSidebar = bool;
     }
 }
 exports.SplitViewController = SplitViewController;
