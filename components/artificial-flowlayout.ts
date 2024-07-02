@@ -59,7 +59,9 @@ interface InnerSection {
     realIndex: number;
   }[];
 }
-
+/**
+ * @deprecated
+ */
 export class ArtificialFlowlayout extends Base<UIView, UiTypes.ViewOptions> {
   private _sections: FlowlayoutSection[]; // 原数据，不变动，不包含空白占位的item
   private _innerSections: InnerSection[]; // 带空白占位的item
