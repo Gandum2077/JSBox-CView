@@ -1,3 +1,28 @@
+import { Base } from './base';
+import { Matrix } from "./single-views";
+
+interface DynamicItemSizeMatrixProps extends UiTypes.MatrixProps {
+  fixedItemHeight: number;
+  minItemWidth: number;
+  maxColumns: number;
+  spacing: number;
+  maxTotalWidth: number;
+  dynamicHeightEnabled?: boolean;
+}
+
+interface DynamicItemSizeMatrixEvents extends UiTypes.MatrixEvents {
+  itemHeight?: (width: number) => number;
+  heightChanged?: (sender: DynamicItemSizeMatrix, height: number) => void;
+}
+
+interface DynamicItemSizeMatrixPropsPartial extends UiTypes.MatrixProps {
+  fixedItemHeight?: number;
+  minItemWidth?: number;
+  maxColumns?: number;
+  spacing?: number;
+  dynamicHeightEnabled?: boolean;
+}
+
 /**
  * # CView Dynamic ItemSize Matrix
  * 
@@ -40,32 +65,6 @@
  * 方法:
  * - heightToWidth(width) 计算特定width时的应有的高度
  */
-
-import { Base } from './base';
-import { Matrix } from "./single-views";
-
-interface DynamicItemSizeMatrixProps extends UiTypes.MatrixProps {
-  fixedItemHeight: number;
-  minItemWidth: number;
-  maxColumns: number;
-  spacing: number;
-  maxTotalWidth: number;
-  dynamicHeightEnabled?: boolean;
-}
-
-interface DynamicItemSizeMatrixEvents extends UiTypes.MatrixEvents {
-  itemHeight?: (width: number) => number;
-  heightChanged?: (sender: DynamicItemSizeMatrix, height: number) => void;
-}
-
-interface DynamicItemSizeMatrixPropsPartial extends UiTypes.MatrixProps {
-  fixedItemHeight?: number;
-  minItemWidth?: number;
-  maxColumns?: number;
-  spacing?: number;
-  dynamicHeightEnabled?: boolean;
-}
-
 export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
   private _props: DynamicItemSizeMatrixProps;
   private _events: DynamicItemSizeMatrixEvents;

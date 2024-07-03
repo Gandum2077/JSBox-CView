@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TabBarController = void 0;
+const base_controller_1 = require("./base-controller");
+const single_views_1 = require("../components/single-views");
+const tabbar_1 = require("../components/tabbar");
 /**
  * # CView TabBar Controller
  *
@@ -16,9 +19,6 @@ exports.TabBarController = void 0;
  *           controller: Controller}[]
  * - index: number = 0
  */
-const base_controller_1 = require("./base-controller");
-const single_views_1 = require("../components/single-views");
-const tabbar_1 = require("../components/tabbar");
 class TabBarController extends base_controller_1.BaseController {
     constructor({ props, layout, events = {} }) {
         super({

@@ -1,16 +1,3 @@
-/**
- * # cview DialogSheet
- * 
- * dialog所需要的sheet
- * 
- * ## 参数
- * - `title` 标题
- * - `cview` CView
- * - `doneHandler` 完成时的回调
- * - `presentMode` presentMode
- * - `bgcolor` 背景颜色
- */
-
 import { Sheet } from "../sheet";
 
 import { CustomNavigationBar } from "../custom-navigation-bar";
@@ -18,8 +5,16 @@ import { l10n } from "../../utils/l10n";
 import { ContentView } from "../single-views";
 import { Base } from "../base";
 
-
-export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>{
+/**
+ * dialog所需要的sheet
+ * 
+ * @param title 标题
+ * @param cview 内容视图
+ * @param doneHandler 完成时的回调
+ * @param presentMode 显示模式
+ * @param bgcolor 背景颜色
+ */
+export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions> {
   _props: {
     title: string;
     cview: Base<any, any>;

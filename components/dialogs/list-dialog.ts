@@ -1,12 +1,15 @@
-/**
- * # CView List Dialog
- * 
- * 显示一个列表以供选择
- */
-
 import { DialogSheet } from './dialog-sheet';
 import { List } from '../single-views';
 
+/**
+ * 显示一个列表以供选择
+ * 
+ * @param items 选项
+ * @param multiSelectEnabled 是否允许多选
+ * @param value 默认选中的选项
+ * @param values 默认选中的选项, 配合multiSelectEnabled使用
+ * @param title 标题
+ */
 export function listDialog({ items, multiSelectEnabled, value, values = [], title }: {
   items: string[];
   multiSelectEnabled?: boolean;

@@ -1,7 +1,3 @@
-/**
- * # cview LoadingDualRing
- */
-
 import { Base } from "../base";
 
 class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
@@ -32,7 +28,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
               radius / 2 - 20,
               this.startAngle,
               this.startAngle + (Math.PI * 2 * 1) / 4,
-              true
+              false
             );
             ctx.strokePath();
           }
@@ -46,11 +42,22 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   }
 }
 
+/**
+ * 两个圆环旋转的加载动画
+ * 
+ * 这是一个示例组件，由于帧数有限而且不稳定，不建议在实际项目中使用。
+ * 
+ */
 export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
-  constructor({ 
+
+  /**
+   * @param colors 颜色（必须是2个），默认为 [$color("#f5542e"), $color("#f2c327")]
+   * @param layout 布局
+   */
+  constructor({
     colors = [$color("#f5542e"), $color("#f2c327")],
-    layout 
+    layout
   }: {
     colors?: UIColor[];
     layout: (make: MASConstraintMaker, view: UIView) => void;
@@ -60,7 +67,7 @@ export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       const canvas1 = new CanvasComponet({
         tintColor: colors[0],
-        startAngle: (-Math.PI * 3) / 4
+        startAngle: -Math.PI * 3 / 4
       });
       const canvas2 = new CanvasComponet({
         tintColor: colors[1],

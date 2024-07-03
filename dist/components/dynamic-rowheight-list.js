@@ -1,4 +1,7 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DynamicRowHeightList = void 0;
+const base_1 = require("./base");
 /**
  * # cview Dynamic RowHeight List
  *
@@ -14,9 +17,6 @@
  *
  * 除了 props.data, props.template 和 events.rowHeight 不可用，其他均和 list 一致
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DynamicRowHeightList = void 0;
-const base_1 = require("./base");
 class DynamicRowHeightList extends base_1.Base {
     constructor({ sections, rows, props, layout, events }) {
         super();

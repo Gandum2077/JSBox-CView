@@ -1,4 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PresentedPageController = void 0;
+const base_controller_1 = require("./base-controller");
+const sheet_1 = require("../components/sheet");
 /** # CView PresentedPageController
  *
  * ## Props
@@ -16,15 +20,13 @@
  * ## 布局
  * 此控制器的 layout 必定为 `$layout.fill`，无需自行设定
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PresentedPageController = void 0;
-const base_controller_1 = require("./base-controller");
-const sheet_1 = require("../components/sheet");
 class PresentedPageController extends base_controller_1.BaseController {
     constructor({ props, layout, events } = {}) {
-        super({ props: {
+        super({
+            props: {
                 id: props === null || props === void 0 ? void 0 : props.id
-            }, layout, events });
+            }, layout, events
+        });
         this._sheet = new sheet_1.Sheet({
             presentMode: (props === null || props === void 0 ? void 0 : props.presentMode) || 1,
             animated: (props === null || props === void 0 ? void 0 : props.animated) || true,

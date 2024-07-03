@@ -1,12 +1,13 @@
-/**
- * # CView Text Dialog
- * 
- * 返回一个Promise用于输入文本
- */
-
 import { Text } from "../single-views";
 import { DialogSheet } from "./dialog-sheet";
 
+/**
+ * 返回一个Promise用于输入文本
+ * @param title 标题
+ * @param text 初始文本
+ * @param placeholder 占位符
+ * @param editable 是否可编辑
+ */
 export function textDialog({ title, text = "", placeholder = "", editable = true }: {
   title: string;
   text?: string;

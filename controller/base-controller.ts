@@ -1,3 +1,60 @@
+import { Base } from '../components/base';
+import { ContentView } from '../components/single-views';
+import { cvid } from "../utils/cvid";
+import { router } from "./controller-router";
+
+/**
+ * status
+ *   - created = 0 被创建，未被加载
+ *   - loaded = 1 被加载，显示状态未知
+ *   - appeared= 2 处于可显示状态
+ *   - disappeared = 3 处于不显示状态
+ *   - removed = 4 根视图被移除
+ * 其中只有 2 和 3 可以相互转化，其他不可以
+ */
+const controllerStatus = {
+  created: 0,
+  loaded: 1,
+  appeared: 2,
+  disappeared: 3,
+  removed: 4
+};
+
+export class ControllerRootView extends ContentView {
+  constructor({
+    props,
+    layout,
+    events
+  }: {
+    props: { bgcolor: UIColor };
+    layout: (make: MASConstraintMaker, view: UIView) => void;
+    events: { ready: (sender: UIView) => void };
+  }) {
+    super({ props, layout, events });
+  }
+
+  set views(views: UiTypes.AllViewOptions[] | Base<any, any>[]) {
+    const _views: UiTypes.AllViewOptions[] = views.map(v => {
+      if (v instanceof Base) return v.definition;
+      return v;
+    })
+    this._views = _views;
+  }
+}
+
+export interface BaseControllerProps {
+  id?: string;
+  bgcolor?: UIColor;
+}
+
+export interface BaseControllerEvents {
+  didCreate?: (controller: BaseController) => void;
+  didLoad?: (controller: BaseController) => void;
+  didAppear?: (controller: BaseController) => void;
+  didDisappear?: (controller: BaseController) => void;
+  didRemove?: (controller: BaseController) => void;
+}
+
 /** 
  * # CView Base Controller
  * 
@@ -57,64 +114,6 @@
  * 
  * - rootView 可以直接通过 rootView.views 设置其_views 属性，其中元素可以为 view 定义也可以为 cview
  */
-
-import { Base } from '../components/base';
-import { ContentView } from '../components/single-views';
-import { cvid } from "../utils/cvid";
-import { router } from "./controller-router";
-
-/**
- * status
- *   - created = 0 被创建，未被加载
- *   - loaded = 1 被加载，显示状态未知
- *   - appeared= 2 处于可显示状态
- *   - disappeared = 3 处于不显示状态
- *   - removed = 4 根视图被移除
- * 其中只有 2 和 3 可以相互转化，其他不可以
- */
-const controllerStatus = {
-  created: 0,
-  loaded: 1,
-  appeared: 2,
-  disappeared: 3,
-  removed: 4
-};
-
-export class ControllerRootView extends ContentView {
-  constructor({
-    props,
-    layout,
-    events
-  }: {
-    props: { bgcolor: UIColor };
-    layout: (make: MASConstraintMaker, view: UIView) => void;
-    events: { ready: (sender: UIView) => void };
-  }) {
-    super({ props, layout, events });
-  }
-
-  set views(views: UiTypes.AllViewOptions[] | Base<any, any>[]) {
-    const _views: UiTypes.AllViewOptions[] = views.map(v => {
-      if (v instanceof Base) return v.definition;
-      return v;
-    })
-    this._views = _views;
-  }
-}
-
-export interface BaseControllerProps {
-  id?: string;
-  bgcolor?: UIColor;
-}
-
-export interface BaseControllerEvents {
-  didCreate?: (controller: BaseController) => void;
-  didLoad?: (controller: BaseController) => void;
-  didAppear?: (controller: BaseController) => void;
-  didDisappear?: (controller: BaseController) => void;
-  didRemove?: (controller: BaseController) => void;
-}
-
 export class BaseController {
   protected _props: BaseControllerProps;
   protected _events: BaseControllerEvents;

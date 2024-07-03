@@ -1,7 +1,3 @@
-/**
- * Alert的基础类
- */
-
 export const UIAlertActionStyle = {
   Default: 0,
   Cancel: 1,
@@ -33,6 +29,9 @@ export class UIAlertAction {
   }
 }
 
+/**
+ * Alert的基础类
+ */
 export class UIAlertController {
   title: string;
   message: string;

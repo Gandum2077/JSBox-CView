@@ -1,27 +1,28 @@
 "use strict";
-/**
- * 创建一个可以旋转的视图。理论上来说，这个视图的布局必须是方形的。
- *
- * props:
- * - image 图片
- * - tintColor
- * - contentMode = 1
- * - cview 使用自定义的cview，上面两项将失效
- * - rps = 0.5 每秒转多少圈
- * - clockwise = true 是否顺时针旋转
- *
- * events:
- * - ready: cview => void 可以在ready事件中启动旋转
- *
- * methods:
- * - startRotating() 开始旋转
- * - stopRotating() 结束旋转，请注意旋转是不能立即结束的，必须等到动画归位
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RotatingView = void 0;
 const base_1 = require("./base");
 const single_views_1 = require("./single-views");
+/**
+ * 创建一个可以旋转的视图。理论上来说，这个视图的布局必须是方形的。
+ *
+ * @method startRotating() 开始旋转
+ * @method stopRotating() 结束旋转，请注意旋转是不能立即结束的，必须等到动画归位
+ */
 class RotatingView extends base_1.Base {
+    /**
+     *
+     * @param props 属性
+     * - image: UIImage
+     * - tintColor: UIColor
+     * - contentMode = 1
+     * - cview 使用自定义的cview，如果设置上面三项将失效
+     * - rps = 0.5 每秒转多少圈
+     * - clockwise = true 是否顺时针旋转
+     * @param layout 布局
+     * @param events 事件
+     * - ready?: (cview: RotatingView) => void 默认的ready事件是自动开始旋转；也可以手动指定其他效果
+     */
     constructor({ props, layout, events = {} }) {
         super();
         this._props = Object.assign({ contentMode: 1, rps: 0.5, clockwise: true }, props);
@@ -50,8 +51,12 @@ class RotatingView extends base_1.Base {
                 layout,
                 events: {
                     ready: sender => {
-                        if (events.ready)
+                        if (events.ready) {
                             events.ready(this);
+                        }
+                        else {
+                            this.startRotating();
+                        }
                     }
                 },
                 views: [this._innerView.definition]

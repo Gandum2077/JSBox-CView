@@ -1,13 +1,17 @@
 "use strict";
-/**
- * # CView List Dialog
- *
- * 显示一个列表以供选择
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.listDialog = void 0;
 const dialog_sheet_1 = require("./dialog-sheet");
 const single_views_1 = require("../single-views");
+/**
+ * 显示一个列表以供选择
+ *
+ * @param items 选项
+ * @param multiSelectEnabled 是否允许多选
+ * @param value 默认选中的选项
+ * @param values 默认选中的选项, 配合multiSelectEnabled使用
+ * @param title 标题
+ */
 function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
     if (value)
         values = [value];

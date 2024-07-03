@@ -1,9 +1,3 @@
-/**
- * # CView PlainAlert
- * 
- * 显示一个文字提示
- */
-
 import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
@@ -13,6 +7,15 @@ import {
 
 import { l10n } from "../../utils/l10n";
 
+/**
+ * 显示一个文字提示
+ * 
+ * @param title 标题
+ * @param message 内容
+ * @param cancelText 取消按钮文字
+ * @param confirmText 确认按钮文字
+ * @returns Promise
+ */
 export function plainAlert({
   title = "",
   message = "",

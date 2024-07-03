@@ -1,7 +1,4 @@
 "use strict";
-/**
- * # cview LoadingWedges
- */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,7 +41,14 @@ class CanvasComponet extends base_1.Base {
         this.view.ocValue().invoke("setNeedsDisplay");
     }
 }
+/**
+ * 饼图加载动画, 4个颜色的饼图以不同的速度旋转，产生华丽的效果
+ */
 class Wedges extends base_1.Base {
+    /**
+     * @param colors 饼图颜色（必须是4个颜色），默认为 [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")]
+     * @param layout 布局
+     */
     constructor({ colors = [
         $color("#f5542e"),
         $color("#f2c327"),

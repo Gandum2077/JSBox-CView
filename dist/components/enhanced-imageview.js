@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnhancedImageView = void 0;
+const base_1 = require("./base");
+const single_views_1 = require("./single-views");
+const cvid_1 = require("../utils/cvid");
 /**
  * 此组件是为了加强 imageView，实现以下目的：
  *  1. 点击实现上下翻页
@@ -18,9 +21,6 @@ exports.EnhancedImageView = void 0;
  * upperLocationTouched: (sender: EnhancedImageView) => void, 上半部分被点击
  * lowerLocationTouched: (sender: EnhancedImageView) => void, 下半部分被点击
  */
-const base_1 = require("./base");
-const single_views_1 = require("./single-views");
-const cvid_1 = require("../utils/cvid");
 class EnhancedImageView extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();

@@ -1,3 +1,38 @@
+import { Base } from "./base";
+import {
+  PreferenceSection,
+  PrefsRow,
+  PrefsRowString,
+  PrefsRowNumber,
+  PrefsRowInteger,
+  PrefsRowStepper,
+  PrefsRowBoolean,
+  PrefsRowSlider,
+  PrefsRowList,
+  PrefsRowTab,
+  PrefsRowInfo,
+  PrefsRowInteractiveInfo,
+  PrefsRowLink,
+  PrefsRowAction,
+  selectableTypes,
+  excludedTypes
+} from "./static-preference-listview";
+
+
+interface CunstomProps extends UiTypes.ListProps {
+  stringLeftInset?: number;
+  infoAndLinkLeftInset?: number;
+  sliderWidth?: number;
+  tabWidth?: number;
+}
+
+interface RequiredCunstomProps extends UiTypes.ListProps {
+  stringLeftInset: number;
+  infoAndLinkLeftInset: number;
+  sliderWidth: number;
+  tabWidth: number;
+}
+
 /**
  * # cview PreferenceListView_dynamic
  * 
@@ -24,44 +59,7 @@
  * 
  * - cview.sections = sections 可以写入新的 sections
  */
-
-import { Base } from "./base";
-import { 
-  PreferenceSection,
-  PrefsRow,
-  PrefsRowString,
-  PrefsRowNumber,
-  PrefsRowInteger,
-  PrefsRowStepper,
-  PrefsRowBoolean,
-  PrefsRowSlider,
-  PrefsRowList,
-  PrefsRowTab,
-  PrefsRowInfo,
-  PrefsRowInteractiveInfo,
-  PrefsRowLink,
-  PrefsRowAction,
-  selectableTypes,
-  excludedTypes
- } from "./static-preference-listview";
-
-
-interface CunstomProps extends UiTypes.ListProps {
-  stringLeftInset?: number;
-  infoAndLinkLeftInset?: number;
-  sliderWidth?: number;
-  tabWidth?: number;
-}
-
-interface RequiredCunstomProps extends UiTypes.ListProps {
-  stringLeftInset: number;
-  infoAndLinkLeftInset: number;
-  sliderWidth: number;
-  tabWidth: number;
-}
-
-
-export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions>{
+export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
   _defineView: () => UiTypes.ListOptions;
   private _sections: PreferenceSection[];
   private _props: RequiredCunstomProps;

@@ -1,3 +1,12 @@
+import { BaseController, BaseControllerProps, BaseControllerEvents, ControllerRootView } from "./base-controller";
+import { Sheet } from "../components/sheet";
+
+interface PresentedPageControllerProps extends BaseControllerProps {
+  presentMode?: number;
+  animated?: boolean;
+  interactiveDismissalDisabled?: boolean;
+}
+
 /** # CView PresentedPageController
  * 
  * ## Props
@@ -15,16 +24,6 @@
  * ## 布局
  * 此控制器的 layout 必定为 `$layout.fill`，无需自行设定
  */
-
-import { BaseController, BaseControllerProps, BaseControllerEvents, ControllerRootView } from "./base-controller";
-import { Sheet } from "../components/sheet";
-
-interface PresentedPageControllerProps extends BaseControllerProps {
-  presentMode?: number;
-  animated?: boolean;
-  interactiveDismissalDisabled?: boolean;
-}
-
 export class PresentedPageController extends BaseController {
   private _sheet: Sheet<ControllerRootView, UIView, UiTypes.ViewOptions>;
   constructor({ props, layout, events }: {
@@ -32,9 +31,11 @@ export class PresentedPageController extends BaseController {
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: BaseControllerEvents;
   } = {}) {
-    super({ props: {
-      id: props?.id
-    }, layout, events });
+    super({
+      props: {
+        id: props?.id
+      }, layout, events
+    });
     this._sheet = new Sheet<ControllerRootView, UIView, UiTypes.ViewOptions>({
       presentMode: props?.presentMode || 1,
       animated: props?.animated || true,

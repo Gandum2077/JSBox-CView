@@ -1,18 +1,3 @@
-/** 
- * # CView TabBar Controller
- *
- * TabBarController 是一个 PagingController
- *
- * ## 属性
- * 
- * - items: {title?: string, 
- *           symbol?: string, 
- *           image?: UIImage, 
- *           tintColor?: UIColor, 
- *           bgcolor?: UIColor, 
- *           controller: Controller}[]
- * - index: number = 0
- */
 import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { ContentView } from "../components/single-views";
 import { TabBar } from "../components/tabbar";
@@ -29,6 +14,21 @@ interface TabBarControllerProps extends BaseControllerProps {
   index?: number;
 }
 
+/** 
+ * # CView TabBar Controller
+ *
+ * TabBarController 是一个 PagingController
+ *
+ * ## 属性
+ * 
+ * - items: {title?: string, 
+ *           symbol?: string, 
+ *           image?: UIImage, 
+ *           tintColor?: UIColor, 
+ *           bgcolor?: UIColor, 
+ *           controller: Controller}[]
+ * - index: number = 0
+ */
 export class TabBarController extends BaseController {
   _props: TabBarControllerProps;
   cviews: {

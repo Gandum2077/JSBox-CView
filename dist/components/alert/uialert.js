@@ -1,7 +1,4 @@
 "use strict";
-/**
- * Alert的基础类
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UIAlertController = exports.UIAlertAction = exports.UIAlertControllerStyle = exports.UIAlertActionStyle = void 0;
 exports.UIAlertActionStyle = {
@@ -25,6 +22,9 @@ class UIAlertAction {
     }
 }
 exports.UIAlertAction = UIAlertAction;
+/**
+ * Alert的基础类
+ */
 class UIAlertController {
     constructor(title, message, style = exports.UIAlertControllerStyle.ActionSheet) {
         this.title = title;

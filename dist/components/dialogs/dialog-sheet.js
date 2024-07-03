@@ -1,22 +1,19 @@
 "use strict";
-/**
- * # cview DialogSheet
- *
- * dialog所需要的sheet
- *
- * ## 参数
- * - `title` 标题
- * - `cview` CView
- * - `doneHandler` 完成时的回调
- * - `presentMode` presentMode
- * - `bgcolor` 背景颜色
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DialogSheet = void 0;
 const sheet_1 = require("../sheet");
 const custom_navigation_bar_1 = require("../custom-navigation-bar");
 const l10n_1 = require("../../utils/l10n");
 const single_views_1 = require("../single-views");
+/**
+ * dialog所需要的sheet
+ *
+ * @param title 标题
+ * @param cview 内容视图
+ * @param doneHandler 完成时的回调
+ * @param presentMode 显示模式
+ * @param bgcolor 背景颜色
+ */
 class DialogSheet extends sheet_1.Sheet {
     constructor(props) {
         super({

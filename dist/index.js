@@ -14,7 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./components/artificial-flowlayout"), exports);
 __exportStar(require("./components/base"), exports);
 __exportStar(require("./components/custom-navigation-bar"), exports);
 __exportStar(require("./components/dynamic-itemsize-matrix"), exports);
@@ -52,7 +51,6 @@ __exportStar(require("./components/dialogs/dialog-sheet"), exports);
 __exportStar(require("./components/dialogs/form-dialog"), exports);
 __exportStar(require("./components/dialogs/list-dialog"), exports);
 __exportStar(require("./components/dialogs/text-dialog"), exports);
-__exportStar(require("./components/spinners/loading-double-rings"), exports);
 __exportStar(require("./components/spinners/loading-dual-ring"), exports);
 __exportStar(require("./components/spinners/loading-wedges"), exports);
 __exportStar(require("./components/spinners/spinner-androidstyle"), exports);

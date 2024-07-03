@@ -1,14 +1,3 @@
-/** 
- * # CView PageViewer Controller
- * 
- * 一个可以左右滑动翻页的控制器。
- * 
- * Props:
- * 
- * - items: { controller: Controller, title: string }[]
- * - navBarProps: {} 可用于 navBar 的其他属性，不包括 title 和 titleView
- */
-
 import { BaseController, BaseControllerProps, BaseControllerEvents, ControllerRootView } from "./base-controller";
 import { PageViewer } from "../components/pageviewer";
 import { PageViewerTitleBar } from "../components/pageviewer-titlebar";
@@ -20,6 +9,16 @@ interface PageViewerControllerProps extends BaseControllerProps {
   index?: number;
 }
 
+/** 
+ * # CView PageViewer Controller
+ * 
+ * 一个可以左右滑动翻页的控制器。
+ * 
+ * Props:
+ * 
+ * - items: { controller: Controller, title: string }[]
+ * - navBarProps: {} 可用于 navBar 的其他属性，不包括 title 和 titleView
+ */
 export class PageViewerController extends BaseController {
   protected _props: PageViewerControllerProps;
   cviews: {
@@ -32,10 +31,12 @@ export class PageViewerController extends BaseController {
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: BaseControllerEvents;
   }) {
-    super({ props: {
-      id: props.id,
-      bgcolor: props.bgcolor
-    }, layout, events });
+    super({
+      props: {
+        id: props.id,
+        bgcolor: props.bgcolor
+      }, layout, events
+    });
     this._props = props;
     this.cviews = {} as {
       pageviewer: PageViewer;

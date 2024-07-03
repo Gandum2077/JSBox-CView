@@ -1,17 +1,12 @@
-/**
- * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
- * 
- * # Props
- * srcs: string[] - 图片地址列表
- * page: number - 当前页码
- * 
- * # Events
- * changed: (page: number) => void - 页码变化时触发
- * tapped: (sender: ImagePager) => void - 点击图片时触发
- */
 import { Base } from "./base";
 import { Matrix } from "./single-views";
 
+/**
+ * 图片浏览组件
+ * 
+ * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
+ * 
+ */
 export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   _props: {
     srcs: string[];
@@ -20,6 +15,17 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   _matrix: Matrix;
   _pageLoadRecorder: { [key: number]: boolean };
   _defineView: () => UiTypes.ViewOptions;
+
+  /**
+   * 
+   * @param props 
+   * - srcs: string[] - 图片地址列表
+   * - page: number - 当前页码
+   * @param layout
+   * @param events 
+   * - changed: (page: number) => void - 页码变化时触发
+   * - tapped: (sender: ImagePager) => void - 点击图片时触发
+   */
   constructor({ props, layout, events = {} }: {
     props: {
       srcs?: string[];

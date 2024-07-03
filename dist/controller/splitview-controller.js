@@ -1,15 +1,4 @@
 "use strict";
-/** # CView SplitView Controller
- *
- * 实现左右分栏布局的控制器, 本身不提供除了分割线以外的视觉效果
- *
- * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
- *
- * ## Props
- *
- * - 只写 items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
- * - 读写 sideBarShown: boolean = false 侧栏是否显示
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SplitViewController = void 0;
 const base_controller_1 = require("./base-controller");
@@ -129,6 +118,17 @@ class MaskView extends base_1.Base {
         this.view.hidden = true;
     }
 }
+/** # CView SplitView Controller
+ *
+ * 实现左右分栏布局的控制器, 本身不提供除了分割线以外的视觉效果
+ *
+ * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
+ *
+ * ## Props
+ *
+ * - 只写 items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
+ * - 读写 sideBarShown: boolean = false 侧栏是否显示
+ */
 class SplitViewController extends base_controller_1.BaseController {
     constructor({ props, layout, events }) {
         super({

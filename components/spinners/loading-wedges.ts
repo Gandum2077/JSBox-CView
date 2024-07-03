@@ -1,7 +1,3 @@
-/**
- * # cview LoadingWedges
- */
-
 import { Base } from "../base";
 
 class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
@@ -46,8 +42,16 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   }
 }
 
+/**
+ * 饼图加载动画, 4个颜色的饼图以不同的速度旋转，产生华丽的效果
+ */
 export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
+
+  /**
+   * @param colors 饼图颜色（必须是4个颜色），默认为 [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")]
+   * @param layout 布局
+   */
   constructor({
     colors = [
       $color("#f5542e"),

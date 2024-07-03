@@ -1,8 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sheet = void 0;
+const cvid_1 = require("../utils/cvid");
+const UIModalPresentationStyle = {
+    automatic: -2,
+    pageSheet: 1,
+    formSheet: 2,
+    fullScreen: 0,
+    currentContext: 3,
+    custom: 4,
+    overFullScreen: 5,
+    overCurrentContext: 6,
+    popover: 7,
+    none: -1
+};
 /**
- * # cview Sheet
  *
  * 创建新的 UIViewController，主要用于 formSheet 和 pageSheet
  *
@@ -19,19 +31,6 @@ exports.Sheet = void 0;
  * - dismiss()
  *
  */
-const cvid_1 = require("../utils/cvid");
-const UIModalPresentationStyle = {
-    automatic: -2,
-    pageSheet: 1,
-    formSheet: 2,
-    fullScreen: 0,
-    currentContext: 3,
-    custom: 4,
-    overFullScreen: 5,
-    overCurrentContext: 6,
-    popover: 7,
-    none: -1
-};
 class Sheet {
     constructor({ presentMode = UIModalPresentationStyle.pageSheet, animated = true, interactiveDismissalDisabled = false, bgcolor = $color("secondarySurface"), cview, dismissalHandler }) {
         this._animated = animated;

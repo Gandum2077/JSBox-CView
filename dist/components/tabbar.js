@@ -1,28 +1,4 @@
 "use strict";
-/**
- * 本组件是为了仿制 UITabBar
- * 本组件不能指定布局而是应该指定 height（如果需要的话）
- * 典型的使用方式是添加在布局为$layout.fill的视图中，并指定 items
- *
- * props:
- *
- * - 只写 height: number = 50
- * - 只写 items: {symbol?: string, image?:UIImage, title?: string}[]
- * - 只写 bgcolor?: UIColor 如果不指定则背景使用blur（style 10），若指定则使用纯色视图
- * - 读写 index: number = 0
- * - 只写 selectedSegmentTintColor = $color("tintColor")
- * - 只写 defaultSegmentTintColor = colors.footBarDefaultSegmentColor
- *
- * events:
- *
- * - changed: (cview, index) => void
- * - doubleTapped: (cview, index) => void
- *
- * methods:
- *
- * - hide(animated=true) 隐藏
- * - show(animated=true) 显示
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TabBar = void 0;
 const colors_1 = require("../utils/colors");
@@ -169,6 +145,30 @@ class ImageCell extends base_1.Base {
         this.view.get("image").remakeLayout(this.layouts.image_loosed);
     }
 }
+/**
+ * 本组件是为了仿制 UITabBar
+ * 本组件不能指定布局而是应该指定 height（如果需要的话）
+ * 典型的使用方式是添加在布局为$layout.fill的视图中，并指定 items
+ *
+ * props:
+ *
+ * - 只写 height: number = 50
+ * - 只写 items: {symbol?: string, image?:UIImage, title?: string}[]
+ * - 只写 bgcolor?: UIColor 如果不指定则背景使用blur（style 10），若指定则使用纯色视图
+ * - 读写 index: number = 0
+ * - 只写 selectedSegmentTintColor = $color("tintColor")
+ * - 只写 defaultSegmentTintColor = colors.footBarDefaultSegmentColor
+ *
+ * events:
+ *
+ * - changed: (cview, index) => void
+ * - doubleTapped: (cview, index) => void
+ *
+ * methods:
+ *
+ * - hide(animated=true) 隐藏
+ * - show(animated=true) 显示
+ */
 class TabBar extends base_1.Base {
     constructor({ props, events = {} }) {
         super();

@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
 /**
  * 控制器的路由器，用于管理控制器的集合和操作。
  *
@@ -13,8 +15,6 @@
  * - `get(id: string)`：根据控制器的ID获取控制器。
  *
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
 class Router {
     constructor() {
         this._set = new Set();

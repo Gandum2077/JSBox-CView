@@ -1,20 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImagePager = void 0;
-/**
- * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
- *
- * # Props
- * srcs: string[] - 图片地址列表
- * page: number - 当前页码
- *
- * # Events
- * changed: (page: number) => void - 页码变化时触发
- * tapped: (sender: ImagePager) => void - 点击图片时触发
- */
 const base_1 = require("./base");
 const single_views_1 = require("./single-views");
+/**
+ * 图片浏览组件
+ *
+ * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
+ *
+ */
 class ImagePager extends base_1.Base {
+    /**
+     *
+     * @param props
+     * - srcs: string[] - 图片地址列表
+     * - page: number - 当前页码
+     * @param layout
+     * @param events
+     * - changed: (page: number) => void - 页码变化时触发
+     * - tapped: (sender: ImagePager) => void - 点击图片时触发
+     */
     constructor({ props, layout, events = {} }) {
         super();
         this._props = Object.assign({ srcs: [], page: 0 }, props);

@@ -1,18 +1,4 @@
 "use strict";
-/**
- * # CView PageViewer TitleBar
- *
- * props:
- *
- * - 只写 items: string[]
- * - 读写 index: number
- * - 只写 selectedItemColor
- * - 只写 defaultItemColor
- *
- * events:
- *
- * - changed: (cview, index) => void 在点击变更 index 的时候回调
- */
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -28,14 +14,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageViewerTitleBar = void 0;
 const base_1 = require("./base");
 const single_views_1 = require("./single-views");
-//const { getTextWidth } = require("cview-util-ui");
 function weightedAverageColors(c0, c1, w) {
     const red = c0.components.red * w + c1.components.red * (1 - w);
     const green = c0.components.green * w + c1.components.green * (1 - w);
     const blue = c0.components.blue * w + c1.components.blue * (1 - w);
     return $rgb(red, green, blue);
 }
+/**
+ * [PageViewer](./pageviewer.ts)配套的标题栏
+ * @property index: number
+ */
 class PageViewerTitleBar extends base_1.Base {
+    /**
+     *
+     * @param props 属性
+     * - items: string[]
+     * - index: number
+     * - selectedItemColor
+     * - defaultItemColor
+     * @param layout 布局
+     * @param events 事件
+     * - changed: (cview, index) => void 在点击变更 index 的时候回调
+     */
     constructor({ props, layout, events = {} }) {
         super();
         this._props = Object.assign({ index: 0, selectedItemColor: $color("systemLink"), defaultItemColor: $color("secondaryText") }, props);

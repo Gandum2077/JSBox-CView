@@ -1,15 +1,3 @@
-/** # CView SplitView Controller
- * 
- * 实现左右分栏布局的控制器, 本身不提供除了分割线以外的视觉效果
- * 
- * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
- * 
- * ## Props
- * 
- * - 只写 items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
- * - 读写 sideBarShown: boolean = false 侧栏是否显示
- */
-
 import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { Base } from "../components/base";
 import { ContentView } from "../components/single-views";
@@ -173,6 +161,17 @@ interface SplitViewControllerProps extends BaseControllerProps {
   items: { controller: BaseController, bgcolor: UIColor }[];
 }
 
+/** # CView SplitView Controller
+ * 
+ * 实现左右分栏布局的控制器, 本身不提供除了分割线以外的视觉效果
+ * 
+ * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
+ * 
+ * ## Props
+ * 
+ * - 只写 items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
+ * - 读写 sideBarShown: boolean = false 侧栏是否显示
+ */
 export class SplitViewController extends BaseController {
   private _screenEdgePanGestureObject: any;
   private _sideBarShown: boolean;

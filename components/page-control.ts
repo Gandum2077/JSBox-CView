@@ -1,24 +1,14 @@
+import { Runtime } from "./single-views";
+
 /**
- * # CView PageControl
  * 
  * 基于 Runtime 构建 PageControl
  * 
  * 请注意本视图如果没有足够的横向宽度，会显示不全
- * ## Props
  * 
- * - 只写 numberOfPages: numnber
- * - 读写 currentPage: number
- * - 只写 pageIndicatorTintColor?: JSBoxColor
- * - 只写 currentPageIndicatorTintColor?: JSBoxColor
- * - 其他通用属性
+ * @property currentPage: number
  * 
- * ## Events
- * 
- * changed: (cview: Cview, currentPage: number) => void
  */
-
-import { Runtime } from "./single-views";
-
 export class PageControl extends Runtime {
   private _numberOfPages: number;
   private _currentPage: number;
@@ -26,6 +16,19 @@ export class PageControl extends Runtime {
   private _currentPageIndicatorTintColor?: UIColor;
   private _changed?: (sender: PageControl, currentPage: number) => void;
   private _pageControl: any;
+
+  /**
+   * 
+   * @param props 属性
+   * - numberOfPages: 页面数量
+   * - currentPage: 当前页面
+   * - pageIndicatorTintColor?: 页面指示器颜色
+   * - currentPageIndicatorTintColor?: 当前页面指示器颜色
+   * @param layout 布局
+   * @param events 事件
+   * - changed: (sender: PageControl, currentPage: number) => void
+   * 
+   */
   constructor({ props, layout, events = {} }: {
     props: {
       numberOfPages?: number;

@@ -1,9 +1,3 @@
-/**
- * # CView InputAlert
- * 
- * 显示一个输入框提示
- */
-
 import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
@@ -13,6 +7,18 @@ import {
 
 import { l10n } from "../../utils/l10n";
 
+/**
+ * 显示一个输入框提示
+ * 
+ * @param title 标题
+ * @param message 内容
+ * @param text 输入框默认文字
+ * @param placeholder 输入框占位符
+ * @param type 输入框类型
+ * @param secure 是否安全输入
+ * @param cancelText 取消按钮文字
+ * @param confirmText 确认按钮文字
+ */
 export function inputAlert({
   title = "",
   message = "",

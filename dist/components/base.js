@@ -1,6 +1,9 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Base = void 0;
+const cvid_1 = require("../utils/cvid");
 /**
- * # Base<T extends AllUIView, R extends UiTypes.AllViewOptions>
+ *
  * 组件 Base 基类，用于创建自定义组件。CView 的所有子类都应该继承自 Base。
  *
  * ## 属性
@@ -16,9 +19,6 @@
  * - 通过组件化的方式，将JSBox view的定义和实例绑定，使用起来更加方便
  * - 可以便利地创建自定义组件
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Base = void 0;
-const cvid_1 = require("../utils/cvid");
 class Base {
     constructor() {
         this.id = cvid_1.cvid.newId;

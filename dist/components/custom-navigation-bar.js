@@ -1,4 +1,34 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CustomNavigationBar = void 0;
+const base_1 = require("./base");
+const single_views_1 = require("./single-views");
+const symbol_button_1 = require("./symbol-button");
+const uitools_1 = require("../utils/uitools");
+const navBarStyles = {
+    hidden: 0,
+    minimized: 1,
+    normal: 2,
+    expanded: 3
+};
+const navBarLayouts = [
+    (make, view) => {
+        make.left.right.top.inset(0);
+        make.height.equalTo(0);
+    },
+    (make, view) => {
+        make.left.right.top.inset(0);
+        make.bottom.equalTo(view.super.safeAreaTop).inset(-25);
+    },
+    (make, view) => {
+        make.left.right.top.inset(0);
+        make.bottom.equalTo(view.super.safeAreaTop).inset(-50);
+    },
+    (make, view) => {
+        make.left.right.top.inset(0);
+        make.bottom.equalTo(view.super.safeAreaTop).inset(-100);
+    }
+];
 /**
  * # CView Custom NavigationBar
  *
@@ -51,36 +81,6 @@
  * - restore() 普通布局
  * - expand() 扩展布局
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CustomNavigationBar = void 0;
-const base_1 = require("./base");
-const single_views_1 = require("./single-views");
-const symbol_button_1 = require("./symbol-button");
-const uitools_1 = require("../utils/uitools");
-const navBarStyles = {
-    hidden: 0,
-    minimized: 1,
-    normal: 2,
-    expanded: 3
-};
-const navBarLayouts = [
-    (make, view) => {
-        make.left.right.top.inset(0);
-        make.height.equalTo(0);
-    },
-    (make, view) => {
-        make.left.right.top.inset(0);
-        make.bottom.equalTo(view.super.safeAreaTop).inset(-25);
-    },
-    (make, view) => {
-        make.left.right.top.inset(0);
-        make.bottom.equalTo(view.super.safeAreaTop).inset(-50);
-    },
-    (make, view) => {
-        make.left.right.top.inset(0);
-        make.bottom.equalTo(view.super.safeAreaTop).inset(-100);
-    }
-];
 class CustomNavigationBar extends base_1.Base {
     constructor({ props = {}, events = {} } = {}) {
         super();

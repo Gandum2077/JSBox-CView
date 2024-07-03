@@ -1,18 +1,3 @@
-/**
- * #cview symbolButton
- *
- * 创建可以自动规范symbol大小的button，兼容image，可以设定insets
- *
- * props:
- *   - symbol
- *   - image
- *   - tintColor
- *   - insets
- *
- * events:
- *  - tapped
- */
-
 import { Base } from "./base";
 
 interface SymbolButtonProps extends UiTypes.ButtonProps {
@@ -22,6 +7,7 @@ interface SymbolButtonProps extends UiTypes.ButtonProps {
 interface SymbolButtonPropsOptional extends UiTypes.ButtonProps {
   insets?: JBInsets
 }
+
 /**
  * 创建可以自动规范symbol大小的button，兼容image，可以设定insets
  * props:
@@ -35,10 +21,10 @@ interface SymbolButtonPropsOptional extends UiTypes.ButtonProps {
 export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
   _props: SymbolButtonProps
   _defineView: () => UiTypes.ButtonOptions;
-  constructor({ 
-    props, 
-    layout, 
-    events = {} 
+  constructor({
+    props,
+    layout,
+    events = {}
   }: {
     props: SymbolButtonPropsOptional;
     layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
@@ -52,17 +38,17 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
     };
     this._layout = layout;
     this._defineView = () => {
-      const props = this._props.menu 
-      ? {
-        radius: 0,
-        bgcolor: $color("clear"),
-        id: this.id,
-        menu: this._props.menu,
-      } : {
-        radius: 0,
-        bgcolor: $color("clear"),
-        id: this.id
-      } 
+      const props = this._props.menu
+        ? {
+          radius: 0,
+          bgcolor: $color("clear"),
+          id: this.id,
+          menu: this._props.menu,
+        } : {
+          radius: 0,
+          bgcolor: $color("clear"),
+          id: this.id
+        }
       return {
         type: "button",
         props,

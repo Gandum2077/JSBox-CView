@@ -1,3 +1,7 @@
+import { Base } from "./base";
+import { Scroll } from "./single-views";
+import { cvid } from "../utils/cvid";
+
 /**
  * 此组件是为了加强 imageView，实现以下目的：
  *  1. 点击实现上下翻页
@@ -15,10 +19,6 @@
  * upperLocationTouched: (sender: EnhancedImageView) => void, 上半部分被点击
  * lowerLocationTouched: (sender: EnhancedImageView) => void, 下半部分被点击
  */
-import { Base } from "./base";
-import { Scroll } from "./single-views";
-import { cvid } from "../utils/cvid";
-
 export class EnhancedImageView extends Base<UIView, UiTypes.ViewOptions> {
   private _props: { src: string; maxZoomScale: number };
   private _scroll: Scroll;

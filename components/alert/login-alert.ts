@@ -1,9 +1,3 @@
-/**
- * # CView LoginAlert
- * 
- * 显示一个登录输入框提示
- */
-
 import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
@@ -13,6 +7,16 @@ import {
 
 import { l10n } from "../../utils/l10n";
 
+/**
+ * 显示一个登录输入框提示
+ * 
+ * @param title 标题
+ * @param message 内容
+ * @param placeholder1 输入框1的占位符
+ * @param placeholder2 输入框2的占位符
+ * @param cancelText 取消按钮文字
+ * @param confirmText 确认按钮文字
+ */
 export function loginAlert({
   title = "",
   message = "",
@@ -27,7 +31,7 @@ export function loginAlert({
   placeholder2?: string;
   cancelText?: string;
   confirmText?: string;
-  } = {}): Promise<{ username: string; password: string }> {
+} = {}): Promise<{ username: string; password: string }> {
   return new Promise((resolve, reject) => {
     const alertVC = new UIAlertController(
       title,

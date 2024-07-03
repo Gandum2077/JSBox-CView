@@ -1,7 +1,4 @@
 "use strict";
-/**
- * # cview LoadingDualRing
- */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -33,7 +30,7 @@ class CanvasComponet extends base_1.Base {
                         ctx.setLineWidth(20);
                         ctx.setLineCap(1);
                         ctx.setLineJoin(1);
-                        ctx.addArc(radius / 2, radius / 2, radius / 2 - 20, this.startAngle, this.startAngle + (Math.PI * 2 * 1) / 4, true);
+                        ctx.addArc(radius / 2, radius / 2, radius / 2 - 20, this.startAngle, this.startAngle + (Math.PI * 2 * 1) / 4, false);
                         ctx.strokePath();
                     }
                 }
@@ -44,14 +41,24 @@ class CanvasComponet extends base_1.Base {
         this.view.ocValue().invoke("setNeedsDisplay");
     }
 }
+/**
+ * 两个圆环旋转的加载动画
+ *
+ * 这是一个示例组件，由于帧数有限而且不稳定，不建议在实际项目中使用。
+ *
+ */
 class DualRing extends base_1.Base {
+    /**
+     * @param colors 颜色（必须是2个），默认为 [$color("#f5542e"), $color("#f2c327")]
+     * @param layout 布局
+     */
     constructor({ colors = [$color("#f5542e"), $color("#f2c327")], layout }) {
         super();
         const interval = 1 / 60;
         this._defineView = () => {
             const canvas1 = new CanvasComponet({
                 tintColor: colors[0],
-                startAngle: (-Math.PI * 3) / 4
+                startAngle: -Math.PI * 3 / 4
             });
             const canvas2 = new CanvasComponet({
                 tintColor: colors[1],

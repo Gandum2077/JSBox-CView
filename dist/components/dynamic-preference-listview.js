@@ -1,4 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DynamicPreferenceListView = void 0;
+const base_1 = require("./base");
+const static_preference_listview_1 = require("./static-preference-listview");
 /**
  * # cview PreferenceListView_dynamic
  *
@@ -25,10 +29,6 @@
  *
  * - cview.sections = sections 可以写入新的 sections
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DynamicPreferenceListView = void 0;
-const base_1 = require("./base");
-const static_preference_listview_1 = require("./static-preference-listview");
 class DynamicPreferenceListView extends base_1.Base {
     constructor({ sections, props, layout, events = {} }) {
         super();

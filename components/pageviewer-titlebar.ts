@@ -1,21 +1,5 @@
-/** 
- * # CView PageViewer TitleBar
- *
- * props:
- *
- * - 只写 items: string[]
- * - 读写 index: number
- * - 只写 selectedItemColor
- * - 只写 defaultItemColor
- *
- * events:
- *
- * - changed: (cview, index) => void 在点击变更 index 的时候回调
- */
-
 import { Base } from './base';
 import { ContentView, Label, Stack } from "./single-views";
-//const { getTextWidth } = require("cview-util-ui");
 
 function weightedAverageColors(c0: UIColor, c1: UIColor, w: number) {
   const red = c0.components.red * w + c1.components.red * (1 - w);
@@ -35,6 +19,10 @@ interface PageViewerTitleBarEvents extends UiTypes.BaseViewEvents {
   changed?: (cview: PageViewerTitleBar, index: number) => void;
 }
 
+/** 
+ * [PageViewer](./pageviewer.ts)配套的标题栏
+ * @property index: number
+ */
 export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
   private _props: Required<PageViewerTitleBarProps>;
   private _floatedIndex: number;
@@ -46,6 +34,17 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
 
   _defineView: () => UiTypes.ViewOptions;
 
+  /**
+   * 
+   * @param props 属性
+   * - items: string[]
+   * - index: number
+   * - selectedItemColor
+   * - defaultItemColor
+   * @param layout 布局
+   * @param events 事件
+   * - changed: (cview, index) => void 在点击变更 index 的时候回调
+   */
   constructor({ props, layout, events = {} }: {
     props: PageViewerTitleBarProps;
     layout: (make: MASConstraintMaker, view: UIView) => void;

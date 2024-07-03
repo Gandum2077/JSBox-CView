@@ -1,22 +1,20 @@
 "use strict";
-/**
- * 安卓风格的加载指示器，基于Lottie实现
- *
- * Props:
- *
- * - id 可以重新指定 id，以供 list 或者 matrix 的 template 使用
- * - weight = 2
- * - diameter = 24
- * - color = $color("gray")
- * - bgcolor = $color("clear")
- *
- * Layout 默认居中
- *
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidStyleSpinner = void 0;
 const base_1 = require("../base");
+/**
+ * 安卓风格的加载指示器, 基于Lottie实现, 效果是一个圆环一边旋转一边缩放。由于帧数有限，不建议在大视图上使用。
+ */
 class AndroidStyleSpinner extends base_1.Base {
+    /**
+     * @param props AndroidStyleSpinnerProps
+     *        - id?: string 可以重新指定 id，以供 list 或者 matrix 的 template 使用
+     *        - weight: number
+     *        - diameter: number
+     *        - color: UIColor, 默认 gray
+     *        - bgcolor: UIColor, 默认 clear
+     * @param layout 可选布局，默认居中
+     */
     constructor({ props, layout }) {
         super();
         this._props = Object.assign({ weight: 2, diameter: 24, color: $color("gray"), bgcolor: $color("clear") }, props);
@@ -232,7 +230,7 @@ class AndroidStyleSpinner extends base_1.Base {
                     circular: true,
                     json,
                     bgcolor: this._props.bgcolor,
-                    id: this.id
+                    id: this._props.id || this.id
                 },
                 layout: layout || ((make, view) => {
                     make.size.equalTo($size(this._props.diameter, this._props.diameter));

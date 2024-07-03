@@ -1,4 +1,40 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseController = exports.ControllerRootView = void 0;
+const base_1 = require("../components/base");
+const single_views_1 = require("../components/single-views");
+const cvid_1 = require("../utils/cvid");
+const controller_router_1 = require("./controller-router");
+/**
+ * status
+ *   - created = 0 被创建，未被加载
+ *   - loaded = 1 被加载，显示状态未知
+ *   - appeared= 2 处于可显示状态
+ *   - disappeared = 3 处于不显示状态
+ *   - removed = 4 根视图被移除
+ * 其中只有 2 和 3 可以相互转化，其他不可以
+ */
+const controllerStatus = {
+    created: 0,
+    loaded: 1,
+    appeared: 2,
+    disappeared: 3,
+    removed: 4
+};
+class ControllerRootView extends single_views_1.ContentView {
+    constructor({ props, layout, events }) {
+        super({ props, layout, events });
+    }
+    set views(views) {
+        const _views = views.map(v => {
+            if (v instanceof base_1.Base)
+                return v.definition;
+            return v;
+        });
+        this._views = _views;
+    }
+}
+exports.ControllerRootView = ControllerRootView;
 /**
  * # CView Base Controller
  *
@@ -58,42 +94,6 @@
  *
  * - rootView 可以直接通过 rootView.views 设置其_views 属性，其中元素可以为 view 定义也可以为 cview
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseController = exports.ControllerRootView = void 0;
-const base_1 = require("../components/base");
-const single_views_1 = require("../components/single-views");
-const cvid_1 = require("../utils/cvid");
-const controller_router_1 = require("./controller-router");
-/**
- * status
- *   - created = 0 被创建，未被加载
- *   - loaded = 1 被加载，显示状态未知
- *   - appeared= 2 处于可显示状态
- *   - disappeared = 3 处于不显示状态
- *   - removed = 4 根视图被移除
- * 其中只有 2 和 3 可以相互转化，其他不可以
- */
-const controllerStatus = {
-    created: 0,
-    loaded: 1,
-    appeared: 2,
-    disappeared: 3,
-    removed: 4
-};
-class ControllerRootView extends single_views_1.ContentView {
-    constructor({ props, layout, events }) {
-        super({ props, layout, events });
-    }
-    set views(views) {
-        const _views = views.map(v => {
-            if (v instanceof base_1.Base)
-                return v.definition;
-            return v;
-        });
-        this._views = _views;
-    }
-}
-exports.ControllerRootView = ControllerRootView;
 class BaseController {
     constructor({ props, layout = $layout.fill, events = {} } = {}) {
         this._props = props || {};

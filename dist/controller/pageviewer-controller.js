@@ -1,4 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageViewerController = void 0;
+const base_controller_1 = require("./base-controller");
+const pageviewer_1 = require("../components/pageviewer");
+const pageviewer_titlebar_1 = require("../components/pageviewer-titlebar");
+const custom_navigation_bar_1 = require("../components/custom-navigation-bar");
 /**
  * # CView PageViewer Controller
  *
@@ -9,18 +15,14 @@
  * - items: { controller: Controller, title: string }[]
  * - navBarProps: {} 可用于 navBar 的其他属性，不包括 title 和 titleView
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PageViewerController = void 0;
-const base_controller_1 = require("./base-controller");
-const pageviewer_1 = require("../components/pageviewer");
-const pageviewer_titlebar_1 = require("../components/pageviewer-titlebar");
-const custom_navigation_bar_1 = require("../components/custom-navigation-bar");
 class PageViewerController extends base_controller_1.BaseController {
     constructor({ props, layout, events = {} }) {
-        super({ props: {
+        super({
+            props: {
                 id: props.id,
                 bgcolor: props.bgcolor
-            }, layout, events });
+            }, layout, events
+        });
         this._props = props;
         this.cviews = {};
         this.cviews.pageviewer = new pageviewer_1.PageViewer({

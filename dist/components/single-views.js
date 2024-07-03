@@ -3,7 +3,7 @@
  * 实现单个视图的定义
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Runtime = exports.Code = exports.Chart = exports.Lottie = exports.Markdown = exports.Canvas = exports.Picker = exports.DatePicker = exports.Gradient = exports.Blur = exports.Matrix = exports.List = exports.Web = exports.Map = exports.Menu = exports.Tab = exports.Stack = exports.Scroll = exports.Video = exports.Image = exports.Text = exports.Stepper = exports.Gallery = exports.Progress = exports.Spinner = exports.Switch = exports.Slider = exports.Input = exports.Button = exports.Label = exports.MaskView = exports.ContentView = exports.RootView = exports.SingleView = void 0;
+exports.Runtime = exports.Code = exports.Chart = exports.Lottie = exports.Markdown = exports.Canvas = exports.Picker = exports.DatePicker = exports.Gradient = exports.Blur = exports.Matrix = exports.List = exports.Web = exports.Map = exports.Menu = exports.Tab = exports.Stack = exports.Scroll = exports.Video = exports.Image = exports.Text = exports.Stepper = exports.Gallery = exports.Progress = exports.Spinner = exports.Switch = exports.Slider = exports.Input = exports.Button = exports.Label = exports.MaskView = exports.ContentView = exports.ClearView = exports.SingleView = void 0;
 const base_1 = require("./base");
 class SingleView extends base_1.Base {
     constructor({ type, props, layout, events, views }) {
@@ -25,18 +25,18 @@ class SingleView extends base_1.Base {
     }
 }
 exports.SingleView = SingleView;
-class RootView extends SingleView {
-    constructor({ layout = $layout.fill, events, views }) {
+class ClearView extends SingleView {
+    constructor({ props, layout = $layout.fill, events, views }) {
         super({
             type: "view",
-            props: { bgcolor: $color("clear") },
+            props: Object.assign({}, props),
             layout,
             events,
             views
         });
     }
 }
-exports.RootView = RootView;
+exports.ClearView = ClearView;
 class ContentView extends SingleView {
     constructor({ props, layout = $layout.fillSafeArea, events = {}, views }) {
         super({
