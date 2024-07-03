@@ -20,6 +20,7 @@ __exportStar(require("./components/dynamic-itemsize-matrix"), exports);
 __exportStar(require("./components/dynamic-preference-listview"), exports);
 __exportStar(require("./components/dynamic-rowheight-list"), exports);
 __exportStar(require("./components/enhanced-imageview"), exports);
+__exportStar(require("./components/flowlayout"), exports);
 __exportStar(require("./components/image-pager"), exports);
 __exportStar(require("./components/page-control"), exports);
 __exportStar(require("./components/pageviewer-titlebar"), exports);

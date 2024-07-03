@@ -4,6 +4,7 @@ export * from './components/dynamic-itemsize-matrix';
 export * from './components/dynamic-preference-listview';
 export * from './components/dynamic-rowheight-list';
 export * from './components/enhanced-imageview';
+export * from './components/flowlayout';
 export * from './components/image-pager';
 export * from './components/page-control';
 export * from './components/pageviewer-titlebar';
