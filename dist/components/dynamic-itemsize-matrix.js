@@ -31,6 +31,7 @@ const single_views_1 = require("./single-views");
  * 2. 确定 itemHeight 有两种方法:
  *    - fixedItemHeight 固定高度，优先级第二
  *    - event: itemHeight(width) => height 通过 width 动态计算，优先级最高
+ * 3. 如果 minItemWidth 比 totalWidth - 2 * spacing 还要小，那么 itemSize.width 会被设定为 totalWidth - 2 * spacing，以保证item不会超出边框
  *
  * props:
  *
@@ -59,7 +60,7 @@ const single_views_1 = require("./single-views");
 class DynamicItemSizeMatrix extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
-        this._props = Object.assign({ fixedItemHeight: 40, minItemWidth: 96, maxColumns: 5, spacing: 6, maxTotalWidth: 0 }, props);
+        this._props = Object.assign({ fixedItemHeight: 40, minItemWidth: 96, maxColumns: 5, spacing: 6, dynamicHeightEnabled: false }, props);
         this._events = events;
         const _a = this._events, { itemHeight, heightChanged } = _a, rest = __rest(_a, ["itemHeight", "heightChanged"]);
         const _matrixEvents = rest;
@@ -67,14 +68,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
         this._itemSizeHeight = 0;
         this.matrix = new single_views_1.Matrix({
             props: Object.assign(Object.assign({}, this._props), { scrollEnabled: !this._props.dynamicHeightEnabled }),
-            layout: this._props.maxTotalWidth
-                ? (make, view) => {
-                    make.center.equalTo(view.super);
-                    make.width.lessThanOrEqualTo(this._props.maxTotalWidth);
-                    make.width.equalTo(view.super).priority(999);
-                    make.height.equalTo(view.super);
-                }
-                : $layout.fill,
+            layout: $layout.fill,
             events: Object.assign(Object.assign({}, _matrixEvents), { itemSize: sender => $size(this._itemSizeWidth, this._itemSizeHeight) })
         });
         this._defineView = () => {
@@ -88,7 +82,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
                 events: {
                     layoutSubviews: sender => {
                         sender.relayout();
-                        const { itemSizeWidth } = this._getColumnsAndItemSizeWidth(sender.frame.width, this._props.maxTotalWidth, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
+                        const { itemSizeWidth } = this._getColumnsAndItemSizeWidth(sender.frame.width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
                         this._itemSizeWidth = itemSizeWidth;
                         this._itemSizeHeight = this._events.itemHeight
                             ? this._events.itemHeight(this._itemSizeWidth)
@@ -107,13 +101,16 @@ class DynamicItemSizeMatrix extends base_1.Base {
         };
     }
     // 此为纯函数
-    _getColumnsAndItemSizeWidth(containerWidth, maxTotalWidth, minItemWidth, maxColumns, spacing) {
-        const totalWidth = maxTotalWidth
-            ? Math.min(maxTotalWidth, containerWidth)
-            : containerWidth;
-        const columns = Math.max(Math.min(Math.floor((totalWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
+    _getColumnsAndItemSizeWidth(containerWidth, minItemWidth, maxColumns, spacing) {
+        if (minItemWidth > containerWidth - 2 * spacing) {
+            return {
+                columns: 1,
+                itemSizeWidth: containerWidth - 2 * spacing
+            };
+        }
+        const columns = Math.max(Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
         );
-        const itemSizeWidth = Math.max(Math.floor((totalWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
+        const itemSizeWidth = Math.max(Math.floor((containerWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
         );
         return {
             columns,
@@ -121,7 +118,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
         };
     }
     heightToWidth(width) {
-        const { columns, itemSizeWidth } = this._getColumnsAndItemSizeWidth(width, this._props.maxTotalWidth, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
+        const { columns, itemSizeWidth } = this._getColumnsAndItemSizeWidth(width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
         const rows = Math.ceil(this._props.data.length / columns);
         const itemSizeHeight = this._events.itemHeight
             ? this._events.itemHeight(itemSizeWidth)
