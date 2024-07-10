@@ -14,12 +14,14 @@ class SecondaryView extends base_1.Base {
                 make.top.bottom.inset(0);
                 make.right.equalTo(view.super.left);
                 make.width.greaterThanOrEqualTo(250);
+                make.width.lessThanOrEqualTo(350);
                 make.width.equalTo(view.super).dividedBy(2.5).priority(999);
             },
             shown: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.super.left);
                 make.width.greaterThanOrEqualTo(250);
+                make.width.lessThanOrEqualTo(350);
                 make.width.equalTo(view.super).dividedBy(2.5).priority(999);
             }
         };
