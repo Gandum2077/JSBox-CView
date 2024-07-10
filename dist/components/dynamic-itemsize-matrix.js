@@ -60,6 +60,7 @@ const single_views_1 = require("./single-views");
 class DynamicItemSizeMatrix extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
+        this._totalWidth = 0;
         this._props = Object.assign({ fixedItemHeight: 40, minItemWidth: 96, maxColumns: 5, spacing: 6, dynamicHeightEnabled: false }, props);
         this._events = events;
         const _a = this._events, { itemHeight, heightChanged } = _a, rest = __rest(_a, ["itemHeight", "heightChanged"]);
@@ -82,6 +83,8 @@ class DynamicItemSizeMatrix extends base_1.Base {
                 events: {
                     layoutSubviews: sender => {
                         sender.relayout();
+                        if (sender.frame.width === this._totalWidth)
+                            return;
                         const { itemSizeWidth } = this._getColumnsAndItemSizeWidth(sender.frame.width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
                         this._itemSizeWidth = itemSizeWidth;
                         this._itemSizeHeight = this._events.itemHeight
