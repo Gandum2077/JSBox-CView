@@ -13,6 +13,7 @@ import { Base } from "../base";
  * @param doneHandler 完成时的回调
  * @param presentMode 显示模式
  * @param bgcolor 背景颜色
+ * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
  */
 export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions> {
   _props: {
@@ -21,6 +22,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     doneHandler?: () => void;
     presentMode?: number;
     bgcolor?: UIColor;
+    doneButtonHidden?: boolean;
   }
   _done: boolean;
   private _navbar?: CustomNavigationBar;
@@ -33,6 +35,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     doneHandler?: () => void;
     presentMode?: number;
     bgcolor?: UIColor;
+    doneButtonHidden?: boolean;
   }) {
     super({
       presentMode: props.presentMode || ($device.isIpad ? 2 : 1),
@@ -57,9 +60,9 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
         leftBarButtonItems: [
           { symbol: "xmark", handler: () => this.dismiss() }
         ],
-        rightBarButtonItems: [
-          { title: l10n("DONE"), handler: () => this.done() }
-        ]
+        rightBarButtonItems: this._props.doneButtonHidden
+          ? []
+          : [{ title: l10n("DONE"), handler: () => this.done() }]
       }
     });
     this._props.cview._layout = (make, view) => {

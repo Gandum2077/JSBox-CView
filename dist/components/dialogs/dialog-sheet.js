@@ -13,6 +13,7 @@ const single_views_1 = require("../single-views");
  * @param doneHandler 完成时的回调
  * @param presentMode 显示模式
  * @param bgcolor 背景颜色
+ * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
  */
 class DialogSheet extends sheet_1.Sheet {
     constructor(props) {
@@ -38,9 +39,9 @@ class DialogSheet extends sheet_1.Sheet {
                 leftBarButtonItems: [
                     { symbol: "xmark", handler: () => this.dismiss() }
                 ],
-                rightBarButtonItems: [
-                    { title: (0, l10n_1.l10n)("DONE"), handler: () => this.done() }
-                ]
+                rightBarButtonItems: this._props.doneButtonHidden
+                    ? []
+                    : [{ title: (0, l10n_1.l10n)("DONE"), handler: () => this.done() }]
             }
         });
         this._props.cview._layout = (make, view) => {
