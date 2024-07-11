@@ -62,6 +62,13 @@ const sections: PreferenceSection[] = [
         key: "tab",
         items: ["测试aaa", "测试bbb"],
         value: 0
+      },
+      {
+        type: "date",
+        title: "date",
+        key: "date",
+        //value: new Date()
+        mode: 1
       }
     ]
   },

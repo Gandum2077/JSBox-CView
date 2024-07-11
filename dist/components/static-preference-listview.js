@@ -9,6 +9,7 @@ exports.selectableTypes = [
     "integer",
     "stepper",
     "list",
+    "date",
     "interactive-info",
     "link",
     "action"
@@ -468,6 +469,80 @@ class TabCell extends Cell {
         return num;
     }
 }
+class DateCell extends Cell {
+    constructor(props, values) {
+        super(props, values);
+        this._type = "date";
+        const { mode, min, max, interval } = props;
+        this._mode = mode || 2;
+        this._min = min;
+        this._max = max;
+        this._interval = interval;
+    }
+    _defineValueView() {
+        return {
+            type: "view",
+            props: {},
+            layout: (make, view) => {
+                make.top.bottom.inset(0);
+                make.left.equalTo(view.prev.right).inset(10);
+                make.right.inset(15);
+            },
+            views: [
+                {
+                    type: "image",
+                    props: {
+                        symbol: "chevron.right",
+                        tintColor: $color("lightGray", "darkGray"),
+                        contentMode: 1
+                    },
+                    layout: (make, view) => {
+                        make.centerY.equalTo(view.super);
+                        make.size.equalTo($size(17, 17));
+                        make.right.inset(0);
+                    }
+                },
+                {
+                    type: "label",
+                    props: {
+                        id: "label",
+                        text: this._dateToString(this._value),
+                        textColor: $color("secondaryText"),
+                        align: $align.right
+                    },
+                    layout: (make, view) => {
+                        make.centerY.equalTo(view.super);
+                        make.left.inset(0);
+                        make.right.equalTo(view.prev.left).inset(5);
+                    }
+                }
+            ]
+        };
+    }
+    _handleValue(date) {
+        const label = this.view.get("label");
+        label.text = this._dateToString(date);
+        return date;
+    }
+    _dateToString(date) {
+        if (!date)
+            return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        if (this._mode === 0 || this._mode === 3) {
+            return `${hours}:${minutes}`;
+        }
+        else if (this._mode === 1) {
+            return `${year}-${month}-${day}`;
+        }
+        else {
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+    }
+}
 class InfoCell extends Cell {
     constructor(props, values) {
         super(props, values);
@@ -668,6 +743,14 @@ class ActionCell extends Cell {
  *     - value?: number 即 index, -1 时为不选
  *     - items?: string[]
  *
+ * - date:
+ *
+ *    - value?: Date
+ *    - min?: Date
+ *    - max?: Date
+ *    - mode?: number = 2
+ *    - interval?: number
+ *
  * - info:
  *
  *     - value?: string
@@ -782,6 +865,28 @@ class PreferenceListView extends base_1.Base {
                                 });
                                 break;
                             }
+                            case "date": {
+                                const props = {};
+                                if (cell.value)
+                                    props.date = cell.value;
+                                if (cell._min)
+                                    props.min = cell._min;
+                                if (cell._max)
+                                    props.max = cell._max;
+                                if (cell._mode)
+                                    props.mode = cell._mode;
+                                if (cell._interval)
+                                    props.interval = cell._interval;
+                                $picker.date({
+                                    props: props,
+                                    handler: (date) => {
+                                        cell.value = date;
+                                        if (cell._changedEvent)
+                                            cell._changedEvent();
+                                    }
+                                });
+                                break;
+                            }
                             case "interactive-info": {
                                 if (cell._copyable) {
                                     $ui.alert({
@@ -842,6 +947,8 @@ class PreferenceListView extends base_1.Base {
                 return new ListCell(props, this._values);
             case "tab":
                 return new TabCell(props, this._values);
+            case "date":
+                return new DateCell(props, this._values);
             case "info":
                 return new InfoCell(props, this._values);
             case "interactive-info":

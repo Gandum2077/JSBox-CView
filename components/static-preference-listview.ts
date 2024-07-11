@@ -1,14 +1,14 @@
 import { Base } from "./base";
 import { getTextWidth } from "../utils/uitools";
 
-type PreferenceCellTypes = "string" | "number" | "integer" | "stepper" | "boolean" | "slider" | "list" | "tab" | "info" | "interactive-info" | "link" | "action";
+type PreferenceCellTypes = "string" | "number" | "integer" | "stepper" | "boolean" | "slider" | "list" | "tab" | "date" | "info" | "interactive-info" | "link" | "action";
 
 export interface PreferenceSection {
   title: string;
   rows: PrefsRow[]
 }
 
-export type PrefsRow = PrefsRowString | PrefsRowNumber | PrefsRowInteger | PrefsRowStepper | PrefsRowBoolean | PrefsRowSlider | PrefsRowList | PrefsRowTab | PrefsRowInfo | PrefsRowInteractiveInfo | PrefsRowLink | PrefsRowAction;
+export type PrefsRow = PrefsRowString | PrefsRowNumber | PrefsRowInteger | PrefsRowStepper | PrefsRowBoolean | PrefsRowSlider | PrefsRowList | PrefsRowTab | PrefsRowDate | PrefsRowInfo | PrefsRowInteractiveInfo | PrefsRowLink | PrefsRowAction;
 
 interface PrefsRowBase {
   type: PreferenceCellTypes;
@@ -80,6 +80,15 @@ export interface PrefsRowTab extends PrefsRowBase {
   items: string[];
 }
 
+export interface PrefsRowDate extends PrefsRowBase {
+  type: "date";
+  value?: Date;
+  min?: Date;
+  max?: Date;
+  mode?: number;
+  interval?: number;
+}
+
 export interface PrefsRowInfo extends PrefsRowBase {
   type: "info";
   value?: string;
@@ -108,6 +117,7 @@ export const selectableTypes = [
   "integer",
   "stepper",
   "list",
+  "date",
   "interactive-info",
   "link",
   "action"
@@ -122,7 +132,7 @@ export const excludedTypes = [
 
 type PreferenceValues = { [key: string]: any };
 
-type AllCells = StringCell | NumberCell | IntegerCell | StepperCell | BooleanCell | SliderCell | ListCell | TabCell | InteractiveInfoCell | InfoCell | LinkCell | ActionCell;
+type AllCells = StringCell | NumberCell | IntegerCell | StepperCell | BooleanCell | SliderCell | ListCell | TabCell | DateCell | InteractiveInfoCell | InfoCell | LinkCell | ActionCell;
 
 abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
   abstract _type: string;
@@ -638,6 +648,85 @@ class TabCell extends Cell {
   }
 }
 
+class DateCell extends Cell {
+  readonly _type = "date";
+  _mode: number;
+  _interval?: number;
+  _min?: Date;
+  _max?: Date;
+  constructor(props: PrefsRowDate, values: PreferenceValues) {
+    super(props, values);
+    const { mode, min, max, interval } = props;
+    this._mode = mode || 2;
+    this._min = min;
+    this._max = max;
+    this._interval = interval;
+  }
+
+  _defineValueView(): UiTypes.ViewOptions {
+    return {
+      type: "view",
+      props: {},
+      layout: (make, view) => {
+        make.top.bottom.inset(0);
+        make.left.equalTo(view.prev.right).inset(10);
+        make.right.inset(15);
+      },
+      views: [
+        {
+          type: "image",
+          props: {
+            symbol: "chevron.right",
+            tintColor: $color("lightGray", "darkGray"),
+            contentMode: 1
+          },
+          layout: (make, view) => {
+            make.centerY.equalTo(view.super);
+            make.size.equalTo($size(17, 17));
+            make.right.inset(0);
+          }
+        },
+        {
+          type: "label",
+          props: {
+            id: "label",
+            text: this._dateToString(this._value),
+            textColor: $color("secondaryText"),
+            align: $align.right
+          },
+          layout: (make, view) => {
+            make.centerY.equalTo(view.super);
+            make.left.inset(0);
+            make.right.equalTo(view.prev.left).inset(5);
+          }
+        }
+      ]
+    };
+  }
+
+  _handleValue(date: Date) {
+    const label = this.view.get("label") as UILabelView;
+    label.text = this._dateToString(date);
+    return date;
+  }
+
+  _dateToString(date?: Date) {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    if (this._mode === 0 || this._mode === 3) {
+      return `${hours}:${minutes}`;
+    } else if (this._mode === 1) {
+      return `${year}-${month}-${day}`;
+    } else {
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+  }
+}
+
 class InfoCell extends Cell {
   readonly _type = "info";
   constructor(props: PrefsRowInfo, values: PreferenceValues) {
@@ -853,6 +942,14 @@ class ActionCell extends Cell {
  *     - value?: number 即 index, -1 时为不选
  *     - items?: string[]
  * 
+ * - date:
+ * 
+ *    - value?: Date
+ *    - min?: Date
+ *    - max?: Date
+ *    - mode?: number = 2
+ *    - interval?: number
+ * 
  * - info:
  * 
  *     - value?: string
@@ -985,6 +1082,22 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
                 });
                 break;
               }
+              case "date": {
+                const props: any = {}
+                if (cell.value) props.date = cell.value;
+                if (cell._min) props.min = cell._min;
+                if (cell._max) props.max = cell._max;
+                if (cell._mode) props.mode = cell._mode;
+                if (cell._interval) props.interval = cell._interval;
+                $picker.date({
+                  props: props,
+                  handler: (date: Date) => {
+                    cell.value = date;
+                    if (cell._changedEvent) cell._changedEvent();
+                  }
+                });
+                break;
+              }
               case "interactive-info": {
                 if (cell._copyable) {
                   $ui.alert({
@@ -1045,6 +1158,8 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
         return new ListCell(props, this._values);
       case "tab":
         return new TabCell(props, this._values);
+      case "date":
+        return new DateCell(props, this._values);
       case "info":
         return new InfoCell(props, this._values);
       case "interactive-info":
