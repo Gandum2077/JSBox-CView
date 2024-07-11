@@ -648,6 +648,22 @@ class TabCell extends Cell {
   }
 }
 
+export function dateToString(mode: number, date?: Date) {
+  if (!date) return ""
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  if (mode === 0 || mode === 3) {
+    return `${hours}:${minutes}`;
+  } else if (mode === 1) {
+    return `${year}-${month}-${day}`;
+  } else {
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+}
+
 class DateCell extends Cell {
   readonly _type = "date";
   _mode: number;
@@ -690,7 +706,7 @@ class DateCell extends Cell {
           type: "label",
           props: {
             id: "label",
-            text: this._dateToString(this._value),
+            text: dateToString(this._mode, this._value),
             textColor: $color("secondaryText"),
             align: $align.right
           },
@@ -706,24 +722,8 @@ class DateCell extends Cell {
 
   _handleValue(date: Date) {
     const label = this.view.get("label") as UILabelView;
-    label.text = this._dateToString(date);
+    label.text = dateToString(this._mode, date);
     return date;
-  }
-
-  _dateToString(date?: Date) {
-    if (!date) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    if (this._mode === 0 || this._mode === 3) {
-      return `${hours}:${minutes}`;
-    } else if (this._mode === 1) {
-      return `${year}-${month}-${day}`;
-    } else {
-      return `${year}-${month}-${day} ${hours}:${minutes}`;
-    }
   }
 }
 
