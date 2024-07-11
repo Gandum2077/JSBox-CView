@@ -124,9 +124,9 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 events: {
                                                     changed: sender => {
                                                         const { section, row } = sender.info;
-                                                        this._sections[section].rows[row].value =
-                                                            sender.value;
-                                                        this.view.data = this._map(this._sections);
+                                                        this._sections[section].rows[row].value = sender.value;
+                                                        const label = sender.next;
+                                                        label.text = sender.value.toString();
                                                         if (events.changed)
                                                             events.changed(this.values);
                                                     }
@@ -156,7 +156,9 @@ class DynamicPreferenceListView extends base_1.Base {
                                             {
                                                 type: "slider",
                                                 props: {
-                                                    id: "slider"
+                                                    id: "slider",
+                                                    min: 0,
+                                                    max: 1
                                                 },
                                                 layout: (make, view) => {
                                                     make.centerY.equalTo(view.super);
@@ -165,16 +167,17 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 },
                                                 events: {
                                                     changed: sender => {
+                                                        var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
                                                         const label = sender.next;
-                                                        label.text = this._handleSliderValue(sender.value, options.decimal, options.min, options.max).toString();
+                                                        label.text = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max).toString();
                                                     },
                                                     touchesEnded: sender => {
+                                                        var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
-                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value, options.decimal, options.min, options.max);
-                                                        this.view.data = this._map(this._sections);
+                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
                                                         if (events.changed)
                                                             events.changed(this.values);
                                                     }
@@ -207,11 +210,8 @@ class DynamicPreferenceListView extends base_1.Base {
                                             changed: sender => {
                                                 const { section, row } = sender.info;
                                                 this._sections[section].rows[row].value = sender.on;
-                                                $delay(0.2, () => {
-                                                    this.view.data = this._map(this._sections);
-                                                    if (events.changed)
-                                                        events.changed(this.values);
-                                                });
+                                                if (events.changed)
+                                                    events.changed(this.values);
                                             }
                                         }
                                     },
@@ -230,11 +230,8 @@ class DynamicPreferenceListView extends base_1.Base {
                                             changed: sender => {
                                                 const { section, row } = sender.info;
                                                 this._sections[section].rows[row].value = sender.index;
-                                                $delay(0.3, () => {
-                                                    this.view.data = this._map(this._sections);
-                                                    if (events.changed)
-                                                        events.changed(this.values);
-                                                });
+                                                if (events.changed)
+                                                    events.changed(this.values);
                                             }
                                         }
                                     },
@@ -431,6 +428,7 @@ class DynamicPreferenceListView extends base_1.Base {
         return sections.map((section, sectionIndex) => ({
             title: section.title,
             rows: section.rows.map((n, rowIndex) => {
+                var _a;
                 const data = generateDefaultRow(n);
                 switch (n.type) {
                     case "string": {
@@ -489,10 +487,10 @@ class DynamicPreferenceListView extends base_1.Base {
                             text: adjustedValue
                         };
                         data.slider = {
-                            value: adjustedValue,
+                            value: adjustedValue / ((_a = n.max) !== null && _a !== void 0 ? _a : 1),
                             info: { section: sectionIndex, row: rowIndex, key: n.key },
-                            min: n.min,
-                            max: n.max,
+                            //min: n.min,
+                            //max: n.max,
                             minColor: n.minColor || $color("systemLink"),
                             maxColor: n.maxColor,
                             thumbColor: n.thumbColor

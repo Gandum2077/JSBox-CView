@@ -49,7 +49,7 @@ const sections = [
                 value: 1,
                 decimal: 0,
                 min: 0,
-                max: 100
+                max: 2
             },
             {
                 type: "list",
