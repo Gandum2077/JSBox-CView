@@ -64,6 +64,12 @@ const sections: PreferenceSection[] = [
         key: "tab",
         items: ["测试aaa", "测试bbb"],
         value: 0
+      },
+      {
+        type: "date",
+        title: "date",
+        key: "date",
+        mode: 1
       }
     ]
   },
@@ -93,7 +99,10 @@ const v = new DynamicPreferenceListView({
   sections: sections,
   layout: $layout.fill,
   events: {
-    changed: (values: any) => console.info(values)
+    changed: (values: any) => {
+      console.info(values)
+      console.info(values.date)
+    }
   }
 });
 

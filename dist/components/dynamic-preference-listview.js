@@ -19,7 +19,7 @@ const static_preference_listview_1 = require("./static-preference-listview");
  *
  * 为了缓解上面的问题, 让修改布局无需调整源代码, 增加下列 props:
  *
- * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, 但是由于后三者内容可控, 可视为只作用于 string
+ * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date 但是由于后四者内容可控, 可视为只作用于 string
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
  * - tabWidth?: number = 200 作用于 tab
@@ -327,6 +327,29 @@ class DynamicPreferenceListView extends base_1.Base {
                                 });
                                 break;
                             }
+                            case "date": {
+                                const props = {};
+                                if (row.value)
+                                    props.date = row.value;
+                                if (row.min)
+                                    props.min = row.min;
+                                if (row.max)
+                                    props.max = row.max;
+                                if (row.mode)
+                                    props.mode = row.mode;
+                                if (row.interval)
+                                    props.interval = row.interval;
+                                $picker.date({
+                                    props: props,
+                                    handler: (date) => {
+                                        row.value = date;
+                                        sender.data = this._map(this._sections);
+                                        if (events.changed)
+                                            events.changed(this.values);
+                                    }
+                                });
+                                break;
+                            }
                             case "interactive-info": {
                                 if (row.copyable) {
                                     $ui.alert({
@@ -417,7 +440,7 @@ class DynamicPreferenceListView extends base_1.Base {
                     text: options.title,
                     textColor: options.titleColor || $color("primaryText")
                 }, // 标题, 同时用于action
-                label_and_chevron: { hidden: true }, // 用于string, number, integer, list
+                label_and_chevron: { hidden: true }, // 用于string, number, integer, list, date
                 number_and_stepper: { hidden: true }, // 用于stepper
                 slider_and_number: { hidden: true }, // 用于slider
                 switch: { hidden: true }, // 用于boolean
@@ -489,7 +512,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.slider = {
                             value: adjustedValue / ((_a = n.max) !== null && _a !== void 0 ? _a : 1),
                             info: { section: sectionIndex, row: rowIndex, key: n.key },
-                            //min: n.min,
+                            //min: n.min, // 不可用，否则会出现slider滑动结束变为0点的bug
                             //max: n.max,
                             minColor: n.minColor || $color("systemLink"),
                             maxColor: n.maxColor,
@@ -511,6 +534,15 @@ class DynamicPreferenceListView extends base_1.Base {
                             items: n.items,
                             index: n.value,
                             info: { section: sectionIndex, row: rowIndex, key: n.key }
+                        };
+                        break;
+                    }
+                    case "date": {
+                        data.label_and_chevron.hidden = false;
+                        data.label_before_chevron = {
+                            hidden: false,
+                            textColor: $color("secondaryText"),
+                            text: (0, static_preference_listview_1.dateToString)(n.mode || 2, n.value)
                         };
                         break;
                     }
