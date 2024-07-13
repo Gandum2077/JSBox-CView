@@ -16,6 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./components/base"), exports);
 __exportStar(require("./components/custom-navigation-bar"), exports);
+__exportStar(require("./components/dynamic-contextmenu-view"), exports);
 __exportStar(require("./components/dynamic-itemsize-matrix"), exports);
 __exportStar(require("./components/dynamic-preference-listview"), exports);
 __exportStar(require("./components/dynamic-rowheight-list"), exports);
