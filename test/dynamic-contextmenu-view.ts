@@ -1,5 +1,6 @@
 import { DynamicContextMenuView } from "../components/dynamic-contextmenu-view";
 
+let menuIndex = 0;
 const menuList = [
   {
     title: "菜单1",
@@ -8,7 +9,7 @@ const menuList = [
         title: "变成菜单1",
         symbol: "plus",
         handler: () => {
-          view.menuIndex = 0;
+          menuIndex = 0;
         }
       },
       {
@@ -16,7 +17,7 @@ const menuList = [
         symbol: "plus",
         destructive: true,
         handler: () => {
-          view.menuIndex = 1;
+          menuIndex = 1;
         }
       }
     ]
@@ -28,14 +29,14 @@ const menuList = [
         title: "变成菜单1",
         symbol: "plus",
         handler: () => {
-          view.menuIndex = 0;
+          menuIndex = 0;
         }
       },
       {
         title: "变成菜单2",
         symbol: "plus",
         handler: () => {
-          view.menuIndex = 1;
+          menuIndex = 1;
         }
       }
     ]
@@ -43,12 +44,10 @@ const menuList = [
 ]
 
 const view = new DynamicContextMenuView({
-  menuList,
-  props: {
-    info: {
-      menuIndex: 0
-    }
+  generateContextMenu: (sender) => {
+    return menuList[menuIndex]
   },
+  props: {},
   layout: (make, view) => {
     make.center.equalTo(view.super);
     make.size.equalTo($size(100, 100));
