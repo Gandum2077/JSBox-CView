@@ -43,7 +43,6 @@ const menuList = [
 ]
 
 const view = new DynamicContextMenuView({
-  ocClassName: "testView",
   menuList,
   props: {
     info: {
