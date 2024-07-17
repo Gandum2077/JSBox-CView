@@ -15,7 +15,7 @@ const base_1 = require("./base");
 class SymbolButton extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
-        this._props = Object.assign({ insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
+        this._props = Object.assign({ contentMode: 1, insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
         this._layout = layout;
         this._defineView = () => {
             const props = this._props.menu
@@ -41,7 +41,7 @@ class SymbolButton extends base_1.Base {
                             image: this._props.image,
                             src: this._props.src,
                             tintColor: this._props.tintColor,
-                            contentMode: 1
+                            contentMode: this._props.contentMode
                         },
                         layout: (make, view) => {
                             make.edges.insets(this._props.insets);
@@ -56,16 +56,16 @@ class SymbolButton extends base_1.Base {
         };
     }
     set tintColor(tintColor) {
-        const image = this.view.get("image");
-        image.tintColor = tintColor;
+        this.view.get("image").tintColor = tintColor;
+    }
+    set image(image) {
+        this.view.get("image").image = image;
     }
     set symbol(symbol) {
-        this._props.symbol = symbol;
-        const image = this.view.get("image");
-        image.symbol = symbol;
+        this.view.get("image").symbol = symbol;
     }
-    get symbol() {
-        return this._props.symbol;
+    set src(src) {
+        this.view.get("image").src = src;
     }
 }
 exports.SymbolButton = SymbolButton;

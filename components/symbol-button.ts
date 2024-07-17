@@ -1,11 +1,13 @@
 import { Base } from "./base";
 
-interface SymbolButtonProps extends UiTypes.ButtonProps {
-  insets: JBInsets
-}
-
-interface SymbolButtonPropsOptional extends UiTypes.ButtonProps {
-  insets?: JBInsets
+interface SymbolButtonProps {
+  symbol?: string;
+  image?: UIImage;
+  src?: string;
+  tintColor: UIColor;
+  contentMode: number;
+  insets: JBInsets;
+  menu?: UiTypes.ContextMenuOptions
 }
 
 /**
@@ -26,12 +28,13 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
     layout,
     events = {}
   }: {
-    props: SymbolButtonPropsOptional;
+    props: Partial<SymbolButtonProps>;
     layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
     events?: UiTypes.BaseViewEvents<UIButtonView>;
   }) {
     super();
     this._props = {
+      contentMode: 1,
       insets: $insets(12.5, 12.5, 12.5, 12.5),
       tintColor: $color("primaryText"),
       ...props
@@ -61,7 +64,7 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
               image: this._props.image,
               src: this._props.src,
               tintColor: this._props.tintColor,
-              contentMode: 1
+              contentMode: this._props.contentMode
             },
             layout: (make, view: UIImageView) => {
               make.edges.insets(this._props.insets);
@@ -77,17 +80,18 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
   }
 
   set tintColor(tintColor: UIColor) {
-    const image = this.view.get("image") as UIImageView;
-    image.tintColor = tintColor;
+    (this.view.get("image") as UIImageView).tintColor = tintColor;
   }
 
-  set symbol(symbol) {
-    this._props.symbol = symbol;
-    const image = this.view.get("image") as UIImageView;
-    image.symbol = symbol;
+  set image(image: UIImage) {
+    (this.view.get("image") as UIImageView).image = image;
   }
 
-  get symbol() {
-    return this._props.symbol;
+  set symbol(symbol: string) {
+    (this.view.get("image") as UIImageView).symbol = symbol;
+  }
+
+  set src(src: string) {
+    (this.view.get("image") as UIImageView).src = src;
   }
 }
