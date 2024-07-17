@@ -15,7 +15,7 @@ const base_1 = require("./base");
 class SymbolButton extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
-        this._props = Object.assign({ contentMode: 1, insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
+        this._props = Object.assign({ enabled: true, contentMode: 1, insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText") }, props);
         this._layout = layout;
         this._defineView = () => {
             const props = this._props.menu
@@ -24,10 +24,12 @@ class SymbolButton extends base_1.Base {
                     bgcolor: $color("clear"),
                     id: this.id,
                     menu: this._props.menu,
+                    enabled: this._props.enabled
                 } : {
                 radius: 0,
                 bgcolor: $color("clear"),
-                id: this.id
+                id: this.id,
+                enabled: this._props.enabled
             };
             return {
                 type: "button",

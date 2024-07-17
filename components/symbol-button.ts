@@ -1,6 +1,7 @@
 import { Base } from "./base";
 
 interface SymbolButtonProps {
+  enabled: boolean;
   symbol?: string;
   image?: UIImage;
   src?: string;
@@ -34,6 +35,7 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
   }) {
     super();
     this._props = {
+      enabled: true,
       contentMode: 1,
       insets: $insets(12.5, 12.5, 12.5, 12.5),
       tintColor: $color("primaryText"),
@@ -47,10 +49,12 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
           bgcolor: $color("clear"),
           id: this.id,
           menu: this._props.menu,
+          enabled: this._props.enabled
         } : {
           radius: 0,
           bgcolor: $color("clear"),
-          id: this.id
+          id: this.id,
+          enabled: this._props.enabled
         }
       return {
         type: "button",
