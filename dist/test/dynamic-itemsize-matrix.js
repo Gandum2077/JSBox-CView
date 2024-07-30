@@ -52,7 +52,13 @@ const matrix = new dynamic_itemsize_matrix_1.DynamicItemSizeMatrix({
     },
     events: {
         itemHeight: width => width * 1.414 + 20,
-        didSelect: (sender, indexPath, data) => { }
+        didSelect: (sender, indexPath, data) => { },
+        didScroll: sender => {
+            matrix.columns;
+            console.log(sender.contentOffset.y);
+            console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)));
+            console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)) * matrix.columns);
+        },
     }
 });
 $ui.render({
@@ -64,5 +70,5 @@ $ui.render({
             }
         ]
     },
-    views: [matrix.definition]
+    views: [matrix.definition],
 });

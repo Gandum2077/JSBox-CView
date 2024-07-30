@@ -75,7 +75,7 @@ class Sheet {
             .invoke("presentModalViewController:animated", this._PSViewController, this._animated);
     }
     dismiss() {
-        this._PSViewController.invoke("dismissModalViewControllerAnimated", true);
+        this._PSViewController.invoke("dismissModalViewControllerAnimated", this._animated);
     }
 }
 exports.Sheet = Sheet;

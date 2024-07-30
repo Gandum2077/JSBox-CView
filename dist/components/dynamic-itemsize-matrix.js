@@ -14,6 +14,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DynamicItemSizeMatrix = void 0;
 const base_1 = require("./base");
 const single_views_1 = require("./single-views");
+function _getColumnsAndItemSizeWidth(containerWidth, minItemWidth, maxColumns, spacing) {
+    if (minItemWidth > containerWidth - 2 * spacing) {
+        return {
+            columns: 1,
+            itemSizeWidth: containerWidth - 2 * spacing
+        };
+    }
+    const columns = Math.max(Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
+    );
+    const itemSizeWidth = Math.max(Math.floor((containerWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
+    );
+    return {
+        columns,
+        itemSizeWidth
+    };
+}
 /**
  * # CView Dynamic ItemSize Matrix
  *
@@ -61,6 +77,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
         this._totalWidth = 0;
+        this._columns = 1;
         this._props = Object.assign({ fixedItemHeight: 40, minItemWidth: 96, maxColumns: 5, spacing: 6, dynamicHeightEnabled: false }, props);
         this._events = events;
         const _a = this._events, { itemHeight, heightChanged } = _a, rest = __rest(_a, ["itemHeight", "heightChanged"]);
@@ -85,7 +102,8 @@ class DynamicItemSizeMatrix extends base_1.Base {
                         sender.relayout();
                         if (sender.frame.width === this._totalWidth)
                             return;
-                        const { itemSizeWidth } = this._getColumnsAndItemSizeWidth(sender.frame.width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
+                        const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(sender.frame.width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
+                        this._columns = columns;
                         this._itemSizeWidth = itemSizeWidth;
                         this._itemSizeHeight = this._events.itemHeight
                             ? this._events.itemHeight(this._itemSizeWidth)
@@ -103,25 +121,8 @@ class DynamicItemSizeMatrix extends base_1.Base {
             };
         };
     }
-    // 此为纯函数
-    _getColumnsAndItemSizeWidth(containerWidth, minItemWidth, maxColumns, spacing) {
-        if (minItemWidth > containerWidth - 2 * spacing) {
-            return {
-                columns: 1,
-                itemSizeWidth: containerWidth - 2 * spacing
-            };
-        }
-        const columns = Math.max(Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
-        );
-        const itemSizeWidth = Math.max(Math.floor((containerWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
-        );
-        return {
-            columns,
-            itemSizeWidth
-        };
-    }
     heightToWidth(width) {
-        const { columns, itemSizeWidth } = this._getColumnsAndItemSizeWidth(width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
+        const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
         const rows = Math.ceil(this._props.data.length / columns);
         const itemSizeHeight = this._events.itemHeight
             ? this._events.itemHeight(itemSizeWidth)
@@ -134,6 +135,12 @@ class DynamicItemSizeMatrix extends base_1.Base {
     set data(data) {
         this._props.data = data;
         this.matrix.view.data = data;
+    }
+    get columns() {
+        return this._columns;
+    }
+    get itemSize() {
+        return $size(this._itemSizeWidth, this._itemSizeHeight);
     }
 }
 exports.DynamicItemSizeMatrix = DynamicItemSizeMatrix;

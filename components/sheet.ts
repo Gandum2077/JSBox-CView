@@ -107,6 +107,6 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
   }
 
   dismiss() {
-    this._PSViewController.invoke("dismissModalViewControllerAnimated", true);
+    this._PSViewController.invoke("dismissModalViewControllerAnimated", this._animated);
   }
 }
