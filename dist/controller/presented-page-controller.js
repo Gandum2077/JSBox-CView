@@ -22,13 +22,14 @@ const sheet_1 = require("../components/sheet");
  */
 class PresentedPageController extends base_controller_1.BaseController {
     constructor({ props, layout, events } = {}) {
+        var _a;
         super({
             props: {
                 id: props === null || props === void 0 ? void 0 : props.id
             }, layout, events
         });
         this._sheet = new sheet_1.Sheet({
-            presentMode: (props === null || props === void 0 ? void 0 : props.presentMode) || 1,
+            presentMode: (_a = props === null || props === void 0 ? void 0 : props.presentMode) !== null && _a !== void 0 ? _a : 1,
             animated: (props === null || props === void 0 ? void 0 : props.animated) || true,
             interactiveDismissalDisabled: (props === null || props === void 0 ? void 0 : props.interactiveDismissalDisabled) || false,
             bgcolor: (props === null || props === void 0 ? void 0 : props.bgcolor) || $color("secondarySurface"),

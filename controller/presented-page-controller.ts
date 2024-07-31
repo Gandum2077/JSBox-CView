@@ -37,7 +37,7 @@ export class PresentedPageController extends BaseController {
       }, layout, events
     });
     this._sheet = new Sheet<ControllerRootView, UIView, UiTypes.ViewOptions>({
-      presentMode: props?.presentMode || 1,
+      presentMode: props?.presentMode ?? 1,
       animated: props?.animated || true,
       interactiveDismissalDisabled: props?.interactiveDismissalDisabled || false,
       bgcolor: props?.bgcolor || $color("secondarySurface"),
