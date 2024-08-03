@@ -22,7 +22,7 @@ const sheet_1 = require("../components/sheet");
  */
 class PresentedPageController extends base_controller_1.BaseController {
     constructor({ props, layout, events } = {}) {
-        var _a;
+        var _a, _b;
         super({
             props: {
                 id: props === null || props === void 0 ? void 0 : props.id
@@ -30,7 +30,7 @@ class PresentedPageController extends base_controller_1.BaseController {
         });
         this._sheet = new sheet_1.Sheet({
             presentMode: (_a = props === null || props === void 0 ? void 0 : props.presentMode) !== null && _a !== void 0 ? _a : 1,
-            animated: (props === null || props === void 0 ? void 0 : props.animated) || true,
+            animated: (_b = props === null || props === void 0 ? void 0 : props.animated) !== null && _b !== void 0 ? _b : true,
             interactiveDismissalDisabled: (props === null || props === void 0 ? void 0 : props.interactiveDismissalDisabled) || false,
             bgcolor: (props === null || props === void 0 ? void 0 : props.bgcolor) || $color("secondarySurface"),
             cview: this.rootView,
