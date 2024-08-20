@@ -36,7 +36,7 @@ class DynamicRowHeightList extends base_1.Base {
             }
             return {
                 type: "list",
-                props: Object.assign({ data }, props),
+                props: Object.assign({ id: this.id, data }, props),
                 layout,
                 events: Object.assign({ rowHeight: (sender, indexPath) => {
                         if (sections) {

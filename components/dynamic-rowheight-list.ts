@@ -46,6 +46,7 @@ export class DynamicRowHeightList extends Base<UIListView, UiTypes.ListOptions> 
       return {
         type: "list",
         props: {
+          id: this.id,
           data,
           ...props
         },
