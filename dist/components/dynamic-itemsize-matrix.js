@@ -93,7 +93,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
             return {
                 type: "view",
                 props: {
-                    bgcolor: this._props.bgcolor,
+                    bgcolor: $color("clear"),
                     id: this.id
                 },
                 layout,
