@@ -11,6 +11,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   _props: {
     srcs: string[];
     page: number;
+    doubleTapToZoom: boolean;
   };
   _matrix: Matrix;
   _pageLoadRecorder: { [key: number]: boolean };
@@ -21,6 +22,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
    * @param props 
    * - srcs: string[] - 图片地址列表
    * - page: number - 当前页码
+   * - doubleTapToZoom: boolean - 是否双击放大，默认为true
    * @param layout
    * @param events 
    * - changed: (page: number) => void - 页码变化时触发
@@ -30,6 +32,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
     props: {
       srcs?: string[];
       page?: number;
+      doubleTapToZoom?: boolean;
     };
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events: {
@@ -42,6 +45,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
     this._props = {
       srcs: [],
       page: 0,
+      doubleTapToZoom: true,
       ...props
     };
     this._pageLoadRecorder = {};
@@ -60,7 +64,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
                 id: "scroll",
                 zoomEnabled: true,
                 maxZoomScale: 3,
-                doubleTapToZoom: true
+                doubleTapToZoom: this._props.doubleTapToZoom
               },
               layout: $layout.fill,
               views: [
@@ -84,6 +88,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
         ready: sender => {
           // 如果没有此处的relayout，则会出现莫名其妙的bug
           sender.relayout();
+          if (!this._matrix.view) return;
           this.page = this.page;
           this.loadsrc(this.page);
         },
@@ -112,8 +117,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
       return {
         type: "view",
         props: {
-          id: this.id,
-          userInteractionEnabled: true
+          id: this.id
         },
         layout,
         views: [this._matrix.definition],
@@ -121,21 +125,11 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
           layoutSubviews: sender => {
             this._pageLoadRecorder = {};
             sender.relayout();
+            if (!this._matrix.view) return;
             this._matrix.view.reload();
             this.page = this.page;
             $delay(0.1, () => this.loadsrc(this.page, true));
             $delay(0.3, () => this.loadsrc(this.page, true));
-          },
-          tapped: sender => {
-            const cell = this._matrix.view.cell($indexPath(0, this.page));
-            if (!cell) return;
-            const scroll = cell.get("scroll") as UIScrollView;
-            const zoomScale = scroll.zoomScale;
-            $delay(0.3, () => {
-              const zoomScale1 = scroll.zoomScale;
-              if (zoomScale === zoomScale1 && events.tapped)
-                events.tapped(this);
-            });
           }
         }
       };

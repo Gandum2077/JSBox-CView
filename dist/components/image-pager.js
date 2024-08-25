@@ -15,6 +15,7 @@ class ImagePager extends base_1.Base {
      * @param props
      * - srcs: string[] - 图片地址列表
      * - page: number - 当前页码
+     * - doubleTapToZoom: boolean - 是否双击放大，默认为true
      * @param layout
      * @param events
      * - changed: (page: number) => void - 页码变化时触发
@@ -22,7 +23,7 @@ class ImagePager extends base_1.Base {
      */
     constructor({ props, layout, events = {} }) {
         super();
-        this._props = Object.assign({ srcs: [], page: 0 }, props);
+        this._props = Object.assign({ srcs: [], page: 0, doubleTapToZoom: true }, props);
         this._pageLoadRecorder = {};
         this._matrix = new single_views_1.Matrix({
             props: {
@@ -39,7 +40,7 @@ class ImagePager extends base_1.Base {
                                 id: "scroll",
                                 zoomEnabled: true,
                                 maxZoomScale: 3,
-                                doubleTapToZoom: true
+                                doubleTapToZoom: this._props.doubleTapToZoom
                             },
                             layout: $layout.fill,
                             views: [
@@ -63,6 +64,8 @@ class ImagePager extends base_1.Base {
                 ready: sender => {
                     // 如果没有此处的relayout，则会出现莫名其妙的bug
                     sender.relayout();
+                    if (!this._matrix.view)
+                        return;
                     this.page = this.page;
                     this.loadsrc(this.page);
                 },
@@ -91,8 +94,7 @@ class ImagePager extends base_1.Base {
             return {
                 type: "view",
                 props: {
-                    id: this.id,
-                    userInteractionEnabled: true
+                    id: this.id
                 },
                 layout,
                 views: [this._matrix.definition],
@@ -100,22 +102,12 @@ class ImagePager extends base_1.Base {
                     layoutSubviews: sender => {
                         this._pageLoadRecorder = {};
                         sender.relayout();
+                        if (!this._matrix.view)
+                            return;
                         this._matrix.view.reload();
                         this.page = this.page;
                         $delay(0.1, () => this.loadsrc(this.page, true));
                         $delay(0.3, () => this.loadsrc(this.page, true));
-                    },
-                    tapped: sender => {
-                        const cell = this._matrix.view.cell($indexPath(0, this.page));
-                        if (!cell)
-                            return;
-                        const scroll = cell.get("scroll");
-                        const zoomScale = scroll.zoomScale;
-                        $delay(0.3, () => {
-                            const zoomScale1 = scroll.zoomScale;
-                            if (zoomScale === zoomScale1 && events.tapped)
-                                events.tapped(this);
-                        });
                     }
                 }
             };
