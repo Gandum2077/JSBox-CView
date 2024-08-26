@@ -14,6 +14,11 @@ interface TabBarControllerProps extends BaseControllerProps {
   index?: number;
 }
 
+interface TabBarControllerEvents extends BaseControllerEvents {
+  changed?: (controller: TabBarController, index: number) => void;
+  doubleTapped?: (controller: TabBarController, index: number) => void;
+}
+
 /** 
  * # CView TabBar Controller
  *
@@ -31,6 +36,7 @@ interface TabBarControllerProps extends BaseControllerProps {
  */
 export class TabBarController extends BaseController {
   _props: TabBarControllerProps;
+  _events: TabBarControllerEvents;
   cviews: {
     tabbar: TabBar;
     pageContentView: ContentView;
@@ -39,18 +45,27 @@ export class TabBarController extends BaseController {
   constructor({ props, layout, events = {} }: {
     props: TabBarControllerProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
-    events?: BaseControllerEvents;
+    events?: TabBarControllerEvents;
   }) {
     super({
       props: {
         id: props.id,
         bgcolor: props.bgcolor
-      }, layout, events
+      }, 
+      layout,
+      events: {
+        ...events,
+        didAppear: () => {
+          this._props.items[this.index].controller.appear();
+          this._events.didAppear?.(this);
+        }
+      }
     });
     this._props = {
       items: props.items,
       index: props.index || 0
     };
+    this._events = events;
     this.cviews = {} as {
       tabbar: TabBar;
       pageContentView: ContentView;
@@ -61,7 +76,15 @@ export class TabBarController extends BaseController {
         index: this._props.index
       },
       events: {
-        changed: (cview, index) => (this.index = index)
+        changed: (cview, index) => {
+          this.index = index;
+          this._props.items.find(item=>item.controller.status === 2)?.controller.disappear();
+          this._props.items[index].controller.appear();
+          this._events.changed?.(this, index);
+        },
+        doubleTapped: (cview, index) => {
+          this._events.doubleTapped?.(this, index);
+        }
       }
     });
 
