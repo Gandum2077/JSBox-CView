@@ -126,10 +126,10 @@ class MaskView extends base_1.Base {
  *
  * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
  *
- * ## Props
+ * @param options.props.items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
  *
- * - 只写 items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
- * - 读写 sideBarShown: boolean = false 侧栏是否显示
+ * @property sideBarShown: boolean = false 侧栏是否显示
+ * @property canShowSidebar: boolean = true 是否启动显示侧栏的动作（若为false，依然可以用sideBarShown来控制侧栏的显示）
  */
 class SplitViewController extends base_controller_1.BaseController {
     constructor({ props, layout, events }) {
@@ -141,6 +141,8 @@ class SplitViewController extends base_controller_1.BaseController {
         });
         this._sideBarShown = false;
         this._canShowSidebar = true;
+        this._primaryController = props.items[0].controller;
+        this._secondaryController = props.items[1].controller;
         this.cviews = {};
         this.cviews.secondaryView = new SecondaryView({
             props: {
@@ -250,6 +252,14 @@ class SplitViewController extends base_controller_1.BaseController {
             this._hideSideBar();
         }
         this._sideBarShown = bool;
+        if (bool) {
+            this._primaryController.disappear();
+            this._secondaryController.appear();
+        }
+        else {
+            this._primaryController.appear();
+            this._secondaryController.disappear();
+        }
     }
     get canShowSidebar() {
         return this._canShowSidebar;

@@ -31,6 +31,10 @@ class TabBarController extends base_controller_1.BaseController {
                     var _a, _b;
                     this._props.items[this.index].controller.appear();
                     (_b = (_a = this._events).didAppear) === null || _b === void 0 ? void 0 : _b.call(_a, this);
+                }, didDisappear: () => {
+                    var _a, _b;
+                    this._props.items[this.index].controller.disappear();
+                    (_b = (_a = this._events).didDisappear) === null || _b === void 0 ? void 0 : _b.call(_a, this);
                 } })
         });
         this._props = {

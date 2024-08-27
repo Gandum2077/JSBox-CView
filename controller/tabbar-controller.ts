@@ -58,6 +58,10 @@ export class TabBarController extends BaseController {
         didAppear: () => {
           this._props.items[this.index].controller.appear();
           this._events.didAppear?.(this);
+        },
+        didDisappear: () => {
+          this._props.items[this.index].controller.disappear();
+          this._events.didDisappear?.(this);
         }
       }
     });

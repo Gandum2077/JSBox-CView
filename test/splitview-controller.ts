@@ -1,4 +1,4 @@
-import { TabBarController } from "../controller/tabbar-controller";
+import { SplitViewController } from "../controller/splitview-controller";
 import { BaseController } from "../controller/base-controller";
 
 const items = [{
@@ -13,7 +13,7 @@ const items = [{
       }
     }
   }),
-  title: "Page 1"
+  bgcolor: $color("red")
 }, {
   controller: new BaseController({ 
     props: { bgcolor: $color("yellow") },
@@ -26,21 +26,16 @@ const items = [{
       }
     }
   }),
-  title: "Page 2"
+  bgcolor: $color("green")
 }]
 
-const pageViewerController = new TabBarController({
+const pageViewerController = new SplitViewController({
   props: {
     items
   },
   events: {
-    changed: (sender, index) => {
-      console.log(`Index changed to ${index}`);
-    },
-    doubleTapped: (sender, index) => {
-      console.log(`Double tapped on index ${index}`);
-    }
+
   }
 });
 
-pageViewerController.uirender({});
+pageViewerController.uirender();
