@@ -33,7 +33,8 @@ export class PresentedPageController extends BaseController {
   } = {}) {
     super({
       props: {
-        id: props?.id
+        id: props?.id,
+        bgcolor: props?.bgcolor
       }, layout, events
     });
     this._sheet = new Sheet<ControllerRootView, UIView, UiTypes.ViewOptions>({

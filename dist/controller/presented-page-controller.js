@@ -25,7 +25,8 @@ class PresentedPageController extends base_controller_1.BaseController {
         var _a, _b;
         super({
             props: {
-                id: props === null || props === void 0 ? void 0 : props.id
+                id: props === null || props === void 0 ? void 0 : props.id,
+                bgcolor: props === null || props === void 0 ? void 0 : props.bgcolor
             }, layout, events
         });
         this._sheet = new sheet_1.Sheet({
