@@ -16,7 +16,7 @@ export function listDialog({ items, multiSelectEnabled, value, values = [], titl
   value?: number;
   values?: number[];
   title: string;
-}) {
+}): Promise<number | number[]> {
   if (value) values = [value]
   const listView = new List({
     props: {

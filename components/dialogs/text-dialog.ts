@@ -13,7 +13,7 @@ export function textDialog({ title, text = "", placeholder = "", editable = true
   text?: string;
   placeholder?: string;
   editable?: boolean;
-}) {
+}): Promise<string> {
   const textView = new Text({
     props: {
       text,
