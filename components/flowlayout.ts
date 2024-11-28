@@ -29,10 +29,10 @@ import { Base } from "./base";
  * - set items(items: FlowlayoutItem[])  设置子视图
  * - get items(): FlowlayoutItem[]  获取子视图
  */
-export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
+export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
   private _width: number; // 缓存宽度，用于判断是否需要重新布局
   private _props: {
-    items: FlowlayoutItem[];
+    items: T[];
     spacing: number;
     itemHeight: number;
     fixedRows?: number;
@@ -40,16 +40,16 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
     menu?: UiTypes.ContextMenuOptions;
     bgcolor?: UIColor;
   }
-  private _wrappers: WrapperView[];
+  private _wrappers: WrapperView<T>[];
   private _events?: {
-    didSelect?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
-    didLongPress?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
+    didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
+    didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
   }
   _defineView: () => UiTypes.ViewOptions;
 
   constructor({ props, layout, events }: {
     props: {
-      items: FlowlayoutItem[];
+      items: T[];
       spacing: number;
       itemHeight: number;
       fixedRows?: number;
@@ -59,8 +59,8 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
     };
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events?: {
-      didSelect?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
-      didLongPress?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
+      didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
+      didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
     }
   }) {
     super();
@@ -95,15 +95,15 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
     });
   }
 
-  cell(index: number): FlowlayoutItem {
+  cell(index: number): T {
     return this._props.items[index];
   }
 
-  get items(): FlowlayoutItem[] {
+  get items(): T[] {
     return this._props.items;
   }
 
-  set items(items: FlowlayoutItem[]) {
+  set items(items: T[]) {
     this._props.items = items;
     this._wrappers = items.map((item, index) => new WrapperView({
       item,
@@ -176,9 +176,9 @@ interface FlowlayoutItem extends Base<any, any> {
   itemWidth: () => number;
 }
 
-class WrapperView extends Base<UIView, UiTypes.ViewOptions> {
+class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
-  item: FlowlayoutItem;
+  item: T;
   constructor({
     item,
     menu,
@@ -187,11 +187,11 @@ class WrapperView extends Base<UIView, UiTypes.ViewOptions> {
     flowlayout,
     index
   }: {
-    item: FlowlayoutItem;
+    item: T;
     menu?: UiTypes.ContextMenuOptions;
-    didSelect?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
-    didLongPress?: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void;
-    flowlayout: Flowlayout;
+    didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
+    didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
+    flowlayout: Flowlayout<T>;
     index: number;
   }) {
     super();
