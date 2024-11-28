@@ -17,6 +17,7 @@ import { Base } from "./base";
  * - maxRows?: number
  * - fixedHeight?: boolean
  * - menu?: UiTypes.ContextMenuOptions
+ * - bgcolor?: UIColor
  * 
  * ## 事件
  * - didSelect: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
@@ -37,6 +38,7 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
     fixedRows?: number;
     fixedHeight?: boolean;
     menu?: UiTypes.ContextMenuOptions;
+    bgcolor?: UIColor;
   }
   private _wrappers: WrapperView[];
   private _events?: {
@@ -53,6 +55,7 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
       fixedRows?: number;
       fixedHeight?: boolean;
       menu?: UiTypes.ContextMenuOptions;
+      bgcolor?: UIColor;
     };
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events?: {
@@ -75,7 +78,8 @@ export class Flowlayout extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => ({
       type: "view",
       props: {
-        id: this.id
+        id: this.id,
+        bgcolor: props.bgcolor,
       },
       layout,
       events: {

@@ -19,6 +19,7 @@ const base_1 = require("./base");
  * - maxRows?: number
  * - fixedHeight?: boolean
  * - menu?: UiTypes.ContextMenuOptions
+ * - bgcolor?: UIColor
  *
  * ## 事件
  * - didSelect: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
@@ -47,7 +48,8 @@ class Flowlayout extends base_1.Base {
         this._defineView = () => ({
             type: "view",
             props: {
-                id: this.id
+                id: this.id,
+                bgcolor: props.bgcolor,
             },
             layout,
             events: {
