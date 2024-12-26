@@ -17,10 +17,10 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
     layout,
     events = {}
   }: {
-    props: {
-      tintColor: UIColor;
-      enabled: boolean;
-      hidden: boolean;
+    props?: {
+      tintColor?: UIColor;
+      enabled?: boolean;
+      hidden?: boolean;
     };
     layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
     events?: UiTypes.BaseViewEvents<UIButtonView>;
@@ -32,8 +32,8 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
         props: {
           id: this.id,
           bgcolor: $color("clear"),
-          enabled: props.enabled ?? true,
-          hidden: props.hidden ?? false,
+          enabled: props?.enabled ?? true,
+          hidden: props?.hidden ?? false,
         },
         layout,
         events,
@@ -43,7 +43,7 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
             props: {
               id: this.id + "_image",
               symbol: "arrow.clockwise",
-              tintColor: props.tintColor ?? $color("primaryText"),
+              tintColor: props?.tintColor ?? $color("primaryText"),
               contentMode: 1,
               hidden: this._loading,
             },
