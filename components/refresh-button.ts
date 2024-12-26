@@ -26,6 +26,7 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
     events?: UiTypes.BaseViewEvents<UIButtonView>;
   }) {
     super();
+    this._layout = layout;
     this._defineView = () => {
       return {
         type: "button",
@@ -35,7 +36,7 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
           enabled: props?.enabled ?? true,
           hidden: props?.hidden ?? false,
         },
-        layout,
+        layout: this._layout,
         events,
         views: [
           {

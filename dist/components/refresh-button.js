@@ -15,6 +15,7 @@ class RefreshButton extends base_1.Base {
     constructor({ props, layout, events = {} }) {
         super();
         this._loading = false;
+        this._layout = layout;
         this._defineView = () => {
             var _a, _b, _c;
             return {
@@ -25,7 +26,7 @@ class RefreshButton extends base_1.Base {
                     enabled: (_a = props === null || props === void 0 ? void 0 : props.enabled) !== null && _a !== void 0 ? _a : true,
                     hidden: (_b = props === null || props === void 0 ? void 0 : props.hidden) !== null && _b !== void 0 ? _b : false,
                 },
-                layout,
+                layout: this._layout,
                 events,
                 views: [
                     {
