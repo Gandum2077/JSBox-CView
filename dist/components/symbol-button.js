@@ -52,8 +52,7 @@ class SymbolButton extends base_1.Base {
                         },
                         layout: (make, view) => {
                             make.edges.insets(this._props.insets);
-                            make.centerX.equalTo(view.super);
-                            make.width.equalTo(view.height);
+                            make.center.equalTo(view.super);
                         }
                     }
                 ],

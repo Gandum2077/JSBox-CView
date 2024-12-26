@@ -26,6 +26,7 @@ __exportStar(require("./components/image-pager"), exports);
 __exportStar(require("./components/page-control"), exports);
 __exportStar(require("./components/pageviewer-titlebar"), exports);
 __exportStar(require("./components/pageviewer"), exports);
+__exportStar(require("./components/refresh-button"), exports);
 __exportStar(require("./components/rotating-view"), exports);
 __exportStar(require("./components/searchbar"), exports);
 __exportStar(require("./components/sheet"), exports);

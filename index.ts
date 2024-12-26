@@ -10,6 +10,7 @@ export * from './components/image-pager';
 export * from './components/page-control';
 export * from './components/pageviewer-titlebar';
 export * from './components/pageviewer';
+export * from './components/refresh-button';
 export * from './components/rotating-view';
 export * from './components/searchbar';
 export * from './components/sheet';
