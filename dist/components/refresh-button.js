@@ -22,8 +22,8 @@ class RefreshButton extends base_1.Base {
                 props: {
                     id: this.id,
                     bgcolor: $color("clear"),
-                    enabled: (_a = props.enabled) !== null && _a !== void 0 ? _a : true,
-                    hidden: (_b = props.hidden) !== null && _b !== void 0 ? _b : false,
+                    enabled: (_a = props === null || props === void 0 ? void 0 : props.enabled) !== null && _a !== void 0 ? _a : true,
+                    hidden: (_b = props === null || props === void 0 ? void 0 : props.hidden) !== null && _b !== void 0 ? _b : false,
                 },
                 layout,
                 events,
@@ -33,7 +33,7 @@ class RefreshButton extends base_1.Base {
                         props: {
                             id: this.id + "_image",
                             symbol: "arrow.clockwise",
-                            tintColor: (_c = props.tintColor) !== null && _c !== void 0 ? _c : $color("primaryText"),
+                            tintColor: (_c = props === null || props === void 0 ? void 0 : props.tintColor) !== null && _c !== void 0 ? _c : $color("primaryText"),
                             contentMode: 1,
                             hidden: this._loading,
                         },
