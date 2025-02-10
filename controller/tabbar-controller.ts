@@ -36,7 +36,6 @@ interface TabBarControllerEvents extends BaseControllerEvents {
  */
 export class TabBarController extends BaseController {
   _props: TabBarControllerProps;
-  _events: TabBarControllerEvents;
   cviews: {
     tabbar: TabBar;
     pageContentView: ContentView;
@@ -51,17 +50,17 @@ export class TabBarController extends BaseController {
       props: {
         id: props.id,
         bgcolor: props.bgcolor
-      }, 
+      },
       layout,
       events: {
         ...events,
         didAppear: () => {
           this._props.items[this.index].controller.appear();
-          this._events.didAppear?.(this);
+          events.didAppear?.(this);
         },
         didDisappear: () => {
           this._props.items[this.index].controller.disappear();
-          this._events.didDisappear?.(this);
+          events.didDisappear?.(this);
         }
       }
     });
@@ -69,7 +68,6 @@ export class TabBarController extends BaseController {
       items: props.items,
       index: props.index || 0
     };
-    this._events = events;
     this.cviews = {} as {
       tabbar: TabBar;
       pageContentView: ContentView;
@@ -82,12 +80,12 @@ export class TabBarController extends BaseController {
       events: {
         changed: (cview, index) => {
           this.index = index;
-          this._props.items.find(item=>item.controller.status === 2)?.controller.disappear();
+          this._props.items.find(item => item.controller.status === 2)?.controller.disappear();
           this._props.items[index].controller.appear();
-          this._events.changed?.(this, index);
+          events.changed?.(this, index);
         },
         doubleTapped: (cview, index) => {
-          this._events.doubleTapped?.(this, index);
+          events.doubleTapped?.(this, index);
         }
       }
     });
