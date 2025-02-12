@@ -137,7 +137,23 @@ class SplitViewController extends base_controller_1.BaseController {
             props: {
                 id: props.id,
                 bgcolor: props.bgcolor
-            }, layout, events
+            },
+            layout,
+            events: Object.assign(Object.assign({}, events), { didAppear: sender => {
+                    var _a;
+                    if (this._sideBarShown) {
+                        this._secondaryController.appear();
+                    }
+                    else {
+                        this._primaryController.appear();
+                    }
+                    (_a = events === null || events === void 0 ? void 0 : events.didAppear) === null || _a === void 0 ? void 0 : _a.call(events, this);
+                }, didDisappear: () => {
+                    var _a;
+                    this._primaryController.disappear();
+                    this._secondaryController.disappear();
+                    (_a = events === null || events === void 0 ? void 0 : events.didDisappear) === null || _a === void 0 ? void 0 : _a.call(events, this);
+                } })
         });
         this._sideBarShown = false;
         this._canShowSidebar = true;
