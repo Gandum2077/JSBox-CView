@@ -1,4 +1,4 @@
-import { Base } from './base';
+import { Base } from "./base";
 import { ContentView, Label, Stack } from "./single-views";
 
 function weightedAverageColors(c0: UIColor, c1: UIColor, w: number) {
@@ -19,7 +19,7 @@ interface PageViewerTitleBarEvents extends UiTypes.BaseViewEvents {
   changed?: (cview: PageViewerTitleBar, index: number) => void;
 }
 
-/** 
+/**
  * [PageViewer](./pageviewer.ts)配套的标题栏
  * @property index: number
  */
@@ -35,7 +35,7 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
 
   /**
-   * 
+   *
    * @param props 属性
    * - items: string[]
    * - index: number
@@ -45,7 +45,11 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
    * @param events 事件
    * - changed: (cview, index) => void 在点击变更 index 的时候回调
    */
-  constructor({ props, layout, events = {} }: {
+  constructor({
+    props,
+    layout,
+    events = {},
+  }: {
     props: PageViewerTitleBarProps;
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events: PageViewerTitleBarEvents;
@@ -55,11 +59,12 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
       index: 0,
       selectedItemColor: $color("systemLink"),
       defaultItemColor: $color("secondaryText"),
-      ...props
+      ...props,
     };
     const { changed, ...restEvents } = events;
     this._floatedIndex = this._props.index;
-    this._lineStartLocationPercentage = this._floatedIndex / this._props.items.length;
+    this._lineStartLocationPercentage =
+      this._floatedIndex / this._props.items.length;
     this.labels = this._props.items.map((n, i) => {
       return new Label({
         props: {
@@ -70,14 +75,14 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
               ? this._props.selectedItemColor
               : this._props.defaultItemColor,
           align: $align.center,
-          userInteractionEnabled: true
+          userInteractionEnabled: true,
         },
         events: {
-          tapped: sender => {
+          tapped: (sender) => {
             this.index = i;
             if (changed) changed(this, i);
-          }
-        }
+          },
+        },
       });
     });
     this.stack = new Stack({
@@ -85,46 +90,48 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
         axis: $stackViewAxis.horizontal,
         distribution: $stackViewDistribution.fillEqually,
         stack: {
-          views: this.labels.map(n => n.definition)
-        }
+          views: this.labels.map((n) => n.definition),
+        },
       },
-      layout: $layout.fill
+      layout: $layout.fill,
     });
     this.placeholderView = new ContentView({
       props: {
-        bgcolor: $color("clear")
+        bgcolor: $color("clear"),
       },
       layout: (make, view) => {
         make.left.bottom.inset(0);
-        make.width.equalTo(view.super).multipliedBy(this._floatedIndex / this._props.items.length);
-      }
+        make.width
+          .equalTo(view.super)
+          .multipliedBy(this._floatedIndex / this._props.items.length);
+      },
     });
     this.line = new ContentView({
       props: {
-        bgcolor: this._props.selectedItemColor
+        bgcolor: this._props.selectedItemColor,
       },
       layout: (make, view) => {
         make.height.equalTo(4);
         make.width.equalTo(view.super).dividedBy(this._props.items.length);
         make.bottom.inset(0);
         make.left.equalTo(view.prev.right);
-      }
+      },
     });
     this._defineView = () => {
       return {
         type: "view",
         props: {
-          id: this.id
+          id: this.id,
         },
         layout,
         events: restEvents,
         views: [
           this.stack.definition,
           this.placeholderView.definition,
-          this.line.definition
-        ]
+          this.line.definition,
+        ],
       };
-    }
+    };
   }
 
   get lineStartLocationPercentage() {

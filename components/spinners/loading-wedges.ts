@@ -4,7 +4,13 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   _tintColor: UIColor;
   startAngle: number;
   _defineView: () => UiTypes.CanvasOptions;
-  constructor({ tintColor, startAngle }: { tintColor: UIColor; startAngle: number }) {
+  constructor({
+    tintColor,
+    startAngle,
+  }: {
+    tintColor: UIColor;
+    startAngle: number;
+  }) {
     super();
     this._tintColor = tintColor;
     this.startAngle = startAngle;
@@ -13,7 +19,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
         type: "canvas",
         props: {
           id: this.id,
-          alpha: 0.8
+          alpha: 0.8,
         },
         layout: $layout.fill,
         events: {
@@ -31,10 +37,10 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
             ctx.addLineToPoint(radius / 2, radius / 2);
             ctx.closePath();
             ctx.fillPath();
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 
   redraw() {
@@ -49,7 +55,7 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
 
   /**
-   * @param colors 饼图颜色（必须是4个颜色），默认为 [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")]
+   * @param colors 饼图颜色（必须是4个颜色）
    * @param layout 布局
    */
   constructor({
@@ -57,9 +63,9 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
       $color("#f5542e"),
       $color("#f2c327"),
       $color("#008b6e"),
-      $color("#00aede")
+      $color("#00aede"),
     ],
-    layout
+    layout,
   }: {
     colors?: UIColor[];
     layout: (make: MASConstraintMaker, view: UIView) => void;
@@ -69,34 +75,34 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       const canvas1 = new CanvasComponet({
         tintColor: colors[0],
-        startAngle: -Math.PI / 2
+        startAngle: -Math.PI / 2,
       });
       const canvas2 = new CanvasComponet({
         tintColor: colors[1],
-        startAngle: 0
+        startAngle: 0,
       });
       const canvas3 = new CanvasComponet({
         tintColor: colors[2],
-        startAngle: Math.PI / 2
+        startAngle: Math.PI / 2,
       });
       const canvas4 = new CanvasComponet({
         tintColor: colors[3],
-        startAngle: Math.PI
+        startAngle: Math.PI,
       });
       return {
         type: "view",
         props: {
-          id: this.id
+          id: this.id,
         },
         views: [
           canvas1.definition,
           canvas2.definition,
           canvas3.definition,
-          canvas4.definition
+          canvas4.definition,
         ],
         layout,
         events: {
-          ready: async sender => {
+          ready: async (sender) => {
             while (sender.super) {
               canvas1.startAngle += Math.PI * interval * 4;
               canvas1.redraw();
@@ -108,9 +114,9 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
               canvas4.redraw();
               await $wait(interval);
             }
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 }

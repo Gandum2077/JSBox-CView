@@ -36,12 +36,13 @@ class PageViewerTitleBar extends base_1.Base {
      * @param events 事件
      * - changed: (cview, index) => void 在点击变更 index 的时候回调
      */
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ index: 0, selectedItemColor: $color("systemLink"), defaultItemColor: $color("secondaryText") }, props);
         const { changed } = events, restEvents = __rest(events, ["changed"]);
         this._floatedIndex = this._props.index;
-        this._lineStartLocationPercentage = this._floatedIndex / this._props.items.length;
+        this._lineStartLocationPercentage =
+            this._floatedIndex / this._props.items.length;
         this.labels = this._props.items.map((n, i) => {
             return new single_views_1.Label({
                 props: {
@@ -51,15 +52,15 @@ class PageViewerTitleBar extends base_1.Base {
                         ? this._props.selectedItemColor
                         : this._props.defaultItemColor,
                     align: $align.center,
-                    userInteractionEnabled: true
+                    userInteractionEnabled: true,
                 },
                 events: {
-                    tapped: sender => {
+                    tapped: (sender) => {
                         this.index = i;
                         if (changed)
                             changed(this, i);
-                    }
-                }
+                    },
+                },
             });
         });
         this.stack = new single_views_1.Stack({
@@ -67,44 +68,46 @@ class PageViewerTitleBar extends base_1.Base {
                 axis: $stackViewAxis.horizontal,
                 distribution: $stackViewDistribution.fillEqually,
                 stack: {
-                    views: this.labels.map(n => n.definition)
-                }
+                    views: this.labels.map((n) => n.definition),
+                },
             },
-            layout: $layout.fill
+            layout: $layout.fill,
         });
         this.placeholderView = new single_views_1.ContentView({
             props: {
-                bgcolor: $color("clear")
+                bgcolor: $color("clear"),
             },
             layout: (make, view) => {
                 make.left.bottom.inset(0);
-                make.width.equalTo(view.super).multipliedBy(this._floatedIndex / this._props.items.length);
-            }
+                make.width
+                    .equalTo(view.super)
+                    .multipliedBy(this._floatedIndex / this._props.items.length);
+            },
         });
         this.line = new single_views_1.ContentView({
             props: {
-                bgcolor: this._props.selectedItemColor
+                bgcolor: this._props.selectedItemColor,
             },
             layout: (make, view) => {
                 make.height.equalTo(4);
                 make.width.equalTo(view.super).dividedBy(this._props.items.length);
                 make.bottom.inset(0);
                 make.left.equalTo(view.prev.right);
-            }
+            },
         });
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 layout,
                 events: restEvents,
                 views: [
                     this.stack.definition,
                     this.placeholderView.definition,
-                    this.line.definition
-                ]
+                    this.line.definition,
+                ],
             };
         };
     }

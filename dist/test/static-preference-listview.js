@@ -9,19 +9,19 @@ const sections = [
                 type: "string",
                 title: "string",
                 key: "string",
-                value: "测试一号测试二号测试三号测试四号测试五号测试六号"
+                value: "测试一号测试二号测试三号测试四号测试五号测试六号",
             },
             {
                 type: "number",
                 title: "number",
                 key: "number",
-                value: 1111.1
+                value: 1111.1,
             },
             {
                 type: "integer",
                 title: "integer",
                 key: "integer",
-                value: 1111
+                value: 1111,
             },
             {
                 type: "stepper",
@@ -29,9 +29,9 @@ const sections = [
                 key: "stepper",
                 value: 2,
                 min: 2,
-                max: 5
-            }
-        ]
+                max: 5,
+            },
+        ],
     },
     {
         title: "Section 2",
@@ -40,7 +40,7 @@ const sections = [
                 type: "boolean",
                 title: "boolean",
                 key: "boolean",
-                value: true
+                value: true,
             },
             {
                 type: "slider",
@@ -49,30 +49,30 @@ const sections = [
                 value: 1,
                 decimal: 0,
                 min: 0,
-                max: 100
+                max: 100,
             },
             {
                 type: "list",
                 title: "list",
                 key: "list",
                 items: ["测试一号", "测试bbb"],
-                value: 0
+                value: 0,
             },
             {
                 type: "tab",
                 title: "tab",
                 key: "tab",
                 items: ["测试aaa", "测试bbb"],
-                value: 0
+                value: 0,
             },
             {
                 type: "date",
                 title: "date",
                 key: "date",
                 //value: new Date()
-                mode: 1
-            }
-        ]
+                mode: 1,
+            },
+        ],
     },
     {
         title: "Section 3",
@@ -80,19 +80,19 @@ const sections = [
             {
                 type: "info",
                 title: "info",
-                value: "this is info"
+                value: "this is info",
             },
             {
                 type: "link",
                 title: "link",
-                value: "https://apple.com"
+                value: "https://apple.com",
             },
             {
                 type: "action",
                 title: "action",
-                value: () => console.info(0)
-            }
-        ]
+                value: () => console.info(0),
+            },
+        ],
     },
     {
         title: "Section 4",
@@ -101,25 +101,25 @@ const sections = [
                 type: "interactive-info",
                 title: "interactive-info",
                 key: "interactive-info",
-                value: "测试一号测试二号测试三号测试四号测试五号测试六号"
+                value: "测试一号测试二号测试三号测试四号测试五号测试六号",
             },
             {
                 type: "interactive-info",
                 title: "interactive-info2",
                 key: "interactive-info2",
                 value: "测试一号测试二号测试三号测试四号测试五号测试六号",
-                copyable: true
-            }
-        ]
-    }
+                copyable: true,
+            },
+        ],
+    },
 ];
 const v = new static_preference_listview_1.PreferenceListView({
     props: { data: [] },
     sections: sections,
     layout: $layout.fill,
     events: {
-        changed: (values) => console.info(values)
-    }
+        changed: (values) => console.info(values),
+    },
 });
 $ui.render({
     props: {
@@ -127,10 +127,9 @@ $ui.render({
         navButtons: [
             {
                 symbol: "plus",
-                handler: () => {
-                }
-            }
-        ]
+                handler: () => { },
+            },
+        ],
     },
-    views: [v.definition]
+    views: [v.definition],
 });

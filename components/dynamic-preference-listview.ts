@@ -17,9 +17,8 @@ import {
   PrefsRowAction,
   selectableTypes,
   excludedTypes,
-  dateToString
+  dateToString,
 } from "./static-preference-listview";
-
 
 interface CunstomProps extends UiTypes.ListProps {
   stringLeftInset?: number;
@@ -37,54 +36,62 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
 
 /**
  * # cview PreferenceListView_dynamic
- * 
+ *
  * 便捷的设置列表实现. 样式以及功能均以 PreferenceListView_static 为准.
- * 
+ *
  * 优势在于:
- * 
+ *
  * - 可以实现 sections 重新写入.
- * 
+ *
  * 劣势在于:
- * 
+ *
  * - 由于每个 cell 不能单独布局, 因此标题和内容的长度无法动态调整, 在两者都比较短的情况下没有问题, 长了布局可能会重叠.
  * - 不能真正实现 selectable 为 false, 分割线仍然会闪动
- * 
+ *
  * 为了缓解上面的问题, 让修改布局无需调整源代码, 增加下列 props:
- * 
- * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date 但是由于后四者内容可控, 可视为只作用于 string
+ *
+ * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date
+ *   但是由于后四者内容可控, 可视为只作用于 string
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
  * - tabWidth?: number = 200 作用于 tab
  *   注意以上的修改是应用于 template, 而不是应用于单个 cell 的
- * 
+ *
  * 独特方法:
- * 
+ *
  * - cview.sections = sections 可以写入新的 sections
  */
-export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
+export class DynamicPreferenceListView extends Base<
+  UIListView,
+  UiTypes.ListOptions
+> {
   _defineView: () => UiTypes.ListOptions;
   private _sections: PreferenceSection[];
   private _props: RequiredCunstomProps;
-  constructor({ sections, props, layout, events = {} }: {
+  constructor({
+    sections,
+    props,
+    layout,
+    events = {},
+  }: {
     sections: PreferenceSection[];
     props: CunstomProps;
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
     events?: {
       changed?: (values: any) => void;
     };
-
   }) {
     super();
-    this._sections = sections.map(n => ({
+    this._sections = sections.map((n) => ({
       title: n.title,
-      rows: n.rows.map(r => ({ ...r }))
+      rows: n.rows.map((r) => ({ ...r })),
     }));
     this._props = {
       stringLeftInset: 120,
       infoAndLinkLeftInset: 120,
       sliderWidth: 200,
       tabWidth: 200,
-      ...props
+      ...props,
     };
     this._layout = layout;
     this._defineView = () => {
@@ -100,20 +107,20 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                 type: "view",
                 props: {
                   id: "bgview",
-                  bgcolor: $color("secondarySurface")
+                  bgcolor: $color("secondarySurface"),
                 },
-                layout: $layout.fill
+                layout: $layout.fill,
               },
               {
                 type: "label",
                 props: {
                   id: "title",
-                  font: $font(17)
+                  font: $font(17),
                 },
                 layout: (make, view) => {
                   make.top.bottom.inset(0);
                   make.left.right.inset(15);
-                }
+                },
               },
               {
                 type: "view",
@@ -126,7 +133,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                   {
                     type: "view",
                     props: {
-                      id: "label_and_chevron"
+                      id: "label_and_chevron",
                     },
                     layout: $layout.fill,
                     views: [
@@ -135,73 +142,74 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                         props: {
                           symbol: "chevron.right",
                           tintColor: $color("lightGray", "darkGray"),
-                          contentMode: 1
+                          contentMode: 1,
                         },
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
                           make.size.equalTo($size(17, 17));
                           make.right.inset(0);
-                        }
+                        },
                       },
                       {
                         type: "label",
                         props: {
                           id: "label_before_chevron",
                           align: $align.right,
-                          font: $font(17)
+                          font: $font(17),
                         },
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
                           make.left.inset(this._props.stringLeftInset - 15);
                           make.right.equalTo(view.prev.left).inset(5);
-                        }
-                      }
-                    ]
+                        },
+                      },
+                    ],
                   },
                   {
                     type: "view",
                     props: {
-                      id: "number_and_stepper"
+                      id: "number_and_stepper",
                     },
                     layout: $layout.fill,
                     views: [
                       {
                         type: "stepper",
                         props: {
-                          id: "stepper"
+                          id: "stepper",
                         },
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
                           make.right.inset(0);
                         },
                         events: {
-                          changed: sender => {
+                          changed: (sender) => {
                             const { section, row } = sender.info;
-                            this._sections[section].rows[row].value = sender.value;
+                            this._sections[section].rows[row].value =
+                              sender.value;
                             const label = sender.next as UILabelView;
                             label.text = sender.value.toString();
                             if (events.changed) events.changed(this.values);
-                          }
-                        }
+                          },
+                        },
                       },
                       {
                         type: "label",
                         props: {
                           id: "label_stepper",
-                          align: $align.right
+                          align: $align.right,
                         },
                         layout: (make, view) => {
                           make.top.bottom.inset(0);
                           make.right.equalTo(view.prev.left).inset(10);
                           make.width.equalTo(100);
-                        }
-                      }
-                    ]
+                        },
+                      },
+                    ],
                   },
                   {
                     type: "view",
                     props: {
-                      id: "slider_and_number"
+                      id: "slider_and_number",
                     },
                     layout: $layout.fill,
                     views: [
@@ -210,7 +218,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                         props: {
                           id: "slider",
                           min: 0,
-                          max: 1
+                          max: 1,
                         },
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
@@ -218,9 +226,11 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                           make.width.equalTo(this._props.sliderWidth - 40);
                         },
                         events: {
-                          changed: sender => {
+                          changed: (sender) => {
                             const { section, row } = sender.info;
-                            const options = this._sections[section].rows[row] as PrefsRowSlider;
+                            const options = this._sections[section].rows[
+                              row
+                            ] as PrefsRowSlider;
                             const label = sender.next as UILabelView;
                             label.text = this._handleSliderValue(
                               sender.value * (options.max ?? 1),
@@ -229,56 +239,57 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                               options.max
                             ).toString();
                           },
-                          touchesEnded: sender => {
+                          touchesEnded: (sender) => {
                             const { section, row } = sender.info;
-                            const options = this._sections[section].rows[row] as PrefsRowSlider;
-                            this._sections[section].rows[
+                            const options = this._sections[section].rows[
                               row
-                            ].value = this._handleSliderValue(
-                              sender.value * (options.max ?? 1),
-                              options.decimal,
-                              options.min,
-                              options.max
-                            );
+                            ] as PrefsRowSlider;
+                            this._sections[section].rows[row].value =
+                              this._handleSliderValue(
+                                sender.value * (options.max ?? 1),
+                                options.decimal,
+                                options.min,
+                                options.max
+                              );
                             if (events.changed) events.changed(this.values);
-                          }
-                        }
+                          },
+                        },
                       },
                       {
                         type: "label",
                         props: {
                           id: "label_slider",
-                          align: $align.center
+                          align: $align.center,
                         },
                         layout: (make, view) => {
                           make.top.bottom.inset(0);
                           make.right.inset(0);
                           make.width.equalTo(44);
-                        }
-                      }
-                    ]
+                        },
+                      },
+                    ],
                   },
                   {
                     type: "switch",
                     props: {
-                      id: "switch"
+                      id: "switch",
                     },
                     layout: (make, view) => {
                       make.centerY.equalTo(view.super);
                       make.right.inset(0);
                     },
                     events: {
-                      changed: sender => {
+                      changed: (sender) => {
                         const { section, row } = sender.info;
                         this._sections[section].rows[row].value = sender.on;
                         if (events.changed) events.changed(this.values);
-                      }
-                    }
+                      },
+                    },
                   },
                   {
                     type: "tab",
                     props: {
-                      id: "tab"
+                      id: "tab",
                     },
                     layout: (make, view) => {
                       make.centerY.equalTo(view.super);
@@ -287,30 +298,30 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                       make.right.inset(0);
                     },
                     events: {
-                      changed: sender => {
+                      changed: (sender) => {
                         const { section, row } = sender.info;
                         this._sections[section].rows[row].value = sender.index;
                         if (events.changed) events.changed(this.values);
-                      }
-                    }
+                      },
+                    },
                   },
                   {
                     type: "label",
                     props: {
                       id: "label_info_link",
-                      align: $align.right
+                      align: $align.right,
                     },
                     layout: (make, view) => {
                       make.top.bottom.inset(0);
                       make.left.inset(this._props.infoAndLinkLeftInset);
                       make.right.inset(0);
-                    }
-                  }
-                ]
-              }
-            ]
+                    },
+                  },
+                ],
+              },
+            ],
           },
-          data: this._map(this._sections)
+          data: this._map(this._sections),
         },
         layout: this._layout,
         events: {
@@ -323,11 +334,11 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                   text: row.value,
                   type: $kbType.default,
                   placeholder: row.placeholder,
-                  handler: text => {
+                  handler: (text) => {
                     row.value = text;
                     sender.data = this._map(this._sections);
                     if (events.changed) events.changed(this.values);
-                  }
+                  },
                 });
                 break;
               }
@@ -336,7 +347,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                   text: row.value?.toString(),
                   type: $kbType.decimal,
                   placeholder: row.placeholder,
-                  handler: text => {
+                  handler: (text) => {
                     let num = this._handleText(text, row.type);
                     if (num === undefined) return;
                     if (row.min !== undefined && num < row.min) num = row.min;
@@ -344,7 +355,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     row.value = num;
                     sender.data = this._map(this._sections);
                     if (events.changed) events.changed(this.values);
-                  }
+                  },
                 });
                 break;
               }
@@ -353,7 +364,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                   text: row.value?.toString(),
                   type: $kbType.number,
                   placeholder: row.placeholder,
-                  handler: text => {
+                  handler: (text) => {
                     let num = this._handleText(text, row.type);
                     if (num === undefined) return;
                     if (row.min !== undefined && num < row.min) num = row.min;
@@ -361,7 +372,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     row.value = num;
                     sender.data = this._map(this._sections);
                     if (events.changed) events.changed(this.values);
-                  }
+                  },
                 });
                 break;
               }
@@ -372,12 +383,12 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     row.value = index;
                     sender.data = this._map(this._sections);
                     if (events.changed) events.changed(this.values);
-                  }
+                  },
                 });
                 break;
               }
               case "date": {
-                const props: any = {}
+                const props: any = {};
                 if (row.value) props.date = row.value;
                 if (row.min) props.min = row.min;
                 if (row.max) props.max = row.max;
@@ -389,7 +400,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     row.value = date;
                     sender.data = this._map(this._sections);
                     if (events.changed) events.changed(this.values);
-                  }
+                  },
                 });
                 break;
               }
@@ -400,20 +411,20 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     message: row.value,
                     actions: [
                       {
-                        title: "取消"
+                        title: "取消",
                       },
                       {
                         title: "复制",
                         handler: () => {
                           $clipboard.text = row.value || "";
-                        }
-                      }
-                    ]
-                  })
+                        },
+                      },
+                    ],
+                  });
                 } else {
                   $ui.alert({
                     title: row.title,
-                    message: row.value
+                    message: row.value,
                   });
                 }
                 break;
@@ -429,10 +440,10 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               default:
                 break;
             }
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 
   _handleText(text: string, type: string) {
@@ -457,7 +468,12 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     }
   }
 
-  _handleSliderValue(num?: number, decimal?: number, min?: number, max?: number): number {
+  _handleSliderValue(
+    num?: number,
+    decimal?: number,
+    min?: number,
+    max?: number
+  ): number {
     if (num === undefined) return min || 0;
     if (decimal === undefined) decimal = 1;
     if (isNaN(num)) num = min || 0;
@@ -470,17 +486,19 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
   _map(sections: PreferenceSection[]) {
     function generateDefaultRow(options: PrefsRow): any {
       return {
-        bgview: { hidden: selectableTypes.includes(options.type) }, // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
+        bgview: { hidden: selectableTypes.includes(options.type) },
+        // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
         title: {
           text: options.title,
-          textColor: options.titleColor || $color("primaryText")
+          textColor: options.titleColor || $color("primaryText"),
         }, // 标题, 同时用于action
-        label_and_chevron: { hidden: true }, // 用于string, number, integer, list, date
+        label_and_chevron: { hidden: true },
+        // 用于string, number, integer, list, date
         number_and_stepper: { hidden: true }, // 用于stepper
         slider_and_number: { hidden: true }, // 用于slider
         switch: { hidden: true }, // 用于boolean
         tab: { hidden: true }, // 用于tab
-        label_info_link: { hidden: true } // 用于info, link
+        label_info_link: { hidden: true }, // 用于info, link
       };
     }
     return sections.map((section, sectionIndex) => ({
@@ -492,7 +510,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_and_chevron.hidden = false;
             data.label_before_chevron = {
               textColor: n.textColor || $color("primaryText"),
-              text: n.value === undefined ? "" : n.value
+              text: n.value === undefined ? "" : n.value,
             };
             break;
           }
@@ -500,7 +518,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_and_chevron.hidden = false;
             data.label_before_chevron = {
               textColor: n.textColor || $color("primaryText"),
-              text: n.value === undefined ? "" : n.value
+              text: n.value === undefined ? "" : n.value,
             };
             break;
           }
@@ -508,7 +526,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_and_chevron.hidden = false;
             data.label_before_chevron = {
               textColor: n.textColor || $color("primaryText"),
-              text: n.value === undefined ? "" : n.value
+              text: n.value === undefined ? "" : n.value,
             };
             break;
           }
@@ -516,13 +534,13 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.number_and_stepper.hidden = false;
             data.label_stepper = {
               textColor: $color("primaryText"),
-              text: n.value === undefined ? "" : n.value
+              text: n.value === undefined ? "" : n.value,
             };
             data.stepper = {
               min: n.min,
               max: n.max,
               value: n.value,
-              info: { section: sectionIndex, row: rowIndex, key: n.key }
+              info: { section: sectionIndex, row: rowIndex, key: n.key },
             };
             break;
           }
@@ -532,7 +550,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               on: n.value,
               onColor: n.onColor || $color("#34C85A"),
               thumbColor: n.thumbColor,
-              info: { section: sectionIndex, row: rowIndex, key: n.key }
+              info: { section: sectionIndex, row: rowIndex, key: n.key },
             };
             break;
           }
@@ -546,7 +564,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             );
             data.label_slider = {
               textColor: $color("primaryText"),
-              text: adjustedValue
+              text: adjustedValue,
             };
             data.slider = {
               value: adjustedValue / (n.max ?? 1),
@@ -555,7 +573,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               //max: n.max,
               minColor: n.minColor || $color("systemLink"),
               maxColor: n.maxColor,
-              thumbColor: n.thumbColor
+              thumbColor: n.thumbColor,
             };
             break;
           }
@@ -563,7 +581,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_and_chevron.hidden = false;
             data.label_before_chevron = {
               textColor: $color("secondaryText"),
-              text: n.items[n.value || 0]
+              text: n.items[n.value || 0],
             };
             break;
           }
@@ -572,7 +590,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
               hidden: false,
               items: n.items,
               index: n.value,
-              info: { section: sectionIndex, row: rowIndex, key: n.key }
+              info: { section: sectionIndex, row: rowIndex, key: n.key },
             };
             break;
           }
@@ -581,7 +599,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_before_chevron = {
               hidden: false,
               textColor: $color("secondaryText"),
-              text: dateToString(n.mode || 2, n.value)
+              text: dateToString(n.mode || 2, n.value),
             };
             break;
           }
@@ -589,7 +607,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_info_link = {
               hidden: false,
               textColor: $color("secondaryText"),
-              text: n.value
+              text: n.value,
             };
             break;
           }
@@ -597,14 +615,14 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_info_link = {
               hidden: false,
               textColor: $color("secondaryText"),
-              text: n.value
+              text: n.value,
             };
             break;
           }
           case "link": {
             data.label_info_link = {
               hidden: false,
-              styledText: `[${n.value}]()`
+              styledText: `[${n.value}]()`,
             };
             break;
           }
@@ -618,7 +636,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             break;
         }
         return data;
-      })
+      }),
     }));
   }
 
@@ -627,17 +645,17 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
   }
 
   set sections(sections) {
-    this._sections = sections.map(n => ({
+    this._sections = sections.map((n) => ({
       title: n.title,
-      rows: n.rows.map(r => ({ ...r }))
+      rows: n.rows.map((r) => ({ ...r })),
     }));
     this.view.data = this._map(this._sections);
   }
 
   get values() {
     const values: { [key: string]: any } = {};
-    this._sections.forEach(section => {
-      section.rows.forEach(row => {
+    this._sections.forEach((section) => {
+      section.rows.forEach((row) => {
         if (row.key && !excludedTypes.includes(row.type)) {
           values[row.key] = row.value;
         }
@@ -647,8 +665,8 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
   }
 
   set(key: string, value: any) {
-    this._sections.forEach(section => {
-      section.rows.forEach(row => {
+    this._sections.forEach((section) => {
+      section.rows.forEach((row) => {
         if (row.key === key) row.value = value;
       });
     });

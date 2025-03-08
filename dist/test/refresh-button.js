@@ -14,7 +14,7 @@ const refreshButton = new refresh_button_1.RefreshButton({
     props: {
         tintColor: $color("primaryText"),
         enabled: true,
-        hidden: false
+        hidden: false,
     },
     layout: (make, view) => {
         make.width.equalTo(50);
@@ -27,9 +27,9 @@ const refreshButton = new refresh_button_1.RefreshButton({
             refreshButton.loading = true;
             yield $wait(2);
             refreshButton.loading = false;
-        })
-    }
+        }),
+    },
 });
 $ui.render({
-    views: [refreshButton.definition]
+    views: [refreshButton.definition],
 });

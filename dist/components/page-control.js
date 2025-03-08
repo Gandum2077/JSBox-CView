@@ -35,7 +35,7 @@ class PageControl extends single_views_1.Runtime {
      * - changed: (sender: PageControl, currentPage: number) => void
      *
      */
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         const { numberOfPages = 3, currentPage = 0, pageIndicatorTintColor, currentPageIndicatorTintColor } = props, restProps = __rest(props, ["numberOfPages", "currentPage", "pageIndicatorTintColor", "currentPageIndicatorTintColor"]);
         const { changed } = events, restEvents = __rest(events, ["changed"]);
         super({ props: restProps, layout, events: restEvents });
@@ -63,7 +63,7 @@ class PageControl extends single_views_1.Runtime {
                 this._currentPage = currentPage;
                 if (this._changed)
                     this._changed(this, currentPage);
-            })
+            }),
         });
         return pageControl;
     }

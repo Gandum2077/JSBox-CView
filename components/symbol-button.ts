@@ -8,7 +8,7 @@ interface SymbolButtonProps {
   tintColor: UIColor;
   contentMode: number;
   insets: JBInsets;
-  menu?: UiTypes.ContextMenuOptions
+  menu?: UiTypes.ContextMenuOptions;
   hidden: boolean;
 }
 
@@ -26,12 +26,12 @@ interface SymbolButtonProps {
  *   - tapped
  */
 export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
-  _props: SymbolButtonProps
+  _props: SymbolButtonProps;
   _defineView: () => UiTypes.ButtonOptions;
   constructor({
     props,
     layout,
-    events = {}
+    events = {},
   }: {
     props: Partial<SymbolButtonProps>;
     layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
@@ -44,25 +44,26 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
       insets: $insets(12.5, 12.5, 12.5, 12.5),
       tintColor: $color("primaryText"),
       hidden: false,
-      ...props
+      ...props,
     };
     this._layout = layout;
     this._defineView = () => {
       const props = this._props.menu
         ? {
-          radius: 0,
-          bgcolor: $color("clear"),
-          id: this.id,
-          menu: this._props.menu,
-          enabled: this._props.enabled,
-          hidden: this._props.hidden
-        } : {
-          radius: 0,
-          bgcolor: $color("clear"),
-          id: this.id,
-          enabled: this._props.enabled,
-          hidden: this._props.hidden
-        }
+            radius: 0,
+            bgcolor: $color("clear"),
+            id: this.id,
+            menu: this._props.menu,
+            enabled: this._props.enabled,
+            hidden: this._props.hidden,
+          }
+        : {
+            radius: 0,
+            bgcolor: $color("clear"),
+            id: this.id,
+            enabled: this._props.enabled,
+            hidden: this._props.hidden,
+          };
       return {
         type: "button",
         props,
@@ -75,18 +76,18 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
               image: this._props.image,
               src: this._props.src,
               tintColor: this._props.tintColor,
-              contentMode: this._props.contentMode
+              contentMode: this._props.contentMode,
             },
             layout: (make, view: UIImageView) => {
               make.edges.insets(this._props.insets);
               make.center.equalTo(view.super);
-            }
-          }
+            },
+          },
         ],
         layout: this._layout,
-        events
+        events,
       };
-    }
+    };
   }
 
   set tintColor(tintColor: UIColor) {

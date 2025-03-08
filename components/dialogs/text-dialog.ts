@@ -8,7 +8,12 @@ import { DialogSheet } from "./dialog-sheet";
  * @param placeholder 占位符
  * @param editable 是否可编辑
  */
-export function textDialog({ title, text = "", placeholder = "", editable = true }: {
+export function textDialog({
+  title,
+  text = "",
+  placeholder = "",
+  editable = true,
+}: {
   title: string;
   text?: string;
   placeholder?: string;
@@ -18,19 +23,19 @@ export function textDialog({ title, text = "", placeholder = "", editable = true
     props: {
       text,
       placeholder,
-      editable
+      editable,
     },
     events: {
-      ready: sender => {
-        if (sender.editable) sender.focus()
-      }
-    }
+      ready: (sender) => {
+        if (sender.editable) sender.focus();
+      },
+    },
   });
 
   const sheet = new DialogSheet({
     title,
     cview: textView,
-    doneHandler: () => textView.view.text
+    doneHandler: () => textView.view.text,
   });
   return new Promise((resolve, reject) => {
     sheet.promisify(resolve, reject);

@@ -2,14 +2,14 @@ import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
   UIAlertAction,
-  UIAlertController
+  UIAlertController,
 } from "./uialert";
 
 import { l10n } from "../../utils/l10n";
 
 /**
  * 显示一个登录输入框提示
- * 
+ *
  * @param title 标题
  * @param message 内容
  * @param placeholder1 输入框1的占位符
@@ -23,7 +23,7 @@ export function loginAlert({
   placeholder1 = "",
   placeholder2 = "",
   cancelText = l10n("CANCEL"),
-  confirmText = l10n("OK")
+  confirmText = l10n("OK"),
 }: {
   title?: string;
   message?: string;
@@ -40,7 +40,7 @@ export function loginAlert({
     );
 
     alertVC.addTextField({
-      placeholder: placeholder1
+      placeholder: placeholder1,
     });
 
     alertVC.addTextField({
@@ -52,8 +52,8 @@ export function loginAlert({
           const password = alertVC.getText(1);
           const isValid = username.length > 0 && password.length > 0;
           return isValid;
-        }
-      }
+        },
+      },
     });
 
     alertVC.addAction(
@@ -69,7 +69,7 @@ export function loginAlert({
       const password = alertVC.getText(1);
       resolve({
         username,
-        password
+        password,
       });
     }
     function cancelEvent() {

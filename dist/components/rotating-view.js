@@ -23,7 +23,7 @@ class RotatingView extends base_1.Base {
      * @param events 事件
      * - ready?: (cview: RotatingView) => void 默认的ready事件是自动开始旋转；也可以手动指定其他效果
      */
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ contentMode: 1, rps: 0.5, clockwise: true }, props);
         this._rotatingFlag = false;
@@ -39,9 +39,9 @@ class RotatingView extends base_1.Base {
                         ? this._props.image.alwaysTemplate
                         : this._props.image,
                     tintColor: this._props.tintColor,
-                    contentMode: this._props.contentMode
+                    contentMode: this._props.contentMode,
                 },
-                layout: $layout.fill
+                layout: $layout.fill,
             });
         }
         this._defineView = () => {
@@ -50,16 +50,16 @@ class RotatingView extends base_1.Base {
                 props: Object.assign(Object.assign({}, this._props), { id: this.id }),
                 layout,
                 events: {
-                    ready: sender => {
+                    ready: (sender) => {
                         if (events.ready) {
                             events.ready(this);
                         }
                         else {
                             this.startRotating();
                         }
-                    }
+                    },
                 },
-                views: [this._innerView.definition]
+                views: [this._innerView.definition],
             };
         };
     }
@@ -77,14 +77,14 @@ class RotatingView extends base_1.Base {
             duration,
             options: 3 << 16,
             animation: () => {
-                view.rotate(Math.PI * 2 / 3 * clockwiseMultiplier);
+                view.rotate(((Math.PI * 2) / 3) * clockwiseMultiplier);
             },
             completion: () => {
                 $ui.animate({
                     duration,
                     options: 3 << 16,
                     animation: () => {
-                        view.rotate(Math.PI * 4 / 3 * clockwiseMultiplier);
+                        view.rotate(((Math.PI * 4) / 3) * clockwiseMultiplier);
                     },
                     completion: () => {
                         $ui.animate({
@@ -96,11 +96,11 @@ class RotatingView extends base_1.Base {
                             completion: () => {
                                 if (this._rotatingFlag)
                                     this._rotateView(view);
-                            }
+                            },
                         });
-                    }
+                    },
                 });
-            }
+            },
         });
     }
 }

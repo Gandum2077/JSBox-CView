@@ -16,40 +16,42 @@ const custom_navigation_bar_1 = require("../components/custom-navigation-bar");
  * - navBarProps: {} 可用于 navBar 的其他属性，不包括 title 和 titleView
  */
 class PageViewerController extends base_controller_1.BaseController {
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super({
             props: {
                 id: props.id,
-                bgcolor: props.bgcolor
-            }, layout, events
+                bgcolor: props.bgcolor,
+            },
+            layout,
+            events,
         });
         this._props = props;
         this.cviews = {};
         this.cviews.pageviewer = new pageviewer_1.PageViewer({
             props: {
                 page: this._props.index || 0,
-                cviews: this._props.items.map(n => n.controller.rootView)
+                cviews: this._props.items.map((n) => n.controller.rootView),
             },
             layout: (make, view) => {
                 make.left.right.bottom.inset(0);
                 make.top.equalTo(view.prev.bottom);
             },
             events: {
-                floatPageChanged: (cview, floatPage) => (this.cviews.titlebar.floatedIndex = floatPage)
-            }
+                floatPageChanged: (cview, floatPage) => (this.cviews.titlebar.floatedIndex = floatPage),
+            },
         });
         this.cviews.titlebar = new pageviewer_titlebar_1.PageViewerTitleBar({
             props: {
-                items: this._props.items.map(n => n.title),
-                index: this._props.index || 0
+                items: this._props.items.map((n) => n.title),
+                index: this._props.index || 0,
             },
             layout: $layout.fill,
             events: {
-                changed: (cview, index) => this.cviews.pageviewer.scrollToPage(index)
-            }
+                changed: (cview, index) => this.cviews.pageviewer.scrollToPage(index),
+            },
         });
         this.cviews.navbar = new custom_navigation_bar_1.CustomNavigationBar({
-            props: Object.assign(Object.assign({}, this._props.navBarProps), { titleView: this.cviews.titlebar })
+            props: Object.assign(Object.assign({}, this._props.navBarProps), { titleView: this.cviews.titlebar }),
         });
         this.rootView.views = [this.cviews.navbar, this.cviews.pageviewer];
     }

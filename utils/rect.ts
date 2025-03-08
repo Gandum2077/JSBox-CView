@@ -1,6 +1,10 @@
 // 用于处理矩形的工具函数
 
-// When called without arguments, return the center of the rectangle. When a Point is passed as an argument, the rectangle’s x and y values are adjusted, so that the new center of the rectangle is p.
+/**
+ * When called without arguments, return the center of the rectangle.
+ * When a Point is passed as an argument, the rectangle’s x and y values
+ * are adjusted, so that the new center of the rectangle is p.
+ */
 export function center(rect: JBRect, point?: JBPoint): JBPoint {
   const { x = 0, y = 0, width: w, height: h } = rect;
   if (!point) return $point(x + w / 2, y + h / 2);
@@ -10,28 +14,40 @@ export function center(rect: JBRect, point?: JBPoint): JBPoint {
   return point;
 }
 
-// Return true if the given point lies within the bounds of the rectangle, false otherwise.
+/**
+ * Return true if the given point lies within the bounds of the rectangle,
+ * false otherwise.
+ */
 export function containsPoint(rect: JBRect, point: JBPoint): boolean {
   const { x, y, width: w, height: h } = rect;
   const { x: px, y: py } = point;
   return x <= px && px <= x + w && y <= py && py <= y + h;
 }
 
-// Return true if the given rectangle lies entirely within the bounds of this rectangle, false otherwise.
+/**
+ * Return true if the given rectangle lies entirely within the bounds of
+ * this rectangle, false otherwise.
+ */
 export function containsRect(rect: JBRect, otherRect: JBRect): boolean {
   const { x, y, width: w, height: h } = rect;
   const { x: x1, y: y1, width: w1, height: h1 } = otherRect;
   return x <= x1 && y <= y1 && x1 + w1 <= x + w && y1 + h1 <= y + h;
 }
 
-// Return true if this rectangle intersects with the other rectangle, false otherwise.
+/**
+ * Return true if this rectangle intersects with the other rectangle,
+ * false otherwise.
+ */
 export function intersects(rect: JBRect, otherRect: JBRect): boolean {
   const { x, y, width: w, height: h } = rect;
   const { x: x1, y: y1, width: w1, height: h1 } = otherRect;
   return x < x1 + w1 && x1 < x + w && y < y1 + h1 && y1 < y + h;
 }
 
-// Return a $rect that corresponds to the intersection of this rectangle with the other one.
+/**
+ * Return a $rect that corresponds to the intersection of this rectangle with
+ * the other one.
+ */
 export function intersection(rect: JBRect, otherRect: JBRect): JBRect {
   const { x, y, width: w, height: h } = rect;
   const { x: x1, y: y1, width: w1, height: h1 } = otherRect;
@@ -42,7 +58,9 @@ export function intersection(rect: JBRect, otherRect: JBRect): JBRect {
   return $rect(nx, ny, nw, nh);
 }
 
-// Return the smallest $rect that encloses both rectangles.
+/**
+ * Return the smallest $rect that encloses both rectangles.
+ */
 export function union(rect: JBRect, otherRect: JBRect): JBRect {
   const { x, y, width: w, height: h } = rect;
   const { x: x1, y: y1, width: w1, height: h1 } = otherRect;
@@ -52,14 +70,19 @@ export function union(rect: JBRect, otherRect: JBRect): JBRect {
   const nh = Math.max(y + h, y1 + h1) - ny;
   return $rect(nx, ny, nw, nh);
 }
-// Equivalent to $rect(r.x + x, r.y + y, r.w, r.h)
+
+/**
+ * Equivalent to $rect(r.x + x, r.y + y, r.w, r.h)
+ */
 export function translate(rect: JBRect, point: JBPoint): JBRect {
   const { x, y, width, height } = rect;
   const { x: x1, y: y1 } = point;
   return $rect(x + x1, y + y1, width, height);
 }
 
-// Return a $rect that is adjusted by the given edge insets.
+/**
+ * Return a $rect that is adjusted by the given edge insets.
+ */
 export function inset(rect: JBRect, insets: JBInsets): JBRect {
   const { x, y, width, height } = rect;
   const { top, left, bottom, right } = insets;

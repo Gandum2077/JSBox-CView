@@ -15,7 +15,7 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
   constructor({
     props,
     layout,
-    events = {}
+    events = {},
   }: {
     props?: {
       tintColor?: UIColor;
@@ -51,7 +51,7 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
             layout: (make, view) => {
               make.edges.insets($insets(12.5, 12.5, 12.5, 12.5));
               make.center.equalTo(view.super);
-            }
+            },
           },
           {
             type: "spinner",
@@ -62,11 +62,11 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
             },
             layout: (make, view) => {
               make.center.equalTo(view.super);
-            }
-          }
-        ]
-      }
-    }
+            },
+          },
+        ],
+      };
+    };
   }
 
   get loading() {

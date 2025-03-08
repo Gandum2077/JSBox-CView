@@ -9,7 +9,7 @@ class FlowlayoutItem extends single_views_1.Label {
                 text: text,
                 borderWidth: 1,
             },
-            layout: $layout.fill
+            layout: $layout.fill,
         });
         this._text = text;
     }
@@ -19,17 +19,23 @@ class FlowlayoutItem extends single_views_1.Label {
 }
 const flowlayout = new flowlayout_1.Flowlayout({
     props: {
-        items: [new FlowlayoutItem('Hello'), new FlowlayoutItem('World'), new FlowlayoutItem('Flowlayout')],
+        items: [
+            new FlowlayoutItem("Hello"),
+            new FlowlayoutItem("World"),
+            new FlowlayoutItem("Flowlayout"),
+        ],
         spacing: 10,
         itemHeight: 30,
         fixedRows: 2,
         fixedHeight: true,
         menu: {
-            items: [{
+            items: [
+                {
                     symbol: "plus",
-                    handler: sender => console.log("here")
-                }]
-        }
+                    handler: (sender) => console.log("here"),
+                },
+            ],
+        },
     },
     layout: (make, view) => {
         make.left.right.inset(10);
@@ -39,8 +45,8 @@ const flowlayout = new flowlayout_1.Flowlayout({
     events: {
         didSelect: (sender, index, item) => {
             $ui.alert(item.view.text);
-        }
-    }
+        },
+    },
 });
 $ui.render({
     props: {
@@ -49,26 +55,26 @@ $ui.render({
                 symbol: "plus",
                 handler: () => {
                     flowlayout.items = [
-                        new FlowlayoutItem('Hello'),
-                        new FlowlayoutItem('World'),
-                        new FlowlayoutItem('Flowlayout'),
-                        new FlowlayoutItem('New Item'),
-                        new FlowlayoutItem('Hello'),
-                        new FlowlayoutItem('World'),
-                        new FlowlayoutItem('FlowlayoutFlowlayoutFlowlayout'),
-                        new FlowlayoutItem('New Item'),
-                        new FlowlayoutItem('Hello'),
-                        new FlowlayoutItem('World'),
-                        new FlowlayoutItem('FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout'),
-                        new FlowlayoutItem('New Item'),
-                        new FlowlayoutItem('Hello'),
-                        new FlowlayoutItem('World'),
-                        new FlowlayoutItem('FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout'),
-                        new FlowlayoutItem('New Item'),
+                        new FlowlayoutItem("Hello"),
+                        new FlowlayoutItem("World"),
+                        new FlowlayoutItem("Flowlayout"),
+                        new FlowlayoutItem("New Item"),
+                        new FlowlayoutItem("Hello"),
+                        new FlowlayoutItem("World"),
+                        new FlowlayoutItem("FlowlayoutFlowlayoutFlowlayout"),
+                        new FlowlayoutItem("New Item"),
+                        new FlowlayoutItem("Hello"),
+                        new FlowlayoutItem("World"),
+                        new FlowlayoutItem("FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"),
+                        new FlowlayoutItem("New Item"),
+                        new FlowlayoutItem("Hello"),
+                        new FlowlayoutItem("World"),
+                        new FlowlayoutItem("FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"),
+                        new FlowlayoutItem("New Item"),
                     ];
-                }
-            }
+                },
+            },
         ],
     },
-    views: [flowlayout.definition]
+    views: [flowlayout.definition],
 });

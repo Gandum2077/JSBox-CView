@@ -1,5 +1,5 @@
-import {cvid} from "../utils/cvid";
-import {Base} from "./base";
+import { cvid } from "../utils/cvid";
+import { Base } from "./base";
 
 const UIModalPresentationStyle = {
   automatic: -2,
@@ -11,13 +11,13 @@ const UIModalPresentationStyle = {
   overFullScreen: 5,
   overCurrentContext: 6,
   popover: 7,
-  none: -1
+  none: -1,
 };
 
 /**
- * 
+ *
  * 创建新的 UIViewController，主要用于 formSheet 和 pageSheet
- * 
+ *
  * ## 参数：
  * - presentMode: number, default: 1, pageSheet: 1, formSheet: 2
  * - animated: boolean = true  是否启用动画效果
@@ -25,13 +25,17 @@ const UIModalPresentationStyle = {
  * - bgcolor: $color  $color("secondarySurface")
  * - cview: Cview
  * - dismissalHandler: function  退出时的回调
- * 
+ *
  * ## 方法：
  * - present()
  * - dismiss()
- * 
+ *
  */
-export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.AllViewOptions> {
+export class Sheet<
+  T extends Base<U, R>,
+  U extends AllUIView,
+  R extends UiTypes.AllViewOptions
+> {
   id: string;
   _animated: boolean;
   _presentMode: number;
@@ -48,7 +52,7 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
     interactiveDismissalDisabled = false,
     bgcolor = $color("secondarySurface"),
     cview,
-    dismissalHandler
+    dismissalHandler,
   }: {
     presentMode?: number;
     animated?: boolean;
@@ -56,7 +60,7 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
     bgcolor?: UIColor;
     cview?: T;
     dismissalHandler?: () => void;
-    }) {
+  }) {
     this._animated = animated;
     this._presentMode = presentMode;
     this._interactiveDismissalDisabled = interactiveDismissalDisabled;
@@ -64,7 +68,6 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
     this._cview = cview;
     this._dismissalHandler = dismissalHandler;
     this.id = cvid.newId;
-    
   }
 
   _create() {
@@ -84,19 +87,19 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
       events: {
         "viewDidDisappear:": () => {
           if (this._dismissalHandler) this._dismissalHandler();
-        }
-      }
+        },
+      },
     });
   }
 
   _add(cview: T) {
-    const definition = cview.definition
-    definition.layout = $layout.fill
+    const definition = cview.definition;
+    definition.layout = $layout.fill;
     this._PSViewControllerView.jsValue().add(definition);
   }
 
   present() {
-    this._create()
+    this._create();
     $ui.controller
       .ocValue()
       .invoke(
@@ -107,6 +110,9 @@ export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.
   }
 
   dismiss() {
-    this._PSViewController.invoke("dismissModalViewControllerAnimated", this._animated);
+    this._PSViewController.invoke(
+      "dismissModalViewControllerAnimated",
+      this._animated
+    );
   }
 }

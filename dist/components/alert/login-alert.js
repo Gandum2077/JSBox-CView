@@ -13,11 +13,11 @@ const l10n_1 = require("../../utils/l10n");
  * @param cancelText 取消按钮文字
  * @param confirmText 确认按钮文字
  */
-function loginAlert({ title = "", message = "", placeholder1 = "", placeholder2 = "", cancelText = (0, l10n_1.l10n)("CANCEL"), confirmText = (0, l10n_1.l10n)("OK") } = {}) {
+function loginAlert({ title = "", message = "", placeholder1 = "", placeholder2 = "", cancelText = (0, l10n_1.l10n)("CANCEL"), confirmText = (0, l10n_1.l10n)("OK"), } = {}) {
     return new Promise((resolve, reject) => {
         const alertVC = new uialert_1.UIAlertController(title, message, uialert_1.UIAlertControllerStyle.Alert);
         alertVC.addTextField({
-            placeholder: placeholder1
+            placeholder: placeholder1,
         });
         alertVC.addTextField({
             placeholder: placeholder2,
@@ -28,8 +28,8 @@ function loginAlert({ title = "", message = "", placeholder1 = "", placeholder2 
                     const password = alertVC.getText(1);
                     const isValid = username.length > 0 && password.length > 0;
                     return isValid;
-                }
-            }
+                },
+            },
         });
         alertVC.addAction(new uialert_1.UIAlertAction(cancelText, uialert_1.UIAlertActionStyle.Destructive, cancelEvent));
         alertVC.addAction(new uialert_1.UIAlertAction(confirmText, uialert_1.UIAlertActionStyle.Default, confirmEvent));
@@ -39,7 +39,7 @@ function loginAlert({ title = "", message = "", placeholder1 = "", placeholder2 
             const password = alertVC.getText(1);
             resolve({
                 username,
-                password
+                password,
             });
         }
         function cancelEvent() {

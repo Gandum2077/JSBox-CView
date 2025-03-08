@@ -12,7 +12,7 @@ const single_views_1 = require("../single-views");
  * @param values 默认选中的选项, 配合multiSelectEnabled使用
  * @param title 标题
  */
-function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
+function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
     if (value)
         values = [value];
     const listView = new single_views_1.List({
@@ -21,7 +21,7 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
             data: items.map((n, i) => {
                 return {
                     label: { text: n },
-                    image: { hidden: !values.includes(i) }
+                    image: { hidden: !values.includes(i) },
                 };
             }),
             template: {
@@ -29,13 +29,13 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
                     {
                         type: "label",
                         props: {
-                            id: "label"
+                            id: "label",
                         },
                         layout: (make, view) => {
                             make.top.bottom.inset(0);
                             make.left.inset(20);
                             make.right.inset(50);
-                        }
+                        },
                     },
                     {
                         type: "image",
@@ -43,22 +43,22 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
                             id: "image",
                             symbol: "checkmark",
                             contentMode: 1,
-                            tintColor: $color("systemLink")
+                            tintColor: $color("systemLink"),
                         },
                         layout: (make, view) => {
                             make.top.bottom.right.inset(10);
                             make.width.equalTo(30);
-                        }
-                    }
-                ]
-            }
+                        },
+                    },
+                ],
+            },
         },
         events: {
             didSelect: (sender, indexPath) => {
                 const data = sender.data;
                 if (multiSelectEnabled) {
-                    data[indexPath.item].image.hidden = !data[indexPath.item].image
-                        .hidden;
+                    data[indexPath.item].image.hidden =
+                        !data[indexPath.item].image.hidden;
                 }
                 else {
                     data.forEach((n, i) => {
@@ -66,8 +66,8 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
                     });
                 }
                 sender.data = data;
-            }
-        }
+            },
+        },
     });
     const sheet = new dialog_sheet_1.DialogSheet({
         title,
@@ -76,12 +76,12 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title }) {
         doneHandler: () => {
             const filtered = listView.view.data
                 .map((n, i) => (n.image.hidden ? -1 : i))
-                .filter(n => n !== -1);
+                .filter((n) => n !== -1);
             if (multiSelectEnabled)
                 return filtered;
             else
                 return filtered[0];
-        }
+        },
     });
     return new Promise((resolve, reject) => {
         sheet.promisify(resolve, reject);

@@ -1,6 +1,6 @@
 // 用于处理路径的工具函数
 
-function _splitProtocol(path: string): [string, string]{
+function _splitProtocol(path: string): [string, string] {
   const regex = /^\w+:\/\//;
   const result = regex.exec(path);
   if (result) {
@@ -20,7 +20,7 @@ function _normalize(path: string): string {
   return protocol + remainingPath.replace(/\/{2,}/g, "/");
 }
 
-export function split(path: string): [string, string]{
+export function split(path: string): [string, string] {
   path = _normalize(path);
   const [protocol, remainingPath] = _splitProtocol(path);
   const lastIndex = remainingPath.lastIndexOf("/");
@@ -31,12 +31,12 @@ export function split(path: string): [string, string]{
   } else {
     return [
       protocol + remainingPath.slice(0, lastIndex),
-      remainingPath.slice(lastIndex + 1)
+      remainingPath.slice(lastIndex + 1),
     ];
   }
 }
 
-export function dirname(path: string): string{
+export function dirname(path: string): string {
   return split(path)[0];
 }
 
@@ -44,7 +44,7 @@ export function basename(path: string): string {
   return split(path)[1];
 }
 
-export function extname(path: string): string{
+export function extname(path: string): string {
   const _basename = basename(path);
   if (!_basename) return "";
   const components = _basename.split(".");
@@ -65,7 +65,7 @@ export function join(...args: string[]): string {
         return part.trim().replace(/(^[/]*|[/]*$)/g, "");
       }
     })
-    .filter(x => x.length)
+    .filter((x) => x.length)
     .join("/");
 }
 
@@ -82,19 +82,19 @@ function _getAttributes(path: string): {
   return attributesOfItemAtPath.jsValue();
 }
 
-export function getCreationDate(path: string): number{
+export function getCreationDate(path: string): number {
   const { NSFileCreationDate } = _getAttributes(path);
   if (!NSFileCreationDate) return 0;
   return NSFileCreationDate.getTime();
 }
 
-export function getModificationDate(path: string): number{
+export function getModificationDate(path: string): number {
   const { NSFileModificationDate } = _getAttributes(path);
   if (!NSFileModificationDate) return 0;
   return NSFileModificationDate.getTime();
 }
 
-export function getFileSize(path: string): number{
+export function getFileSize(path: string): number {
   const { NSFileSize } = _getAttributes(path);
   return NSFileSize || 0;
 }

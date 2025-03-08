@@ -6,7 +6,8 @@ const single_views_1 = require("./single-views");
 /**
  * 图片浏览组件
  *
- * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
+ * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，
+ * 适用于图片数量较多的场景，以及需要动态加载图片列表的场景
  *
  */
 class ImagePager extends base_1.Base {
@@ -21,7 +22,7 @@ class ImagePager extends base_1.Base {
      * - changed: (page: number) => void - 页码变化时触发
      * - tapped: (sender: ImagePager) => void - 点击图片时触发
      */
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ srcs: [], page: 0, doubleTapToZoom: true }, props);
         this._pageLoadRecorder = {};
@@ -40,7 +41,7 @@ class ImagePager extends base_1.Base {
                                 id: "scroll",
                                 zoomEnabled: true,
                                 maxZoomScale: 3,
-                                doubleTapToZoom: this._props.doubleTapToZoom
+                                doubleTapToZoom: this._props.doubleTapToZoom,
                             },
                             layout: $layout.fill,
                             views: [
@@ -48,20 +49,20 @@ class ImagePager extends base_1.Base {
                                     type: "image",
                                     props: {
                                         id: "image",
-                                        contentMode: $contentMode.scaleAspectFit
-                                    }
-                                }
-                            ]
-                        }
-                    ]
+                                        contentMode: $contentMode.scaleAspectFit,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
                 },
-                data: this._props.srcs.map(n => {
+                data: this._props.srcs.map((n) => {
                     return { image: { src: n } };
-                })
+                }),
             },
             layout: $layout.fill,
             events: {
-                ready: sender => {
+                ready: (sender) => {
                     // 如果没有此处的relayout，则会出现莫名其妙的bug
                     sender.relayout();
                     if (!this._matrix.view)
@@ -84,22 +85,22 @@ class ImagePager extends base_1.Base {
                     if (oldPage !== this.page && events.changed)
                         events.changed(this.page);
                 },
-                didScroll: sender => {
+                didScroll: (sender) => {
                     this.loadsrc(this.page + 1, true);
                     this.loadsrc(this.page - 1, true);
-                }
-            }
+                },
+            },
         });
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 layout,
                 views: [this._matrix.definition],
                 events: {
-                    layoutSubviews: sender => {
+                    layoutSubviews: (sender) => {
                         this._pageLoadRecorder = {};
                         sender.relayout();
                         if (!this._matrix.view)
@@ -108,8 +109,8 @@ class ImagePager extends base_1.Base {
                         this.page = this.page;
                         $delay(0.1, () => this.loadsrc(this.page, true));
                         $delay(0.3, () => this.loadsrc(this.page, true));
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -139,14 +140,14 @@ class ImagePager extends base_1.Base {
     set page(page) {
         this._matrix.view.scrollTo({
             indexPath: $indexPath(0, page),
-            animated: false
+            animated: false,
         });
         this._props.page = page;
     }
     scrollToPage(page) {
         this._matrix.view.scrollTo({
             indexPath: $indexPath(0, page),
-            animated: true
+            animated: true,
         });
         this._props.page = page;
     }

@@ -23,7 +23,8 @@ class SearchBar extends base_1.Base {
      * - style: number 搜索框的样式
      *   - 0: 取消按钮在输入框内，聚焦时显示取消按钮
      *   - 1: 取消按钮在输入框右侧，聚焦时会有左右移动的动画
-     *   - 2: 取消按钮布局同 1，但是 placeholder 平时显示在中间，聚焦时才会移动到左边。如果使用此样式，建议每次 blur 的时候都清除 text。
+     *   - 2: 取消按钮布局同 1，但是 placeholder 平时显示在中间，聚焦时才会移动到左边。
+     *        如果使用此样式，建议每次 blur 的时候都清除 text。
      * - accessoryCview: cview 请通过下面的事件来和 SearchBar 互相操作
      * - placeholder: string
      * - cancelText: string
@@ -36,11 +37,15 @@ class SearchBar extends base_1.Base {
      * - changed: cview => void
      * - returned: cview => void
      */
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ placeholder: (0, l10n_1.l10n)("SEARCH"), cancelText: (0, l10n_1.l10n)("CANCEL"), tintColor: $color("systemLink"), bgcolor: colors_1.searchBarBgcolor, style: 0 }, props);
-        const cancelButtonWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, { inset: 20 });
-        const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, { inset: 20 });
+        const cancelButtonWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, {
+            inset: 20,
+        });
+        const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, {
+            inset: 20,
+        });
         this._focused = false;
         this._layouts = this._defineLayouts(cancelButtonWidth, placeholderWidth);
         this.cviews = {};
@@ -50,36 +55,36 @@ class SearchBar extends base_1.Base {
                 placeholder: this._props.placeholder,
                 bgcolor: $color("clear"),
                 radius: 0,
-                accessoryView: this._props.accessoryCview && this._props.accessoryCview.definition
+                accessoryView: this._props.accessoryCview && this._props.accessoryCview.definition,
             },
             layout: (make, view) => {
                 make.left.equalTo(view.prev.right);
                 make.top.bottom.right.inset(0);
             },
             events: {
-                changed: sender => {
+                changed: (sender) => {
                     if (events.changed)
                         events.changed(this);
                 },
-                didBeginEditing: sender => {
+                didBeginEditing: (sender) => {
                     this._onFocused();
                     if (events.didBeginEditing)
                         events.didBeginEditing(this);
                 },
-                didEndEditing: sender => {
+                didEndEditing: (sender) => {
                     if (events.didEndEditing)
                         events.didEndEditing(this);
                 },
-                returned: sender => {
+                returned: (sender) => {
                     this.blur();
                     if (events.returned)
                         events.returned(this);
-                }
-            }
+                },
+            },
         });
         this.cviews.iconInput = new single_views_1.ContentView({
             props: {
-                bgcolor: undefined
+                bgcolor: undefined,
             },
             layout: this._layouts.iconInput.normal,
             views: [
@@ -92,22 +97,22 @@ class SearchBar extends base_1.Base {
                             props: {
                                 //tintColor: searchBarSymbolColor,
                                 tintColor: $color("systemPlaceholderText"),
-                                symbol: "magnifyingglass"
+                                symbol: "magnifyingglass",
                             },
                             layout: (make, view) => {
                                 make.size.equalTo($size(20, 20));
                                 make.center.equalTo(view.super);
-                            }
-                        }
+                            },
+                        },
                     ],
                     layout: (make, view) => {
                         make.top.bottom.inset(0);
                         make.width.equalTo(20);
                         make.left.inset(6);
-                    }
+                    },
                 },
-                this.cviews.input.definition
-            ]
+                this.cviews.input.definition,
+            ],
         });
         this.cviews.cancelButton = new single_views_1.Label({
             props: {
@@ -116,40 +121,40 @@ class SearchBar extends base_1.Base {
                 font: $font(17),
                 align: $align.center,
                 userInteractionEnabled: true,
-                alpha: 0
+                alpha: 0,
             },
             layout: this._layouts.cancelButton.normal,
             events: {
-                tapped: sender => this.blur()
-            }
+                tapped: (sender) => this.blur(),
+            },
         });
         this.cviews.bgview = new single_views_1.ContentView({
             props: {
                 bgcolor: this._props.bgcolor,
                 radius: 8,
-                userInteractionEnabled: true
+                userInteractionEnabled: true,
             },
             layout: this._layouts.bgview.normal,
             events: {
-                tapped: sender => {
+                tapped: (sender) => {
                     if (!this._focused)
                         this.focus();
-                }
-            }
+                },
+            },
         });
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
                     id: this.id,
-                    clipsToBounds: true
+                    clipsToBounds: true,
                 },
                 layout,
                 views: [
                     this.cviews.bgview.definition,
                     this.cviews.iconInput.definition,
-                    this.cviews.cancelButton.definition
-                ]
+                    this.cviews.cancelButton.definition,
+                ],
             };
         };
     }
@@ -167,9 +172,12 @@ class SearchBar extends base_1.Base {
                 };
                 const bgviewLayout = $layout.fill;
                 return {
-                    iconInput: { normal: IconInputLayout, focused: IconInputLayoutFocused },
+                    iconInput: {
+                        normal: IconInputLayout,
+                        focused: IconInputLayoutFocused,
+                    },
                     cancelButton: { normal: cancelButtonLayout },
-                    bgview: { normal: bgviewLayout }
+                    bgview: { normal: bgviewLayout },
                 };
             }
             case 1: {
@@ -190,7 +198,7 @@ class SearchBar extends base_1.Base {
                 return {
                     iconInput: { normal: IconInputLayout },
                     cancelButton: { normal: cancelButtonLayout },
-                    bgview: { normal: bgviewLayoutNormal, focused: bgviewLayoutFocused }
+                    bgview: { normal: bgviewLayoutNormal, focused: bgviewLayoutFocused },
                 };
             }
             case 2: {
@@ -216,10 +224,10 @@ class SearchBar extends base_1.Base {
                 return {
                     iconInput: {
                         normal: IconInputLayoutNormal,
-                        focused: IconInputLayoutFocused
+                        focused: IconInputLayoutFocused,
                     },
                     cancelButton: { normal: cancelButtonLayout },
-                    bgview: { normal: bgviewLayoutNormal, focused: bgviewLayoutFocused }
+                    bgview: { normal: bgviewLayoutNormal, focused: bgviewLayoutFocused },
                 };
             }
             default:
@@ -237,7 +245,7 @@ class SearchBar extends base_1.Base {
                     animation: () => {
                         this.cviews.iconInput.view.relayout();
                         this.cviews.cancelButton.view.alpha = 1;
-                    }
+                    },
                 });
                 break;
             }
@@ -249,7 +257,7 @@ class SearchBar extends base_1.Base {
                     animation: () => {
                         this.cviews.bgview.view.relayout();
                         this.cviews.cancelButton.view.alpha = 1;
-                    }
+                    },
                 });
                 break;
             }
@@ -264,7 +272,7 @@ class SearchBar extends base_1.Base {
                         this.cviews.iconInput.view.relayout();
                         this.cviews.bgview.view.relayout();
                         this.cviews.cancelButton.view.alpha = 1;
-                    }
+                    },
                 });
                 break;
             }
@@ -282,7 +290,7 @@ class SearchBar extends base_1.Base {
                     animation: () => {
                         this.cviews.iconInput.view.relayout();
                         this.cviews.cancelButton.view.alpha = 0;
-                    }
+                    },
                 });
                 break;
             }
@@ -293,17 +301,21 @@ class SearchBar extends base_1.Base {
                     animation: () => {
                         this.cviews.bgview.view.relayout();
                         this.cviews.cancelButton.view.alpha = 0;
-                    }
+                    },
                 });
                 break;
             }
             case 2: {
-                const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, { inset: 20 });
+                const placeholderWidth = (0, uitools_1.getTextWidth)(this._props.placeholder, {
+                    inset: 20,
+                });
                 const textWidth = (0, uitools_1.getTextWidth)(this.text, { inset: 20 });
                 const IconInputLayoutInputing = (make, view) => {
                     make.center.equalTo(view.super);
                     make.top.bottom.inset(0);
-                    make.width.equalTo(Math.max(textWidth, placeholderWidth) + 50).priority(999);
+                    make.width
+                        .equalTo(Math.max(textWidth, placeholderWidth) + 50)
+                        .priority(999);
                     make.width.lessThanOrEqualTo(view.super).priority(1000);
                 };
                 this.cviews.iconInput.view.remakeLayout(IconInputLayoutInputing);
@@ -314,7 +326,7 @@ class SearchBar extends base_1.Base {
                         this.cviews.iconInput.view.relayout();
                         this.cviews.bgview.view.relayout();
                         this.cviews.cancelButton.view.alpha = 0;
-                    }
+                    },
                 });
                 break;
             }

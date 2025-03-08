@@ -1,6 +1,5 @@
 // cvid 用于生成唯一的 id
 
-
 /**
  * 生成指定长度的随机字符串
  */
@@ -31,4 +30,4 @@ class CVID {
   }
 }
 
-export const cvid = new CVID({ prefix: makeid(8) + "_" })
+export const cvid = new CVID({ prefix: makeid(8) + "_" });

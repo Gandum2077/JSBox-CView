@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const splitview_controller_1 = require("../controller/splitview-controller");
 const base_controller_1 = require("../controller/base-controller");
-const items = [{
+const items = [
+    {
         controller: new base_controller_1.BaseController({
             props: { bgcolor: $color("red") },
             events: {
@@ -11,11 +12,12 @@ const items = [{
                 },
                 didDisappear: () => {
                     console.log("Page 1 did disappear");
-                }
-            }
+                },
+            },
         }),
-        bgcolor: $color("red")
-    }, {
+        bgcolor: $color("red"),
+    },
+    {
         controller: new base_controller_1.BaseController({
             props: { bgcolor: $color("yellow") },
             events: {
@@ -24,15 +26,16 @@ const items = [{
                 },
                 didDisappear: () => {
                     console.log("Page 2 did disappear");
-                }
-            }
+                },
+            },
         }),
-        bgcolor: $color("green")
-    }];
+        bgcolor: $color("green"),
+    },
+];
 const pageViewerController = new splitview_controller_1.SplitViewController({
     props: {
-        items
+        items,
     },
-    events: {}
+    events: {},
 });
 pageViewerController.uirender();

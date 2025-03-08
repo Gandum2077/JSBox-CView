@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DualRing = void 0;
 const base_1 = require("../base");
 class CanvasComponet extends base_1.Base {
-    constructor({ tintColor, startAngle }) {
+    constructor({ tintColor, startAngle, }) {
         super();
         this._tintColor = tintColor;
         this.startAngle = startAngle;
@@ -20,7 +20,7 @@ class CanvasComponet extends base_1.Base {
             return {
                 type: "canvas",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 layout: $layout.fill,
                 events: {
@@ -32,8 +32,8 @@ class CanvasComponet extends base_1.Base {
                         ctx.setLineJoin(1);
                         ctx.addArc(radius / 2, radius / 2, radius / 2 - 20, this.startAngle, this.startAngle + (Math.PI * 2 * 1) / 4, false);
                         ctx.strokePath();
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -52,22 +52,22 @@ class DualRing extends base_1.Base {
      * @param colors 颜色（必须是2个），默认为 [$color("#f5542e"), $color("#f2c327")]
      * @param layout 布局
      */
-    constructor({ colors = [$color("#f5542e"), $color("#f2c327")], layout }) {
+    constructor({ colors = [$color("#f5542e"), $color("#f2c327")], layout, }) {
         super();
         const interval = 1 / 60;
         this._defineView = () => {
             const canvas1 = new CanvasComponet({
                 tintColor: colors[0],
-                startAngle: -Math.PI * 3 / 4
+                startAngle: (-Math.PI * 3) / 4,
             });
             const canvas2 = new CanvasComponet({
                 tintColor: colors[1],
-                startAngle: Math.PI / 4
+                startAngle: Math.PI / 4,
             });
             return {
                 type: "view",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 views: [canvas1.definition, canvas2.definition],
                 layout,
@@ -80,8 +80,8 @@ class DualRing extends base_1.Base {
                             canvas2.redraw();
                             yield $wait(interval);
                         }
-                    })
-                }
+                    }),
+                },
             };
         };
     }

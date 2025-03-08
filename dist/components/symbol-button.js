@@ -16,7 +16,7 @@ const base_1 = require("./base");
  *   - tapped
  */
 class SymbolButton extends base_1.Base {
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ enabled: true, contentMode: 1, insets: $insets(12.5, 12.5, 12.5, 12.5), tintColor: $color("primaryText"), hidden: false }, props);
         this._layout = layout;
@@ -28,14 +28,15 @@ class SymbolButton extends base_1.Base {
                     id: this.id,
                     menu: this._props.menu,
                     enabled: this._props.enabled,
-                    hidden: this._props.hidden
-                } : {
-                radius: 0,
-                bgcolor: $color("clear"),
-                id: this.id,
-                enabled: this._props.enabled,
-                hidden: this._props.hidden
-            };
+                    hidden: this._props.hidden,
+                }
+                : {
+                    radius: 0,
+                    bgcolor: $color("clear"),
+                    id: this.id,
+                    enabled: this._props.enabled,
+                    hidden: this._props.hidden,
+                };
             return {
                 type: "button",
                 props,
@@ -48,16 +49,16 @@ class SymbolButton extends base_1.Base {
                             image: this._props.image,
                             src: this._props.src,
                             tintColor: this._props.tintColor,
-                            contentMode: this._props.contentMode
+                            contentMode: this._props.contentMode,
                         },
                         layout: (make, view) => {
                             make.edges.insets(this._props.insets);
                             make.center.equalTo(view.super);
-                        }
-                    }
+                        },
+                    },
                 ],
                 layout: this._layout,
-                events
+                events,
             };
         };
     }

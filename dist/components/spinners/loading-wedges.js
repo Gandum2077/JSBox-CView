@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wedges = void 0;
 const base_1 = require("../base");
 class CanvasComponet extends base_1.Base {
-    constructor({ tintColor, startAngle }) {
+    constructor({ tintColor, startAngle, }) {
         super();
         this._tintColor = tintColor;
         this.startAngle = startAngle;
@@ -21,7 +21,7 @@ class CanvasComponet extends base_1.Base {
                 type: "canvas",
                 props: {
                     id: this.id,
-                    alpha: 0.8
+                    alpha: 0.8,
                 },
                 layout: $layout.fill,
                 events: {
@@ -32,8 +32,8 @@ class CanvasComponet extends base_1.Base {
                         ctx.addLineToPoint(radius / 2, radius / 2);
                         ctx.closePath();
                         ctx.fillPath();
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -46,44 +46,44 @@ class CanvasComponet extends base_1.Base {
  */
 class Wedges extends base_1.Base {
     /**
-     * @param colors 饼图颜色（必须是4个颜色），默认为 [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")]
+     * @param colors 饼图颜色（必须是4个颜色）
      * @param layout 布局
      */
     constructor({ colors = [
         $color("#f5542e"),
         $color("#f2c327"),
         $color("#008b6e"),
-        $color("#00aede")
-    ], layout }) {
+        $color("#00aede"),
+    ], layout, }) {
         super();
         const interval = 1 / 60;
         this._defineView = () => {
             const canvas1 = new CanvasComponet({
                 tintColor: colors[0],
-                startAngle: -Math.PI / 2
+                startAngle: -Math.PI / 2,
             });
             const canvas2 = new CanvasComponet({
                 tintColor: colors[1],
-                startAngle: 0
+                startAngle: 0,
             });
             const canvas3 = new CanvasComponet({
                 tintColor: colors[2],
-                startAngle: Math.PI / 2
+                startAngle: Math.PI / 2,
             });
             const canvas4 = new CanvasComponet({
                 tintColor: colors[3],
-                startAngle: Math.PI
+                startAngle: Math.PI,
             });
             return {
                 type: "view",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 views: [
                     canvas1.definition,
                     canvas2.definition,
                     canvas3.definition,
-                    canvas4.definition
+                    canvas4.definition,
                 ],
                 layout,
                 events: {
@@ -99,8 +99,8 @@ class Wedges extends base_1.Base {
                             canvas4.redraw();
                             yield $wait(interval);
                         }
-                    })
-                }
+                    }),
+                },
             };
         };
     }

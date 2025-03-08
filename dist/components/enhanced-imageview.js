@@ -11,7 +11,8 @@ const cvid_1 = require("../utils/cvid");
  *
  * 请注意：此组件使用了Runtime代码重新设置了Tapped事件。
  * 与以前使用touchesEnded事件来实现相比，可以避免在滑动手指时误触发。
- * 但因此带来了副作用：必须在关闭前通过releaseGestureObject释放掉此视图中自定义的NSObject，否则再次启动可能会有问题。
+ * 但因此带来了副作用：必须在关闭前通过releaseGestureObject释放掉此视图中自定义的NSObject，
+ * 否则再次启动可能会有问题。
  *
  * Props:
  *  src: string, 图片地址
@@ -22,14 +23,14 @@ const cvid_1 = require("../utils/cvid");
  * lowerLocationTouched: (sender: EnhancedImageView) => void, 下半部分被点击
  */
 class EnhancedImageView extends base_1.Base {
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._props = Object.assign({ maxZoomScale: 2 }, props);
         this._scroll = new single_views_1.Scroll({
             props: {
                 zoomEnabled: true,
                 doubleTapToZoom: false,
-                maxZoomScale: this._props.maxZoomScale
+                maxZoomScale: this._props.maxZoomScale,
             },
             layout: $layout.fill,
             views: [
@@ -38,13 +39,13 @@ class EnhancedImageView extends base_1.Base {
                     props: {
                         id: "image",
                         src: this._props.src,
-                        contentMode: 1
+                        contentMode: 1,
                     },
-                    layout: $layout.fill
-                }
+                    layout: $layout.fill,
+                },
             ],
             events: {
-                ready: view => {
+                ready: (view) => {
                     $delay(0.1, () => this._addGesture(view, (gesture) => {
                         const location = gesture.$locationInView(view.ocValue());
                         const realLocation = $point(location.x - view.bounds.x, location.y - view.bounds.y);
@@ -58,23 +59,23 @@ class EnhancedImageView extends base_1.Base {
                                 events.lowerLocationTouched(this);
                         }
                     }));
-                }
-            }
+                },
+            },
         });
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
-                    id: this.id
+                    id: this.id,
                 },
                 views: [this._scroll.definition],
                 layout,
                 events: {
-                    layoutSubviews: sender => {
+                    layoutSubviews: (sender) => {
                         $delay(0.1, () => (this.src = this.src));
                         $delay(0.3, () => (this.src = this.src));
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -83,11 +84,12 @@ class EnhancedImageView extends base_1.Base {
         $define({
             type: objectId + ": NSObject",
             events: {
-                tapped: event
-            }
+                tapped: event,
+            },
         });
         const object = $objc(objectId).$new();
-        $objc_retain(object); // 此步骤是必须的，否则将很快被系统释放掉，但是必须在关闭时手动释放掉，否则再次启动可能会有问题
+        $objc_retain(object); // 此步骤是必须的，否则将很快被系统释放掉，
+        // 但是必须在关闭时手动释放掉，否则再次启动可能会有问题
         this._gestureObject = object;
         const tapGestureRecognizer = $objc("UITapGestureRecognizer")
             .$alloc()

@@ -21,13 +21,15 @@ const sheet_1 = require("../components/sheet");
  * 此控制器的 layout 必定为 `$layout.fill`，无需自行设定
  */
 class PresentedPageController extends base_controller_1.BaseController {
-    constructor({ props, layout, events } = {}) {
+    constructor({ props, layout, events, } = {}) {
         var _a, _b;
         super({
             props: {
                 id: props === null || props === void 0 ? void 0 : props.id,
-                bgcolor: props === null || props === void 0 ? void 0 : props.bgcolor
-            }, layout, events
+                bgcolor: props === null || props === void 0 ? void 0 : props.bgcolor,
+            },
+            layout,
+            events,
         });
         this._sheet = new sheet_1.Sheet({
             presentMode: (_a = props === null || props === void 0 ? void 0 : props.presentMode) !== null && _a !== void 0 ? _a : 1,
@@ -35,7 +37,7 @@ class PresentedPageController extends base_controller_1.BaseController {
             interactiveDismissalDisabled: (props === null || props === void 0 ? void 0 : props.interactiveDismissalDisabled) || false,
             bgcolor: (props === null || props === void 0 ? void 0 : props.bgcolor) || $color("secondarySurface"),
             cview: this.rootView,
-            dismissalHandler: () => this.remove()
+            dismissalHandler: () => this.remove(),
         });
     }
     present() {

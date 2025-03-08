@@ -19,14 +19,14 @@ const controllerStatus = {
     loaded: 1,
     appeared: 2,
     disappeared: 3,
-    removed: 4
+    removed: 4,
 };
 class ControllerRootView extends single_views_1.ContentView {
-    constructor({ props, layout, events }) {
+    constructor({ props, layout, events, }) {
         super({ props, layout, events });
     }
     set views(views) {
-        const _views = views.map(v => {
+        const _views = views.map((v) => {
             if (v instanceof base_1.Base)
                 return v.definition;
             return v;
@@ -58,7 +58,8 @@ exports.ControllerRootView = ControllerRootView;
  *
  * 5 个生命周期节点：创建、加载、显示、隐藏、销毁。后面四个具有生命周期事件。
  *
- * 创建阶段没有对应事件，此阶段适合为 rootView 添加子 view，不能涉及对 UIView 的任何操作，因为此时 rootView 还未加载。
+ * 创建阶段没有对应事件，此阶段适合为 rootView 添加子 view，
+ * 不能涉及对 UIView 的任何操作，因为此时 rootView 还未加载。
  *
  * 生命周期事件：
  *
@@ -88,26 +89,28 @@ exports.ControllerRootView = ControllerRootView;
  * 1. load() 会在 rootView 的 ready 事件中自动调用，也可以手动调用，以加速运行
  * 2. appear()
  * 3. disappear()
- * 4. remove() 用来移除 Router 中的当前 Controller，**请注意此方法和 rootView 的移除无关**，如果通过 uirender 和 uipush，可以在销毁时自动执行 remove()
+ * 4. remove() 用来移除 Router 中的当前 Controller，**请注意此方法和 rootView 的移除无关**，
+ *    如果通过 uirender 和 uipush，可以在销毁时自动执行 remove()
  *
  * ## 其他
  *
- * - rootView 可以直接通过 rootView.views 设置其_views 属性，其中元素可以为 view 定义也可以为 cview
+ * - rootView 可以直接通过 rootView.views 设置其_views 属性，
+ *   其中元素可以为 view 定义也可以为 cview
  */
 class BaseController {
-    constructor({ props, layout = $layout.fill, events = {} } = {}) {
+    constructor({ props, layout = $layout.fill, events = {}, } = {}) {
         this._props = props || {};
         this._events = events;
         this.id = this._props.id || cvid_1.cvid.newId;
         this._status = controllerStatus.created; // status使用额外的get来使其只读
         this.rootView = new ControllerRootView({
             props: {
-                bgcolor: this._props.bgcolor || $color("primarySurface")
+                bgcolor: this._props.bgcolor || $color("primarySurface"),
             },
             layout,
             events: {
-                ready: sender => this.load()
-            }
+                ready: (sender) => this.load(),
+            },
         });
         this.cviews = {};
     }
@@ -156,8 +159,8 @@ class BaseController {
             events: {
                 appeared: () => this.appear(),
                 disappeared: () => this.disappear(),
-                dealloc: () => this.remove()
-            }
+                dealloc: () => this.remove(),
+            },
         });
     }
     uipush(props) {
@@ -167,8 +170,8 @@ class BaseController {
             events: {
                 appeared: () => this.appear(),
                 disappeared: () => this.disappear(),
-                dealloc: () => this.remove()
-            }
+                dealloc: () => this.remove(),
+            },
         });
     }
     get status() {

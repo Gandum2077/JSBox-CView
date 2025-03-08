@@ -4,7 +4,13 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   _tintColor: UIColor;
   startAngle: number;
   _defineView: () => UiTypes.CanvasOptions;
-  constructor({ tintColor, startAngle }: { tintColor: UIColor; startAngle: number }) {
+  constructor({
+    tintColor,
+    startAngle,
+  }: {
+    tintColor: UIColor;
+    startAngle: number;
+  }) {
     super();
     this._tintColor = tintColor;
     this.startAngle = startAngle;
@@ -12,7 +18,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
       return {
         type: "canvas",
         props: {
-          id: this.id
+          id: this.id,
         },
         layout: $layout.fill,
         events: {
@@ -31,10 +37,10 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
               false
             );
             ctx.strokePath();
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 
   redraw() {
@@ -44,9 +50,9 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
 
 /**
  * 两个圆环旋转的加载动画
- * 
+ *
  * 这是一个示例组件，由于帧数有限而且不稳定，不建议在实际项目中使用。
- * 
+ *
  */
 export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
@@ -57,7 +63,7 @@ export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
    */
   constructor({
     colors = [$color("#f5542e"), $color("#f2c327")],
-    layout
+    layout,
   }: {
     colors?: UIColor[];
     layout: (make: MASConstraintMaker, view: UIView) => void;
@@ -67,21 +73,21 @@ export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       const canvas1 = new CanvasComponet({
         tintColor: colors[0],
-        startAngle: -Math.PI * 3 / 4
+        startAngle: (-Math.PI * 3) / 4,
       });
       const canvas2 = new CanvasComponet({
         tintColor: colors[1],
-        startAngle: Math.PI / 4
+        startAngle: Math.PI / 4,
       });
       return {
         type: "view",
         props: {
-          id: this.id
+          id: this.id,
         },
         views: [canvas1.definition, canvas2.definition],
         layout,
         events: {
-          ready: async sender => {
+          ready: async (sender) => {
             while (sender.super) {
               canvas1.startAngle += Math.PI * interval * 2;
               canvas1.redraw();
@@ -89,9 +95,9 @@ export class DualRing extends Base<UIView, UiTypes.ViewOptions> {
               canvas2.redraw();
               await $wait(interval);
             }
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 }

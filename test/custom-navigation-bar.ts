@@ -1,4 +1,4 @@
-import { CustomNavigationBar } from "../components/custom-navigation-bar"
+import { CustomNavigationBar } from "../components/custom-navigation-bar";
 
 const navbar = new CustomNavigationBar({
   props: {
@@ -8,33 +8,33 @@ const navbar = new CustomNavigationBar({
     rightBarButtonItems: [
       {
         symbol: "gear",
-        handler: (sender) => console.log(sender)
-      }
-    ]
-  }
-})
+        handler: (sender) => console.log(sender),
+      },
+    ],
+  },
+});
 
 $ui.render({
-  views: [{
-    type: "button",
-    props: {
-      
+  views: [
+    {
+      type: "button",
+      props: {},
+      layout: $layout.fill,
+      events: {
+        tapped: () => {
+          $ui.push({
+            views: [navbar.definition],
+          });
+          $delay(1, () => {
+            navbar.cviews.bgview.view.alpha = 0.5;
+            navbar.cviews.separator.view.alpha = 0.5;
+          });
+          $delay(2, () => {
+            navbar.cviews.bgview.view.alpha = 0;
+            navbar.cviews.separator.view.alpha = 0;
+          });
+        },
+      },
     },
-    layout: $layout.fill,
-    events: {
-      tapped: () => {
-        $ui.push({
-          views: [navbar.definition]
-        })
-        $delay(1, () => {
-          navbar.cviews.bgview.view.alpha = 0.5
-          navbar.cviews.separator.view.alpha = 0.5
-        })
-        $delay(2, () => {
-          navbar.cviews.bgview.view.alpha = 0
-          navbar.cviews.separator.view.alpha = 0
-        })
-      }
-    }
-  }]
-})
+  ],
+});

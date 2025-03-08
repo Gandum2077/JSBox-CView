@@ -2,14 +2,14 @@ import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
   UIAlertAction,
-  UIAlertController
+  UIAlertController,
 } from "./uialert";
 
 import { l10n } from "../../utils/l10n";
 
 /**
  * 显示一个输入框提示
- * 
+ *
  * @param title 标题
  * @param message 内容
  * @param text 输入框默认文字
@@ -27,7 +27,7 @@ export function inputAlert({
   type = 0,
   secure = false,
   cancelText = l10n("CANCEL"),
-  confirmText = l10n("OK")
+  confirmText = l10n("OK"),
 }: {
   title?: string;
   message?: string;
@@ -54,8 +54,8 @@ export function inputAlert({
           const input = alertVC.getText(0);
           const isValid = input.length > 0;
           return isValid;
-        }
-      }
+        },
+      },
     });
 
     alertVC.addAction(
@@ -75,5 +75,3 @@ export function inputAlert({
     }
   });
 }
-
-

@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AndroidStyleSpinner = void 0;
 const base_1 = require("../base");
 /**
- * 安卓风格的加载指示器, 基于Lottie实现, 效果是一个圆环一边旋转一边缩放。由于帧数有限，不建议在大视图上使用。
+ * 安卓风格的加载指示器, 基于Lottie实现, 效果是一个圆环一边旋转一边缩放。
+ * 由于帧数有限，不建议在大视图上使用。
  */
 class AndroidStyleSpinner extends base_1.Base {
     /**
@@ -15,7 +16,7 @@ class AndroidStyleSpinner extends base_1.Base {
      *        - bgcolor: UIColor, 默认 clear
      * @param layout 可选布局，默认居中
      */
-    constructor({ props, layout }) {
+    constructor({ props, layout, }) {
         super();
         this._props = Object.assign({ weight: 2, diameter: 24, color: $color("gray"), bgcolor: $color("clear") }, props);
         this._defineView = () => {
@@ -51,18 +52,18 @@ class AndroidStyleSpinner extends base_1.Base {
                                         i: { x: [0.833], y: [0.833] },
                                         o: { x: [0.167], y: [0.167] },
                                         t: 0,
-                                        s: [0]
+                                        s: [0],
                                     },
                                     {
                                         t: 119,
-                                        s: [720]
-                                    }
+                                        s: [720],
+                                    },
                                 ],
-                                ix: 10
+                                ix: 10,
                             },
                             p: { a: 0, k: [12, 12, 0], ix: 2 },
                             a: { a: 0, k: [1, 1, 0], ix: 1 },
-                            s: { a: 0, k: [100, 100, 100], ix: 6 }
+                            s: { a: 0, k: [100, 100, 100], ix: 6 },
                         },
                         ao: 0,
                         shapes: [
@@ -80,34 +81,34 @@ class AndroidStyleSpinner extends base_1.Base {
                                                     [0, -5.523],
                                                     [5.523, 0],
                                                     [0, 5.523],
-                                                    [-5.523, 0]
+                                                    [-5.523, 0],
                                                 ],
                                                 o: [
                                                     [0, 5.523],
                                                     [-5.523, 0],
                                                     [0, -5.523],
-                                                    [5.523, 0]
+                                                    [5.523, 0],
                                                 ],
                                                 v: [
                                                     [11, 1],
                                                     [1, 11],
                                                     [-9, 1],
-                                                    [1, -9]
+                                                    [1, -9],
                                                 ],
-                                                c: true
+                                                c: true,
                                             },
-                                            ix: 2
+                                            ix: 2,
                                         },
                                         nm: "Path 1",
                                         mn: "ADBE Vector Shape - Group",
-                                        hd: false
+                                        hd: false,
                                     },
                                     {
                                         ty: "mm",
                                         mm: 3,
                                         nm: "Merge Paths 1",
                                         mn: "ADBE Vector Filter - Merge",
-                                        hd: false
+                                        hd: false,
                                     },
                                     {
                                         ty: "tm",
@@ -118,26 +119,26 @@ class AndroidStyleSpinner extends base_1.Base {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 0,
-                                                    s: [0]
+                                                    s: [0],
                                                 },
                                                 {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 60,
-                                                    s: [0]
+                                                    s: [0],
                                                 },
                                                 {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 90,
-                                                    s: [60]
+                                                    s: [60],
                                                 },
                                                 {
                                                     t: 119,
-                                                    s: [100]
-                                                }
+                                                    s: [100],
+                                                },
                                             ],
-                                            ix: 1
+                                            ix: 1,
                                         },
                                         e: {
                                             a: 1,
@@ -146,39 +147,39 @@ class AndroidStyleSpinner extends base_1.Base {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 0,
-                                                    s: [0]
+                                                    s: [0],
                                                 },
                                                 {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 30,
-                                                    s: [70]
+                                                    s: [70],
                                                 },
                                                 {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 60,
-                                                    s: [90]
+                                                    s: [90],
                                                 },
                                                 {
                                                     i: { x: [0.833], y: [0.833] },
                                                     o: { x: [0.167], y: [0.167] },
                                                     t: 90,
-                                                    s: [90]
+                                                    s: [90],
                                                 },
                                                 {
                                                     t: 119,
-                                                    s: [99]
-                                                }
+                                                    s: [99],
+                                                },
                                             ],
-                                            ix: 2
+                                            ix: 2,
                                         },
                                         o: { a: 0, k: 0, ix: 3 },
                                         m: 1,
                                         ix: 3,
                                         nm: "Trim Paths 1",
                                         mn: "ADBE Vector Filter - Trim",
-                                        hd: false
+                                        hd: false,
                                     },
                                     {
                                         ty: "st",
@@ -191,7 +192,7 @@ class AndroidStyleSpinner extends base_1.Base {
                                         bm: 0,
                                         nm: "Stroke 1",
                                         mn: "ADBE Vector Graphic - Stroke",
-                                        hd: false
+                                        hd: false,
                                     },
                                     {
                                         ty: "tr",
@@ -202,8 +203,8 @@ class AndroidStyleSpinner extends base_1.Base {
                                         o: { a: 0, k: 100, ix: 7 },
                                         sk: { a: 0, k: 0, ix: 4 },
                                         sa: { a: 0, k: 0, ix: 5 },
-                                        nm: "Transform"
-                                    }
+                                        nm: "Transform",
+                                    },
                                 ],
                                 nm: "circle",
                                 np: 4,
@@ -211,16 +212,16 @@ class AndroidStyleSpinner extends base_1.Base {
                                 bm: 0,
                                 ix: 1,
                                 mn: "ADBE Vector Group",
-                                hd: false
-                            }
+                                hd: false,
+                            },
                         ],
                         ip: 0,
                         op: 120,
                         st: 0,
-                        bm: 0
-                    }
+                        bm: 0,
+                    },
                 ],
-                markers: []
+                markers: [],
             };
             return {
                 type: "lottie",
@@ -230,15 +231,16 @@ class AndroidStyleSpinner extends base_1.Base {
                     circular: true,
                     json,
                     bgcolor: this._props.bgcolor,
-                    id: this._props.id || this.id
+                    id: this._props.id || this.id,
                 },
-                layout: layout || ((make, view) => {
-                    make.size.equalTo($size(this._props.diameter, this._props.diameter));
-                    make.center.equalTo(view.super);
-                }),
+                layout: layout ||
+                    ((make, view) => {
+                        make.size.equalTo($size(this._props.diameter, this._props.diameter));
+                        make.center.equalTo(view.super);
+                    }),
                 events: {
-                    ready: sender => sender.play({})
-                }
+                    ready: (sender) => sender.play({}),
+                },
             };
         };
     }

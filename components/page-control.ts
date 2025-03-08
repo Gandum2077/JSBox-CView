@@ -1,13 +1,13 @@
 import { Runtime } from "./single-views";
 
 /**
- * 
+ *
  * 基于 Runtime 构建 PageControl
- * 
+ *
  * 请注意本视图如果没有足够的横向宽度，会显示不全
- * 
+ *
  * @property currentPage: number
- * 
+ *
  */
 export class PageControl extends Runtime {
   private _numberOfPages: number;
@@ -18,7 +18,7 @@ export class PageControl extends Runtime {
   private _pageControl: any;
 
   /**
-   * 
+   *
    * @param props 属性
    * - numberOfPages: 页面数量
    * - currentPage: 当前页面
@@ -27,9 +27,13 @@ export class PageControl extends Runtime {
    * @param layout 布局
    * @param events 事件
    * - changed: (sender: PageControl, currentPage: number) => void
-   * 
+   *
    */
-  constructor({ props, layout, events = {} }: {
+  constructor({
+    props,
+    layout,
+    events = {},
+  }: {
     props: {
       numberOfPages?: number;
       currentPage?: number;
@@ -39,7 +43,7 @@ export class PageControl extends Runtime {
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events?: {
       changed?: (sender: PageControl, currentPage: number) => void;
-    }
+    };
   }) {
     const {
       numberOfPages = 3,
@@ -76,9 +80,9 @@ export class PageControl extends Runtime {
       events: $UIEvent.valueChanged,
       handler: $block("void", () => {
         const currentPage = pageControl.$currentPage();
-        this._currentPage = currentPage
+        this._currentPage = currentPage;
         if (this._changed) this._changed(this, currentPage);
-      })
+      }),
     });
     return pageControl;
   }
@@ -88,7 +92,7 @@ export class PageControl extends Runtime {
   }
 
   set currentPage(num) {
-    this._currentPage = num
+    this._currentPage = num;
     if (this._pageControl) this._pageControl.$setCurrentPage(num);
   }
 }

@@ -11,10 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const form_dialog_1 = require("../components/dialogs/form-dialog");
 $ui.render({
-    views: [{
+    views: [
+        {
             type: "button",
             props: {
-                title: "Show Form Dialog"
+                title: "Show Form Dialog",
             },
             layout: $layout.center,
             events: {
@@ -28,31 +29,32 @@ $ui.render({
                                         type: "boolean",
                                         title: "Switch",
                                         key: "switch",
-                                        value: true
+                                        value: true,
                                     },
                                     {
                                         type: "string",
                                         title: "String",
                                         key: "string",
-                                        value: "Hello, World!"
-                                    }
-                                ]
-                            }
+                                        value: "Hello, World!",
+                                    },
+                                ],
+                            },
                         ],
                         title: "Form Dialog",
-                        checkHandler: values => {
+                        checkHandler: (values) => {
                             console.log(values);
                             if (values.switch)
                                 return true;
                             else
                                 return false;
-                        }
+                        },
                     });
                     $ui.alert({
                         title: "Values",
-                        message: JSON.stringify(values, null, 2)
+                        message: JSON.stringify(values, null, 2),
                     });
-                })
-            }
-        }]
+                }),
+            },
+        },
+    ],
 });

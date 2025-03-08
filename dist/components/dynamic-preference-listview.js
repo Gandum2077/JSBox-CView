@@ -19,7 +19,8 @@ const static_preference_listview_1 = require("./static-preference-listview");
  *
  * 为了缓解上面的问题, 让修改布局无需调整源代码, 增加下列 props:
  *
- * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date 但是由于后四者内容可控, 可视为只作用于 string
+ * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date
+ *   但是由于后四者内容可控, 可视为只作用于 string
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
  * - tabWidth?: number = 200 作用于 tab
@@ -30,11 +31,11 @@ const static_preference_listview_1 = require("./static-preference-listview");
  * - cview.sections = sections 可以写入新的 sections
  */
 class DynamicPreferenceListView extends base_1.Base {
-    constructor({ sections, props, layout, events = {} }) {
+    constructor({ sections, props, layout, events = {}, }) {
         super();
-        this._sections = sections.map(n => ({
+        this._sections = sections.map((n) => ({
             title: n.title,
-            rows: n.rows.map(r => (Object.assign({}, r)))
+            rows: n.rows.map((r) => (Object.assign({}, r))),
         }));
         this._props = Object.assign({ stringLeftInset: 120, infoAndLinkLeftInset: 120, sliderWidth: 200, tabWidth: 200 }, props);
         this._layout = layout;
@@ -47,20 +48,20 @@ class DynamicPreferenceListView extends base_1.Base {
                                 type: "view",
                                 props: {
                                     id: "bgview",
-                                    bgcolor: $color("secondarySurface")
+                                    bgcolor: $color("secondarySurface"),
                                 },
-                                layout: $layout.fill
+                                layout: $layout.fill,
                             },
                             {
                                 type: "label",
                                 props: {
                                     id: "title",
-                                    font: $font(17)
+                                    font: $font(17),
                                 },
                                 layout: (make, view) => {
                                     make.top.bottom.inset(0);
                                     make.left.right.inset(15);
-                                }
+                                },
                             },
                             {
                                 type: "view",
@@ -73,7 +74,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                     {
                                         type: "view",
                                         props: {
-                                            id: "label_and_chevron"
+                                            id: "label_and_chevron",
                                         },
                                         layout: $layout.fill,
                                         views: [
@@ -82,74 +83,75 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 props: {
                                                     symbol: "chevron.right",
                                                     tintColor: $color("lightGray", "darkGray"),
-                                                    contentMode: 1
+                                                    contentMode: 1,
                                                 },
                                                 layout: (make, view) => {
                                                     make.centerY.equalTo(view.super);
                                                     make.size.equalTo($size(17, 17));
                                                     make.right.inset(0);
-                                                }
+                                                },
                                             },
                                             {
                                                 type: "label",
                                                 props: {
                                                     id: "label_before_chevron",
                                                     align: $align.right,
-                                                    font: $font(17)
+                                                    font: $font(17),
                                                 },
                                                 layout: (make, view) => {
                                                     make.centerY.equalTo(view.super);
                                                     make.left.inset(this._props.stringLeftInset - 15);
                                                     make.right.equalTo(view.prev.left).inset(5);
-                                                }
-                                            }
-                                        ]
+                                                },
+                                            },
+                                        ],
                                     },
                                     {
                                         type: "view",
                                         props: {
-                                            id: "number_and_stepper"
+                                            id: "number_and_stepper",
                                         },
                                         layout: $layout.fill,
                                         views: [
                                             {
                                                 type: "stepper",
                                                 props: {
-                                                    id: "stepper"
+                                                    id: "stepper",
                                                 },
                                                 layout: (make, view) => {
                                                     make.centerY.equalTo(view.super);
                                                     make.right.inset(0);
                                                 },
                                                 events: {
-                                                    changed: sender => {
+                                                    changed: (sender) => {
                                                         const { section, row } = sender.info;
-                                                        this._sections[section].rows[row].value = sender.value;
+                                                        this._sections[section].rows[row].value =
+                                                            sender.value;
                                                         const label = sender.next;
                                                         label.text = sender.value.toString();
                                                         if (events.changed)
                                                             events.changed(this.values);
-                                                    }
-                                                }
+                                                    },
+                                                },
                                             },
                                             {
                                                 type: "label",
                                                 props: {
                                                     id: "label_stepper",
-                                                    align: $align.right
+                                                    align: $align.right,
                                                 },
                                                 layout: (make, view) => {
                                                     make.top.bottom.inset(0);
                                                     make.right.equalTo(view.prev.left).inset(10);
                                                     make.width.equalTo(100);
-                                                }
-                                            }
-                                        ]
+                                                },
+                                            },
+                                        ],
                                     },
                                     {
                                         type: "view",
                                         props: {
-                                            id: "slider_and_number"
+                                            id: "slider_and_number",
                                         },
                                         layout: $layout.fill,
                                         views: [
@@ -158,7 +160,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 props: {
                                                     id: "slider",
                                                     min: 0,
-                                                    max: 1
+                                                    max: 1,
                                                 },
                                                 layout: (make, view) => {
                                                     make.centerY.equalTo(view.super);
@@ -166,59 +168,60 @@ class DynamicPreferenceListView extends base_1.Base {
                                                     make.width.equalTo(this._props.sliderWidth - 40);
                                                 },
                                                 events: {
-                                                    changed: sender => {
+                                                    changed: (sender) => {
                                                         var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
                                                         const label = sender.next;
                                                         label.text = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max).toString();
                                                     },
-                                                    touchesEnded: sender => {
+                                                    touchesEnded: (sender) => {
                                                         var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
-                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
+                                                        this._sections[section].rows[row].value =
+                                                            this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
                                                         if (events.changed)
                                                             events.changed(this.values);
-                                                    }
-                                                }
+                                                    },
+                                                },
                                             },
                                             {
                                                 type: "label",
                                                 props: {
                                                     id: "label_slider",
-                                                    align: $align.center
+                                                    align: $align.center,
                                                 },
                                                 layout: (make, view) => {
                                                     make.top.bottom.inset(0);
                                                     make.right.inset(0);
                                                     make.width.equalTo(44);
-                                                }
-                                            }
-                                        ]
+                                                },
+                                            },
+                                        ],
                                     },
                                     {
                                         type: "switch",
                                         props: {
-                                            id: "switch"
+                                            id: "switch",
                                         },
                                         layout: (make, view) => {
                                             make.centerY.equalTo(view.super);
                                             make.right.inset(0);
                                         },
                                         events: {
-                                            changed: sender => {
+                                            changed: (sender) => {
                                                 const { section, row } = sender.info;
                                                 this._sections[section].rows[row].value = sender.on;
                                                 if (events.changed)
                                                     events.changed(this.values);
-                                            }
-                                        }
+                                            },
+                                        },
                                     },
                                     {
                                         type: "tab",
                                         props: {
-                                            id: "tab"
+                                            id: "tab",
                                         },
                                         layout: (make, view) => {
                                             make.centerY.equalTo(view.super);
@@ -227,29 +230,29 @@ class DynamicPreferenceListView extends base_1.Base {
                                             make.right.inset(0);
                                         },
                                         events: {
-                                            changed: sender => {
+                                            changed: (sender) => {
                                                 const { section, row } = sender.info;
                                                 this._sections[section].rows[row].value = sender.index;
                                                 if (events.changed)
                                                     events.changed(this.values);
-                                            }
-                                        }
+                                            },
+                                        },
                                     },
                                     {
                                         type: "label",
                                         props: {
                                             id: "label_info_link",
-                                            align: $align.right
+                                            align: $align.right,
                                         },
                                         layout: (make, view) => {
                                             make.top.bottom.inset(0);
                                             make.left.inset(this._props.infoAndLinkLeftInset);
                                             make.right.inset(0);
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
                     }, data: this._map(this._sections) }),
                 layout: this._layout,
                 events: {
@@ -264,12 +267,12 @@ class DynamicPreferenceListView extends base_1.Base {
                                     text: row.value,
                                     type: $kbType.default,
                                     placeholder: row.placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         row.value = text;
                                         sender.data = this._map(this._sections);
                                         if (events.changed)
                                             events.changed(this.values);
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -278,7 +281,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                     text: (_a = row.value) === null || _a === void 0 ? void 0 : _a.toString(),
                                     type: $kbType.decimal,
                                     placeholder: row.placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         let num = this._handleText(text, row.type);
                                         if (num === undefined)
                                             return;
@@ -290,7 +293,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                         sender.data = this._map(this._sections);
                                         if (events.changed)
                                             events.changed(this.values);
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -299,7 +302,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                     text: (_b = row.value) === null || _b === void 0 ? void 0 : _b.toString(),
                                     type: $kbType.number,
                                     placeholder: row.placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         let num = this._handleText(text, row.type);
                                         if (num === undefined)
                                             return;
@@ -311,7 +314,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                         sender.data = this._map(this._sections);
                                         if (events.changed)
                                             events.changed(this.values);
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -323,7 +326,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                         sender.data = this._map(this._sections);
                                         if (events.changed)
                                             events.changed(this.values);
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -346,7 +349,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                         sender.data = this._map(this._sections);
                                         if (events.changed)
                                             events.changed(this.values);
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -357,21 +360,21 @@ class DynamicPreferenceListView extends base_1.Base {
                                         message: row.value,
                                         actions: [
                                             {
-                                                title: "取消"
+                                                title: "取消",
                                             },
                                             {
                                                 title: "复制",
                                                 handler: () => {
                                                     $clipboard.text = row.value || "";
-                                                }
-                                            }
-                                        ]
+                                                },
+                                            },
+                                        ],
                                     });
                                 }
                                 else {
                                     $ui.alert({
                                         title: row.title,
-                                        message: row.value
+                                        message: row.value,
                                     });
                                 }
                                 break;
@@ -389,8 +392,8 @@ class DynamicPreferenceListView extends base_1.Base {
                             default:
                                 break;
                         }
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -435,17 +438,19 @@ class DynamicPreferenceListView extends base_1.Base {
     _map(sections) {
         function generateDefaultRow(options) {
             return {
-                bgview: { hidden: static_preference_listview_1.selectableTypes.includes(options.type) }, // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
+                bgview: { hidden: static_preference_listview_1.selectableTypes.includes(options.type) },
+                // bgview其实是用于调整selectable, 显示此视图就没有highlight效果
                 title: {
                     text: options.title,
-                    textColor: options.titleColor || $color("primaryText")
+                    textColor: options.titleColor || $color("primaryText"),
                 }, // 标题, 同时用于action
-                label_and_chevron: { hidden: true }, // 用于string, number, integer, list, date
+                label_and_chevron: { hidden: true },
+                // 用于string, number, integer, list, date
                 number_and_stepper: { hidden: true }, // 用于stepper
                 slider_and_number: { hidden: true }, // 用于slider
                 switch: { hidden: true }, // 用于boolean
                 tab: { hidden: true }, // 用于tab
-                label_info_link: { hidden: true } // 用于info, link
+                label_info_link: { hidden: true }, // 用于info, link
             };
         }
         return sections.map((section, sectionIndex) => ({
@@ -458,7 +463,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_and_chevron.hidden = false;
                         data.label_before_chevron = {
                             textColor: n.textColor || $color("primaryText"),
-                            text: n.value === undefined ? "" : n.value
+                            text: n.value === undefined ? "" : n.value,
                         };
                         break;
                     }
@@ -466,7 +471,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_and_chevron.hidden = false;
                         data.label_before_chevron = {
                             textColor: n.textColor || $color("primaryText"),
-                            text: n.value === undefined ? "" : n.value
+                            text: n.value === undefined ? "" : n.value,
                         };
                         break;
                     }
@@ -474,7 +479,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_and_chevron.hidden = false;
                         data.label_before_chevron = {
                             textColor: n.textColor || $color("primaryText"),
-                            text: n.value === undefined ? "" : n.value
+                            text: n.value === undefined ? "" : n.value,
                         };
                         break;
                     }
@@ -482,13 +487,13 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.number_and_stepper.hidden = false;
                         data.label_stepper = {
                             textColor: $color("primaryText"),
-                            text: n.value === undefined ? "" : n.value
+                            text: n.value === undefined ? "" : n.value,
                         };
                         data.stepper = {
                             min: n.min,
                             max: n.max,
                             value: n.value,
-                            info: { section: sectionIndex, row: rowIndex, key: n.key }
+                            info: { section: sectionIndex, row: rowIndex, key: n.key },
                         };
                         break;
                     }
@@ -498,7 +503,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             on: n.value,
                             onColor: n.onColor || $color("#34C85A"),
                             thumbColor: n.thumbColor,
-                            info: { section: sectionIndex, row: rowIndex, key: n.key }
+                            info: { section: sectionIndex, row: rowIndex, key: n.key },
                         };
                         break;
                     }
@@ -507,7 +512,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         const adjustedValue = this._handleSliderValue(n.value, n.decimal, n.min, n.max);
                         data.label_slider = {
                             textColor: $color("primaryText"),
-                            text: adjustedValue
+                            text: adjustedValue,
                         };
                         data.slider = {
                             value: adjustedValue / ((_a = n.max) !== null && _a !== void 0 ? _a : 1),
@@ -516,7 +521,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             //max: n.max,
                             minColor: n.minColor || $color("systemLink"),
                             maxColor: n.maxColor,
-                            thumbColor: n.thumbColor
+                            thumbColor: n.thumbColor,
                         };
                         break;
                     }
@@ -524,7 +529,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_and_chevron.hidden = false;
                         data.label_before_chevron = {
                             textColor: $color("secondaryText"),
-                            text: n.items[n.value || 0]
+                            text: n.items[n.value || 0],
                         };
                         break;
                     }
@@ -533,7 +538,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             hidden: false,
                             items: n.items,
                             index: n.value,
-                            info: { section: sectionIndex, row: rowIndex, key: n.key }
+                            info: { section: sectionIndex, row: rowIndex, key: n.key },
                         };
                         break;
                     }
@@ -542,7 +547,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_before_chevron = {
                             hidden: false,
                             textColor: $color("secondaryText"),
-                            text: (0, static_preference_listview_1.dateToString)(n.mode || 2, n.value)
+                            text: (0, static_preference_listview_1.dateToString)(n.mode || 2, n.value),
                         };
                         break;
                     }
@@ -550,7 +555,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_info_link = {
                             hidden: false,
                             textColor: $color("secondaryText"),
-                            text: n.value
+                            text: n.value,
                         };
                         break;
                     }
@@ -558,14 +563,14 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_info_link = {
                             hidden: false,
                             textColor: $color("secondaryText"),
-                            text: n.value
+                            text: n.value,
                         };
                         break;
                     }
                     case "link": {
                         data.label_info_link = {
                             hidden: false,
-                            styledText: `[${n.value}]()`
+                            styledText: `[${n.value}]()`,
                         };
                         break;
                     }
@@ -579,23 +584,23 @@ class DynamicPreferenceListView extends base_1.Base {
                         break;
                 }
                 return data;
-            })
+            }),
         }));
     }
     get sections() {
         return this._sections;
     }
     set sections(sections) {
-        this._sections = sections.map(n => ({
+        this._sections = sections.map((n) => ({
             title: n.title,
-            rows: n.rows.map(r => (Object.assign({}, r)))
+            rows: n.rows.map((r) => (Object.assign({}, r))),
         }));
         this.view.data = this._map(this._sections);
     }
     get values() {
         const values = {};
-        this._sections.forEach(section => {
-            section.rows.forEach(row => {
+        this._sections.forEach((section) => {
+            section.rows.forEach((row) => {
                 if (row.key && !static_preference_listview_1.excludedTypes.includes(row.type)) {
                     values[row.key] = row.value;
                 }
@@ -604,8 +609,8 @@ class DynamicPreferenceListView extends base_1.Base {
         return values;
     }
     set(key, value) {
-        this._sections.forEach(section => {
-            section.rows.forEach(row => {
+        this._sections.forEach((section) => {
+            section.rows.forEach((row) => {
                 if (row.key === key)
                     row.value = value;
             });

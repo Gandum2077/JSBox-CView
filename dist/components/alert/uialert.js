@@ -4,11 +4,11 @@ exports.UIAlertController = exports.UIAlertAction = exports.UIAlertControllerSty
 exports.UIAlertActionStyle = {
     Default: 0,
     Cancel: 1,
-    Destructive: 2
+    Destructive: 2,
 };
 exports.UIAlertControllerStyle = {
     ActionSheet: 0,
-    Alert: 1
+    Alert: 1,
 };
 class UIAlertAction {
     constructor(title, style = exports.UIAlertActionStyle.Default, handler) {
@@ -71,8 +71,8 @@ class UIAlertController {
                             else {
                                 return true;
                             }
-                        }
-                    }
+                        },
+                    },
                 }));
             }
         }));

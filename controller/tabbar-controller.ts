@@ -1,4 +1,8 @@
-import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
+import {
+  BaseController,
+  BaseControllerProps,
+  BaseControllerEvents,
+} from "./base-controller";
 import { ContentView } from "../components/single-views";
 import { TabBar } from "../components/tabbar";
 
@@ -19,18 +23,18 @@ interface TabBarControllerEvents extends BaseControllerEvents {
   doubleTapped?: (controller: TabBarController, index: number) => void;
 }
 
-/** 
+/**
  * # CView TabBar Controller
  *
  * TabBarController 是一个 PagingController
  *
  * ## 属性
- * 
- * - items: {title?: string, 
- *           symbol?: string, 
- *           image?: UIImage, 
- *           tintColor?: UIColor, 
- *           bgcolor?: UIColor, 
+ *
+ * - items: {title?: string,
+ *           symbol?: string,
+ *           image?: UIImage,
+ *           tintColor?: UIColor,
+ *           bgcolor?: UIColor,
  *           controller: Controller}[]
  * - index: number = 0
  */
@@ -39,9 +43,13 @@ export class TabBarController extends BaseController {
   cviews: {
     tabbar: TabBar;
     pageContentView: ContentView;
-  }
+  };
   pages: ContentView[];
-  constructor({ props, layout, events = {} }: {
+  constructor({
+    props,
+    layout,
+    events = {},
+  }: {
     props: TabBarControllerProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: TabBarControllerEvents;
@@ -49,7 +57,7 @@ export class TabBarController extends BaseController {
     super({
       props: {
         id: props.id,
-        bgcolor: props.bgcolor
+        bgcolor: props.bgcolor,
       },
       layout,
       events: {
@@ -61,12 +69,12 @@ export class TabBarController extends BaseController {
         didDisappear: () => {
           this._props.items[this.index].controller.disappear();
           events.didDisappear?.(this);
-        }
-      }
+        },
+      },
     });
     this._props = {
       items: props.items,
-      index: props.index || 0
+      index: props.index || 0,
     };
     this.cviews = {} as {
       tabbar: TabBar;
@@ -75,39 +83,41 @@ export class TabBarController extends BaseController {
     this.cviews.tabbar = new TabBar({
       props: {
         items: this._props.items,
-        index: this._props.index
+        index: this._props.index,
       },
       events: {
         changed: (cview, index) => {
           this.index = index;
-          this._props.items.find(item => item.controller.status === 2)?.controller.disappear();
+          this._props.items
+            .find((item) => item.controller.status === 2)
+            ?.controller.disappear();
           this._props.items[index].controller.appear();
           events.changed?.(this, index);
         },
         doubleTapped: (cview, index) => {
           events.doubleTapped?.(this, index);
-        }
-      }
+        },
+      },
     });
 
     this.pages = this._props.items.map((n, i) => {
       return new ContentView({
         props: {
           bgcolor: n.bgcolor || this._props.bgcolor,
-          hidden: i !== this._props.index
+          hidden: i !== this._props.index,
         },
         layout: $layout.fill,
-        views: [n.controller.rootView.definition]
+        views: [n.controller.rootView.definition],
       });
     });
     this.cviews.pageContentView = new ContentView({
       props: {
-        bgcolor: $color("clear")
+        bgcolor: $color("clear"),
       },
       layout: $layout.fill,
-      views: this.pages.map(n => n.definition)
+      views: this.pages.map((n) => n.definition),
     });
-    this.rootView.views = [this.cviews.pageContentView, this.cviews.tabbar]
+    this.rootView.views = [this.cviews.pageContentView, this.cviews.tabbar];
   }
 
   set index(num) {

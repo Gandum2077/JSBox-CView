@@ -11,7 +11,7 @@ const menuList = [
                 symbol: "plus",
                 handler: () => {
                     menuIndex = 0;
-                }
+                },
             },
             {
                 title: "变成菜单2",
@@ -19,9 +19,9 @@ const menuList = [
                 destructive: true,
                 handler: () => {
                     menuIndex = 1;
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
     {
         title: "菜单2",
@@ -31,17 +31,17 @@ const menuList = [
                 symbol: "plus",
                 handler: () => {
                     menuIndex = 0;
-                }
+                },
             },
             {
                 title: "变成菜单2",
                 symbol: "plus",
                 handler: () => {
                     menuIndex = 1;
-                }
-            }
-        ]
-    }
+                },
+            },
+        ],
+    },
 ];
 const view = new dynamic_contextmenu_view_1.DynamicContextMenuView({
     generateContextMenu: (sender) => {
@@ -52,16 +52,18 @@ const view = new dynamic_contextmenu_view_1.DynamicContextMenuView({
         make.center.equalTo(view.super);
         make.size.equalTo($size(100, 100));
     },
-    views: [{
+    views: [
+        {
             type: "label",
             props: {
                 text: "长按我",
                 textColor: $color("black"),
-                align: $align.center
+                align: $align.center,
             },
-            layout: $layout.center
-        }]
+            layout: $layout.center,
+        },
+    ],
 });
 $ui.render({
-    views: [view.definition]
+    views: [view.definition],
 });

@@ -12,7 +12,7 @@ const base_1 = require("./base");
  *   - tapped
  */
 class RefreshButton extends base_1.Base {
-    constructor({ props, layout, events = {} }) {
+    constructor({ props, layout, events = {}, }) {
         super();
         this._loading = false;
         this._layout = layout;
@@ -41,7 +41,7 @@ class RefreshButton extends base_1.Base {
                         layout: (make, view) => {
                             make.edges.insets($insets(12.5, 12.5, 12.5, 12.5));
                             make.center.equalTo(view.super);
-                        }
+                        },
                     },
                     {
                         type: "spinner",
@@ -52,9 +52,9 @@ class RefreshButton extends base_1.Base {
                         },
                         layout: (make, view) => {
                             make.center.equalTo(view.super);
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             };
         };
     }

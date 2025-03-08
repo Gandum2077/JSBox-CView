@@ -25,13 +25,13 @@ class DialogSheetForm extends dialog_sheet_1.DialogSheet {
  * @param sections 表单分组, 请参考`PreferenceListView`中的`PreferenceSection`
  * @param title 标题
  */
-function formDialog({ sections, title, checkHandler }) {
+function formDialog({ sections, title, checkHandler, }) {
     const view = new static_preference_listview_1.PreferenceListView({ sections });
     const sheet = new DialogSheetForm({
         title,
         bgcolor: $color("insetGroupedBackground"),
         cview: view,
-        doneHandler: () => view.values
+        doneHandler: () => view.values,
     }, checkHandler || (() => true));
     return new Promise((resolve, reject) => {
         sheet.promisify(resolve, reject);

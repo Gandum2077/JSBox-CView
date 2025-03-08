@@ -18,7 +18,10 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
     label_loosed: (make: MASConstraintMaker, view: AllUIView) => void;
   };
   _defineView: () => UiTypes.ViewOptions;
-  constructor({ props, events = {} }: {
+  constructor({
+    props,
+    events = {},
+  }: {
     props: {
       symbol?: string;
       image?: UIImage;
@@ -27,10 +30,10 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
       selectedSegmentTintColor: UIColor;
       defaultSegmentTintColor: UIColor;
       selected?: boolean;
-    },
+    };
     events: {
       tapped?: (index: number) => void;
-    }
+    };
   }) {
     super();
     this._props = props;
@@ -52,14 +55,14 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
       label_loosed: (make, view) => {
         make.left.equalTo(view.prev.right).inset(10);
         make.centerY.equalTo(view.super);
-      }
+      },
     };
     this._defineView = () => {
       return {
         type: "view",
         props: {
           id: this.id,
-          userInteractionEnabled: true
+          userInteractionEnabled: true,
         },
         views: [
           {
@@ -68,26 +71,26 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
               id: "image",
               symbol: this._props.symbol,
               image: this._props.image,
-              contentMode: 1
-            }
+              contentMode: 1,
+            },
           },
           {
             type: "label",
             props: {
               id: "label",
               text: this._props.text,
-              align: $align.center
-            }
-          }
+              align: $align.center,
+            },
+          },
         ],
         events: {
-          tapped: sender => {
+          tapped: (sender) => {
             if (events.tapped) events.tapped(this._props.index);
-          }
-        }
+          },
+        },
       };
-    }
-  } 
+    };
+  }
 
   set selected(selected) {
     this._props.selected = selected;
@@ -132,7 +135,10 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
     image_loosed: (make: MASConstraintMaker, view: AllUIView) => void;
   };
   _defineView: () => UiTypes.ViewOptions;
-  constructor({ props, events = {} }: {
+  constructor({
+    props,
+    events = {},
+  }: {
     props: {
       symbol?: string;
       image?: UIImage;
@@ -140,10 +146,10 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
       selectedSegmentTintColor: UIColor;
       defaultSegmentTintColor: UIColor;
       selected?: boolean;
-    },
+    };
     events: {
       tapped?: (index: number) => void;
-    }
+    };
   }) {
     super();
     this._props = props;
@@ -155,14 +161,14 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
       image_loosed: (make, view) => {
         make.center.equalTo(view.super);
         make.size.equalTo($size(30, 30));
-      }
+      },
     };
     this._defineView = () => {
       return {
         type: "view",
         props: {
           id: this.id,
-          userInteractionEnabled: true
+          userInteractionEnabled: true,
         },
         views: [
           {
@@ -171,17 +177,17 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
               id: "image",
               symbol: this._props.symbol,
               image: this._props.image,
-              contentMode: 1
-            }
-          }
+              contentMode: 1,
+            },
+          },
         ],
         events: {
-          tapped: sender => {
+          tapped: (sender) => {
             if (events.tapped) events.tapped(this._props.index);
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 
   set selected(selected) {
@@ -206,8 +212,8 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
 }
 
 /**
- * 本组件是为了仿制 UITabBar  
- * 本组件不能指定布局而是应该指定 height（如果需要的话）  
+ * 本组件是为了仿制 UITabBar
+ * 本组件不能指定布局而是应该指定 height（如果需要的话）
  * 典型的使用方式是添加在布局为$layout.fill的视图中，并指定 items
  *
  * props:
@@ -229,7 +235,10 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
  * - hide(animated=true) 隐藏
  * - show(animated=true) 显示
  */
-export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
+export class TabBar extends Base<
+  UIView | UIBlurView,
+  UiTypes.ViewOptions | UiTypes.BlurOptions
+> {
   _props: {
     height: number;
     items: { symbol?: string; image?: UIImage; title?: string }[];
@@ -245,7 +254,10 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     doubleTapped?: (cview: TabBar, index: number) => void;
   };
   _defineView: () => UiTypes.ViewOptions | UiTypes.BlurOptions;
-  constructor({ props, events = {} }: {
+  constructor({
+    props,
+    events = {},
+  }: {
     props: {
       height?: number;
       items: { symbol?: string; image?: UIImage; title?: string }[];
@@ -253,11 +265,11 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
       selectedSegmentTintColor?: UIColor;
       defaultSegmentTintColor?: UIColor;
       bgcolor?: UIColor;
-    },
+    };
     events: {
       changed?: (cview: TabBar, index: number) => void;
       doubleTapped?: (cview: TabBar, index: number) => void;
-    }
+    };
   }) {
     super();
     this._props = {
@@ -266,7 +278,7 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
       selectedSegmentTintColor: $color("systemLink"),
       defaultSegmentTintColor: footBarDefaultSegmentColor,
       //bgcolor: $color("secondarySurface"),
-      ...props
+      ...props,
     };
     this._index = this._props.index;
     this._events = events;
@@ -279,75 +291,79 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
           distribution: $stackViewDistribution.fillEqually,
           spacing: 0,
           stack: {
-            views: this._cells.map(n => n.definition)
-          }
+            views: this._cells.map((n) => n.definition),
+          },
         },
         layout: (make, view) => {
           make.height.equalTo(this._props.height - 0.5);
           make.left.right.equalTo(view.super.safeArea);
           make.top.equalTo(view.prev.bottom);
-        }
+        },
       };
       const line: UiTypes.ViewOptions = {
         type: "view",
         props: {
-          bgcolor: $color("separatorColor")
+          bgcolor: $color("separatorColor"),
         },
         layout: (make, view) => {
           make.top.left.right.inset(0);
           make.height.equalTo(0.5);
-        }
+        },
       };
       if (this._props.bgcolor) {
         return {
           type: "view",
           props: {
             id: this.id,
-            bgcolor: this._props.bgcolor
+            bgcolor: this._props.bgcolor,
           },
           layout: (make, view) => {
             make.left.right.bottom.inset(0);
-            make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
+            make.top
+              .equalTo(view.super.safeAreaBottom)
+              .inset(-this._props.height);
           },
           views: [line, stack],
           events: {
-            ready: sender => (this.index = this._index),
-            layoutSubviews: sender => {
+            ready: (sender) => (this.index = this._index),
+            layoutSubviews: (sender) => {
               const windowWidth = sender.frame.width;
               if (windowWidth > 600) {
                 this._useLoosedLayout();
               } else {
                 this._useTightenedLayout();
               }
-            }
-          }
+            },
+          },
         };
       } else {
         return {
           type: "blur",
           props: {
             id: this.id,
-            style: 10
+            style: 10,
           },
           layout: (make, view) => {
             make.left.right.bottom.inset(0);
-            make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
+            make.top
+              .equalTo(view.super.safeAreaBottom)
+              .inset(-this._props.height);
           },
           views: [line, stack],
           events: {
-            ready: sender => (this.index = this._index),
-            layoutSubviews: sender => {
+            ready: (sender) => (this.index = this._index),
+            layoutSubviews: (sender) => {
               const windowWidth = sender.frame.width;
               if (windowWidth > 600) {
                 this._useLoosedLayout();
               } else {
                 this._useTightenedLayout();
               }
-            }
-          }
+            },
+          },
         };
       }
-    }
+    };
   }
 
   _defineCells() {
@@ -360,10 +376,10 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
             text: n.title,
             index: i,
             selectedSegmentTintColor: this._props.selectedSegmentTintColor,
-            defaultSegmentTintColor: this._props.defaultSegmentTintColor
+            defaultSegmentTintColor: this._props.defaultSegmentTintColor,
           },
           events: {
-            tapped: index => {
+            tapped: (index) => {
               if (index !== this.index) {
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
@@ -371,8 +387,8 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
                 if (this._events.doubleTapped)
                   this._events.doubleTapped(this, index);
               }
-            }
-          }
+            },
+          },
         });
       } else {
         return new ImageCell({
@@ -381,10 +397,10 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
             image: n.image ? n.image.alwaysTemplate : undefined,
             index: i,
             selectedSegmentTintColor: this._props.selectedSegmentTintColor,
-            defaultSegmentTintColor: this._props.defaultSegmentTintColor
+            defaultSegmentTintColor: this._props.defaultSegmentTintColor,
           },
           events: {
-            tapped: index => {
+            tapped: (index) => {
               if (index !== this.index) {
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
@@ -392,8 +408,8 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
                 if (this._events.doubleTapped)
                   this._events.doubleTapped(this, index);
               }
-            }
-          }
+            },
+          },
         });
       }
     });
@@ -418,7 +434,7 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     if (animated) {
       $ui.animate({
         duration: 0.3,
-        animation: () => this.view.relayout()
+        animation: () => this.view.relayout(),
       });
     }
   }
@@ -431,19 +447,19 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     if (animated) {
       $ui.animate({
         duration: 0.3,
-        animation: () => this.view.relayout()
+        animation: () => this.view.relayout(),
       });
     }
   }
 
   _useTightenedLayout() {
-    this._cells.forEach(n => {
+    this._cells.forEach((n) => {
       n._useTightenedLayout();
     });
   }
 
   _useLoosedLayout() {
-    this._cells.forEach(n => {
+    this._cells.forEach((n) => {
       n._useLoosedLayout();
     });
   }

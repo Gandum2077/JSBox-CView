@@ -2,13 +2,14 @@ import { Base } from "./base";
 
 /**
  * 流式布局：间距固定，项目高度固定但宽度不定，左对齐，自动换行，不能滚动。
- * 
+ *
  * 注意事项:
- * 1. 此控件默认是可变高度的，但前提是布局中必须有关于高度的约束。如果不需要可变高度，可以设置fixedHeight为true
+ * 1. 此控件默认是可变高度的，但前提是布局中必须有关于高度的约束。
+ *    如果不需要可变高度，可以设置fixedHeight为true
  * 1. 此控件的边缘是不留白的，这和Matrix不同
  * 2. itemWidth 如果超过总宽度，会被设定为总宽度
  * 3. maxRows 可以控制最大行数，如果超过则会被截断
- * 
+ *
  * ## 属性
  * 属性的写法尽可能和Matrix的风格保持一致
  * - items: FlowlayoutItem[] 关键参数，必须实现一个方法itemWidth(): number, 用于告知自身理想的宽度
@@ -18,7 +19,7 @@ import { Base } from "./base";
  * - fixedHeight?: boolean
  * - menu?: UiTypes.ContextMenuOptions
  * - bgcolor?: UIColor
- * 
+ *
  * ## 事件
  * - didSelect: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
  * - didLongPress: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
@@ -29,7 +30,10 @@ import { Base } from "./base";
  * - set items(items: FlowlayoutItem[])  设置子视图
  * - get items(): FlowlayoutItem[]  获取子视图
  */
-export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
+export class Flowlayout<T extends FlowlayoutItem> extends Base<
+  UIView,
+  UiTypes.ViewOptions
+> {
   private _width: number; // 缓存宽度，用于判断是否需要重新布局
   private _props: {
     items: T[];
@@ -39,15 +43,19 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     fixedHeight?: boolean;
     menu?: UiTypes.ContextMenuOptions;
     bgcolor?: UIColor;
-  }
+  };
   private _wrappers: WrapperView<T>[];
   private _events?: {
     didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
     didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
-  }
+  };
   _defineView: () => UiTypes.ViewOptions;
 
-  constructor({ props, layout, events }: {
+  constructor({
+    props,
+    layout,
+    events,
+  }: {
     props: {
       items: T[];
       spacing: number;
@@ -61,20 +69,23 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     events?: {
       didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
       didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
-    }
+    };
   }) {
     super();
     this._width = 0;
     this._props = props;
     this._events = events;
-    this._wrappers = props.items.map((item, index) => new WrapperView({
-      item,
-      menu: props.menu,
-      didSelect: events?.didSelect,
-      didLongPress: events?.didLongPress,
-      flowlayout: this,
-      index
-    }));
+    this._wrappers = props.items.map(
+      (item, index) =>
+        new WrapperView({
+          item,
+          menu: props.menu,
+          didSelect: events?.didSelect,
+          didLongPress: events?.didLongPress,
+          flowlayout: this,
+          index,
+        })
+    );
     this._defineView = () => ({
       type: "view",
       props: {
@@ -83,15 +94,16 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
       },
       layout,
       events: {
-        layoutSubviews: sender => {
+        layoutSubviews: (sender) => {
           if (this._width !== sender.frame.width) {
             this._width = sender.frame.width;
             const height = this._layoutWrappers();
-            if (!this._props.fixedHeight) sender.updateLayout((make) => make.height.equalTo(height));
+            if (!this._props.fixedHeight)
+              sender.updateLayout((make) => make.height.equalTo(height));
           }
-        }
+        },
       },
-      views: this._wrappers.map(wrapper => wrapper.definition)
+      views: this._wrappers.map((wrapper) => wrapper.definition),
     });
   }
 
@@ -105,18 +117,22 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
 
   set items(items: T[]) {
     this._props.items = items;
-    this._wrappers = items.map((item, index) => new WrapperView({
-      item,
-      menu: this._props.menu,
-      didSelect: this._events?.didSelect,
-      didLongPress: this._events?.didLongPress,
-      flowlayout: this,
-      index
-    }));
-    this.view.views.forEach(v => v.remove());
-    this._wrappers.forEach(wrapper => this.view.add(wrapper.definition));
+    this._wrappers = items.map(
+      (item, index) =>
+        new WrapperView({
+          item,
+          menu: this._props.menu,
+          didSelect: this._events?.didSelect,
+          didLongPress: this._events?.didLongPress,
+          flowlayout: this,
+          index,
+        })
+    );
+    this.view.views.forEach((v) => v.remove());
+    this._wrappers.forEach((wrapper) => this.view.add(wrapper.definition));
     const height = this._layoutWrappers();
-    if (!this._props.fixedHeight) this.view.updateLayout((make) => make.height.equalTo(height));
+    if (!this._props.fixedHeight)
+      this.view.updateLayout((make) => make.height.equalTo(height));
   }
 
   _layoutWrappers(): number {
@@ -176,7 +192,10 @@ interface FlowlayoutItem extends Base<any, any> {
   itemWidth: () => number;
 }
 
-class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
+class WrapperView<T extends FlowlayoutItem> extends Base<
+  UIView,
+  UiTypes.ViewOptions
+> {
   _defineView: () => UiTypes.ViewOptions;
   item: T;
   constructor({
@@ -185,7 +204,7 @@ class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOpt
     didSelect,
     didLongPress,
     flowlayout,
-    index
+    index,
   }: {
     item: T;
     menu?: UiTypes.ContextMenuOptions;
@@ -200,7 +219,7 @@ class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOpt
       id: this.id,
       frame: $rect(0, 0, 0, 0),
       userInteractionEnabled: true,
-    }
+    };
     if (menu) {
       props.menu = menu;
     }
@@ -209,13 +228,13 @@ class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOpt
       props,
       views: [item.definition],
       events: {
-        tapped: sender => {
-          if (didSelect) didSelect(flowlayout, index, item)
+        tapped: (sender) => {
+          if (didSelect) didSelect(flowlayout, index, item);
         },
-        longPressed: sender => {
-          if (didLongPress) didLongPress(flowlayout, index, item)
-        }
-      }
+        longPressed: (sender) => {
+          if (didLongPress) didLongPress(flowlayout, index, item);
+        },
+      },
     });
   }
 

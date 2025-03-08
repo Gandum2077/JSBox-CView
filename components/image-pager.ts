@@ -3,9 +3,10 @@ import { Matrix } from "./single-views";
 
 /**
  * 图片浏览组件
- * 
- * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，适用于图片数量较多的场景，以及需要动态加载图片列表的场景
- * 
+ *
+ * 与内置的Gallery组件相比，ImagePager组件可以动态刷新，
+ * 适用于图片数量较多的场景，以及需要动态加载图片列表的场景
+ *
  */
 export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   _props: {
@@ -18,17 +19,21 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
 
   /**
-   * 
-   * @param props 
+   *
+   * @param props
    * - srcs: string[] - 图片地址列表
    * - page: number - 当前页码
    * - doubleTapToZoom: boolean - 是否双击放大，默认为true
    * @param layout
-   * @param events 
+   * @param events
    * - changed: (page: number) => void - 页码变化时触发
    * - tapped: (sender: ImagePager) => void - 点击图片时触发
    */
-  constructor({ props, layout, events = {} }: {
+  constructor({
+    props,
+    layout,
+    events = {},
+  }: {
     props: {
       srcs?: string[];
       page?: number;
@@ -39,14 +44,13 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
       changed?: (page: number) => void;
       tapped?: (sender: ImagePager) => void;
     };
-
   }) {
     super();
     this._props = {
       srcs: [],
       page: 0,
       doubleTapToZoom: true,
-      ...props
+      ...props,
     };
     this._pageLoadRecorder = {};
     this._matrix = new Matrix({
@@ -64,7 +68,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
                 id: "scroll",
                 zoomEnabled: true,
                 maxZoomScale: 3,
-                doubleTapToZoom: this._props.doubleTapToZoom
+                doubleTapToZoom: this._props.doubleTapToZoom,
               },
               layout: $layout.fill,
               views: [
@@ -72,20 +76,20 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
                   type: "image",
                   props: {
                     id: "image",
-                    contentMode: $contentMode.scaleAspectFit
-                  }
-                }
-              ]
-            }
-          ]
+                    contentMode: $contentMode.scaleAspectFit,
+                  },
+                },
+              ],
+            },
+          ],
         },
-        data: this._props.srcs.map(n => {
+        data: this._props.srcs.map((n) => {
           return { image: { src: n } };
-        })
+        }),
       },
       layout: $layout.fill,
       events: {
-        ready: sender => {
+        ready: (sender) => {
           // 如果没有此处的relayout，则会出现莫名其妙的bug
           sender.relayout();
           if (!this._matrix.view) return;
@@ -107,22 +111,22 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
           if (oldPage !== this.page && events.changed)
             events.changed(this.page);
         },
-        didScroll: sender => {
+        didScroll: (sender) => {
           this.loadsrc(this.page + 1, true);
           this.loadsrc(this.page - 1, true);
-        }
-      }
+        },
+      },
     });
     this._defineView = () => {
       return {
         type: "view",
         props: {
-          id: this.id
+          id: this.id,
         },
         layout,
         views: [this._matrix.definition],
         events: {
-          layoutSubviews: sender => {
+          layoutSubviews: (sender) => {
             this._pageLoadRecorder = {};
             sender.relayout();
             if (!this._matrix.view) return;
@@ -130,10 +134,10 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
             this.page = this.page;
             $delay(0.1, () => this.loadsrc(this.page, true));
             $delay(0.3, () => this.loadsrc(this.page, true));
-          }
-        }
+          },
+        },
       };
-    }
+    };
   }
 
   loadsrc(page: number, forced = false) {
@@ -162,7 +166,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   set page(page) {
     this._matrix.view.scrollTo({
       indexPath: $indexPath(0, page),
-      animated: false
+      animated: false,
     });
     this._props.page = page;
   }
@@ -170,7 +174,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
   scrollToPage(page: number) {
     this._matrix.view.scrollTo({
       indexPath: $indexPath(0, page),
-      animated: true
+      animated: true,
     });
     this._props.page = page;
   }

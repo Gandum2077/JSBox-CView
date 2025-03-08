@@ -7,7 +7,8 @@ const base_1 = require("./base");
  *
  * 可以自动更新 rowHeight 的 list
  *
- * 核心策略为 list 的所有行均为 cview，且每一个 cview 需要实现一个方法：heightToWidth(width: number) => number
+ * 核心策略为 list 的所有行均为 cview，且每一个 cview 需要实现一个方法：
+ * heightToWidth(width: number) => number
  * 通过这个方法汇报自己在某个宽度的时候所需要的高度，这必须任何时候均立即可用；
  *
  * 特别参数
@@ -18,18 +19,18 @@ const base_1 = require("./base");
  * 除了 props.data, props.template 和 events.rowHeight 不可用，其他均和 list 一致
  */
 class DynamicRowHeightList extends base_1.Base {
-    constructor({ sections, rows, props, layout, events }) {
+    constructor({ sections, rows, props, layout, events, }) {
         super();
         this._defineView = () => {
             let data;
             if (sections && sections.length > 0) {
-                data = sections.map(n => ({
+                data = sections.map((n) => ({
                     title: n.title,
-                    rows: n.rows.map(r => r.definition)
+                    rows: n.rows.map((r) => r.definition),
                 }));
             }
             else if (rows && rows.length > 0) {
-                data = rows.map(r => r.definition);
+                data = rows.map((r) => r.definition);
             }
             else {
                 throw new Error("sections or rows must be provided");
@@ -49,7 +50,7 @@ class DynamicRowHeightList extends base_1.Base {
                         else {
                             throw new Error("sections or rows must be provided");
                         }
-                    } }, events)
+                    } }, events),
             };
         };
     }

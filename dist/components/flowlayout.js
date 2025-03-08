@@ -6,7 +6,8 @@ const base_1 = require("./base");
  * 流式布局：间距固定，项目高度固定但宽度不定，左对齐，自动换行，不能滚动。
  *
  * 注意事项:
- * 1. 此控件默认是可变高度的，但前提是布局中必须有关于高度的约束。如果不需要可变高度，可以设置fixedHeight为true
+ * 1. 此控件默认是可变高度的，但前提是布局中必须有关于高度的约束。
+ *    如果不需要可变高度，可以设置fixedHeight为true
  * 1. 此控件的边缘是不留白的，这和Matrix不同
  * 2. itemWidth 如果超过总宽度，会被设定为总宽度
  * 3. maxRows 可以控制最大行数，如果超过则会被截断
@@ -32,7 +33,7 @@ const base_1 = require("./base");
  * - get items(): FlowlayoutItem[]  获取子视图
  */
 class Flowlayout extends base_1.Base {
-    constructor({ props, layout, events }) {
+    constructor({ props, layout, events, }) {
         super();
         this._width = 0;
         this._props = props;
@@ -43,7 +44,7 @@ class Flowlayout extends base_1.Base {
             didSelect: events === null || events === void 0 ? void 0 : events.didSelect,
             didLongPress: events === null || events === void 0 ? void 0 : events.didLongPress,
             flowlayout: this,
-            index
+            index,
         }));
         this._defineView = () => ({
             type: "view",
@@ -53,16 +54,16 @@ class Flowlayout extends base_1.Base {
             },
             layout,
             events: {
-                layoutSubviews: sender => {
+                layoutSubviews: (sender) => {
                     if (this._width !== sender.frame.width) {
                         this._width = sender.frame.width;
                         const height = this._layoutWrappers();
                         if (!this._props.fixedHeight)
                             sender.updateLayout((make) => make.height.equalTo(height));
                     }
-                }
+                },
             },
-            views: this._wrappers.map(wrapper => wrapper.definition)
+            views: this._wrappers.map((wrapper) => wrapper.definition),
         });
     }
     cell(index) {
@@ -81,11 +82,11 @@ class Flowlayout extends base_1.Base {
                 didSelect: (_a = this._events) === null || _a === void 0 ? void 0 : _a.didSelect,
                 didLongPress: (_b = this._events) === null || _b === void 0 ? void 0 : _b.didLongPress,
                 flowlayout: this,
-                index
+                index,
             });
         });
-        this.view.views.forEach(v => v.remove());
-        this._wrappers.forEach(wrapper => this.view.add(wrapper.definition));
+        this.view.views.forEach((v) => v.remove());
+        this._wrappers.forEach((wrapper) => this.view.add(wrapper.definition));
         const height = this._layoutWrappers();
         if (!this._props.fixedHeight)
             this.view.updateLayout((make) => make.height.equalTo(height));
@@ -144,7 +145,7 @@ class Flowlayout extends base_1.Base {
 }
 exports.Flowlayout = Flowlayout;
 class WrapperView extends base_1.Base {
-    constructor({ item, menu, didSelect, didLongPress, flowlayout, index }) {
+    constructor({ item, menu, didSelect, didLongPress, flowlayout, index, }) {
         super();
         this.item = item;
         const props = {
@@ -160,15 +161,15 @@ class WrapperView extends base_1.Base {
             props,
             views: [item.definition],
             events: {
-                tapped: sender => {
+                tapped: (sender) => {
                     if (didSelect)
                         didSelect(flowlayout, index, item);
                 },
-                longPressed: sender => {
+                longPressed: (sender) => {
                     if (didLongPress)
                         didLongPress(flowlayout, index, item);
-                }
-            }
+                },
+            },
         });
     }
     set frame(frame) {

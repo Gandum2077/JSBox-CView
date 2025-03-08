@@ -1,12 +1,12 @@
 export const UIAlertActionStyle = {
   Default: 0,
   Cancel: 1,
-  Destructive: 2
+  Destructive: 2,
 };
 
 export const UIAlertControllerStyle = {
   ActionSheet: 0,
-  Alert: 1
+  Alert: 1,
 };
 
 export class UIAlertAction {
@@ -14,7 +14,11 @@ export class UIAlertAction {
   style: number;
   instance: any;
 
-  constructor(title: string, style = UIAlertActionStyle.Default, handler: Function) {
+  constructor(
+    title: string,
+    style = UIAlertActionStyle.Default,
+    handler: Function
+  ) {
     this.title = title;
     this.style = style;
     this.instance = $objc("UIAlertAction").$actionWithTitle_style_handler(
@@ -37,7 +41,11 @@ export class UIAlertController {
   message: string;
   style: number;
   instance: any;
-  constructor(title: string, message: string, style = UIAlertControllerStyle.ActionSheet) {
+  constructor(
+    title: string,
+    message: string,
+    style = UIAlertControllerStyle.ActionSheet
+  ) {
     this.title = title;
     this.message = message;
     this.style = style;
@@ -88,8 +96,8 @@ export class UIAlertController {
                   } else {
                     return true;
                   }
-                }
-              }
+                },
+              },
             })
           );
         }

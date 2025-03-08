@@ -2,14 +2,14 @@ import {
   UIAlertActionStyle,
   UIAlertControllerStyle,
   UIAlertAction,
-  UIAlertController
+  UIAlertController,
 } from "./uialert";
 
 import { l10n } from "../../utils/l10n";
 
 /**
  * 显示一个文字提示
- * 
+ *
  * @param title 标题
  * @param message 内容
  * @param cancelText 取消按钮文字
@@ -20,7 +20,7 @@ export function plainAlert({
   title = "",
   message = "",
   cancelText = l10n("CANCEL"),
-  confirmText = l10n("OK")
+  confirmText = l10n("OK"),
 }: {
   title?: string;
   message?: string;

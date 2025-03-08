@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Runtime = exports.Code = exports.Chart = exports.Lottie = exports.Markdown = exports.Canvas = exports.Picker = exports.DatePicker = exports.Gradient = exports.Blur = exports.Matrix = exports.List = exports.Web = exports.Map = exports.Menu = exports.Tab = exports.Stack = exports.Scroll = exports.Video = exports.Image = exports.Text = exports.Stepper = exports.Gallery = exports.Progress = exports.Spinner = exports.Switch = exports.Slider = exports.Input = exports.Button = exports.Label = exports.MaskView = exports.ContentView = exports.ClearView = exports.SingleView = void 0;
 const base_1 = require("./base");
 class SingleView extends base_1.Base {
-    constructor({ type, props, layout, events, views }) {
+    constructor({ type, props, layout, events, views, }) {
         super();
         this._type = type || "view";
         this._props = props;
@@ -19,32 +19,32 @@ class SingleView extends base_1.Base {
                 props: Object.assign(Object.assign({}, this._props), { id: this.id }),
                 layout: this._layout,
                 events: this._events,
-                views: this._views
+                views: this._views,
             };
         };
     }
 }
 exports.SingleView = SingleView;
 class ClearView extends SingleView {
-    constructor({ props, layout = $layout.fill, events, views }) {
+    constructor({ props, layout = $layout.fill, events, views, }) {
         super({
             type: "view",
             props: Object.assign({}, props),
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.ClearView = ClearView;
 class ContentView extends SingleView {
-    constructor({ props, layout = $layout.fillSafeArea, events = {}, views }) {
+    constructor({ props, layout = $layout.fillSafeArea, events = {}, views, }) {
         super({
             type: "view",
             props: Object.assign({ bgcolor: $color("primarySurface") }, props),
             layout,
             events,
-            views
+            views,
         });
     }
 }
@@ -56,373 +56,373 @@ exports.ContentView = ContentView;
  *   - tapped 点击事件，通常用于dismiss
  */
 class MaskView extends SingleView {
-    constructor({ props, layout = $layout.fill, events, views }) {
+    constructor({ props, layout = $layout.fill, events, views, }) {
         super({
             type: "view",
             props: Object.assign(Object.assign({ bgcolor: $rgba(0, 0, 0, 0.2) }, props), { userInteractionEnabled: true }),
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.MaskView = MaskView;
 class Label extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "label",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Label = Label;
 class Button extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "button",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Button = Button;
 class Input extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "input",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Input = Input;
 class Slider extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "slider",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Slider = Slider;
 class Switch extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "switch",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Switch = Switch;
 class Spinner extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "spinner",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Spinner = Spinner;
 class Progress extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "progress",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Progress = Progress;
 class Gallery extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "gallery",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Gallery = Gallery;
 class Stepper extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "stepper",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Stepper = Stepper;
 class Text extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "text",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Text = Text;
 class Image extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "image",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Image = Image;
 class Video extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "video",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Video = Video;
 class Scroll extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "scroll",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Scroll = Scroll;
 class Stack extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "stack",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Stack = Stack;
 class Tab extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "tab",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Tab = Tab;
 class Menu extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "menu",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Menu = Menu;
 class Map extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "map",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Map = Map;
 class Web extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "web",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Web = Web;
 class List extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "list",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.List = List;
 class Matrix extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "matrix",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Matrix = Matrix;
 class Blur extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "blur",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Blur = Blur;
 class Gradient extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "gradient",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Gradient = Gradient;
 class DatePicker extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "date-picker",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.DatePicker = DatePicker;
 class Picker extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "picker",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Picker = Picker;
 class Canvas extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "canvas",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Canvas = Canvas;
 class Markdown extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "markdown",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Markdown = Markdown;
 class Lottie extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "lottie",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Lottie = Lottie;
 class Chart extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "chart",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Chart = Chart;
 class Code extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "code",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }
 exports.Code = Code;
 class Runtime extends SingleView {
-    constructor({ props, layout, events, views }) {
+    constructor({ props, layout, events, views, }) {
         super({
             type: "runtime",
             props,
             layout,
             events,
-            views
+            views,
         });
     }
 }

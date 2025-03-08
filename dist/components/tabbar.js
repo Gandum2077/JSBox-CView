@@ -4,7 +4,7 @@ exports.TabBar = void 0;
 const colors_1 = require("../utils/colors");
 const base_1 = require("./base");
 class ImageLabelCell extends base_1.Base {
-    constructor({ props, events = {} }) {
+    constructor({ props, events = {}, }) {
         super();
         this._props = props;
         this.layouts = {
@@ -25,14 +25,14 @@ class ImageLabelCell extends base_1.Base {
             label_loosed: (make, view) => {
                 make.left.equalTo(view.prev.right).inset(10);
                 make.centerY.equalTo(view.super);
-            }
+            },
         };
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
                     id: this.id,
-                    userInteractionEnabled: true
+                    userInteractionEnabled: true,
                 },
                 views: [
                     {
@@ -41,24 +41,24 @@ class ImageLabelCell extends base_1.Base {
                             id: "image",
                             symbol: this._props.symbol,
                             image: this._props.image,
-                            contentMode: 1
-                        }
+                            contentMode: 1,
+                        },
                     },
                     {
                         type: "label",
                         props: {
                             id: "label",
                             text: this._props.text,
-                            align: $align.center
-                        }
-                    }
+                            align: $align.center,
+                        },
+                    },
                 ],
                 events: {
-                    tapped: sender => {
+                    tapped: (sender) => {
                         if (events.tapped)
                             events.tapped(this._props.index);
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -88,7 +88,7 @@ class ImageLabelCell extends base_1.Base {
     }
 }
 class ImageCell extends base_1.Base {
-    constructor({ props, events = {} }) {
+    constructor({ props, events = {}, }) {
         super();
         this._props = props;
         this.layouts = {
@@ -99,14 +99,14 @@ class ImageCell extends base_1.Base {
             image_loosed: (make, view) => {
                 make.center.equalTo(view.super);
                 make.size.equalTo($size(30, 30));
-            }
+            },
         };
         this._defineView = () => {
             return {
                 type: "view",
                 props: {
                     id: this.id,
-                    userInteractionEnabled: true
+                    userInteractionEnabled: true,
                 },
                 views: [
                     {
@@ -115,16 +115,16 @@ class ImageCell extends base_1.Base {
                             id: "image",
                             symbol: this._props.symbol,
                             image: this._props.image,
-                            contentMode: 1
-                        }
-                    }
+                            contentMode: 1,
+                        },
+                    },
                 ],
                 events: {
-                    tapped: sender => {
+                    tapped: (sender) => {
                         if (events.tapped)
                             events.tapped(this._props.index);
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -170,7 +170,7 @@ class ImageCell extends base_1.Base {
  * - show(animated=true) 显示
  */
 class TabBar extends base_1.Base {
-    constructor({ props, events = {} }) {
+    constructor({ props, events = {}, }) {
         super();
         this._props = Object.assign({ height: 50, index: 0, selectedSegmentTintColor: $color("systemLink"), defaultSegmentTintColor: colors_1.footBarDefaultSegmentColor }, props);
         this._index = this._props.index;
@@ -184,40 +184,42 @@ class TabBar extends base_1.Base {
                     distribution: $stackViewDistribution.fillEqually,
                     spacing: 0,
                     stack: {
-                        views: this._cells.map(n => n.definition)
-                    }
+                        views: this._cells.map((n) => n.definition),
+                    },
                 },
                 layout: (make, view) => {
                     make.height.equalTo(this._props.height - 0.5);
                     make.left.right.equalTo(view.super.safeArea);
                     make.top.equalTo(view.prev.bottom);
-                }
+                },
             };
             const line = {
                 type: "view",
                 props: {
-                    bgcolor: $color("separatorColor")
+                    bgcolor: $color("separatorColor"),
                 },
                 layout: (make, view) => {
                     make.top.left.right.inset(0);
                     make.height.equalTo(0.5);
-                }
+                },
             };
             if (this._props.bgcolor) {
                 return {
                     type: "view",
                     props: {
                         id: this.id,
-                        bgcolor: this._props.bgcolor
+                        bgcolor: this._props.bgcolor,
                     },
                     layout: (make, view) => {
                         make.left.right.bottom.inset(0);
-                        make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
+                        make.top
+                            .equalTo(view.super.safeAreaBottom)
+                            .inset(-this._props.height);
                     },
                     views: [line, stack],
                     events: {
-                        ready: sender => (this.index = this._index),
-                        layoutSubviews: sender => {
+                        ready: (sender) => (this.index = this._index),
+                        layoutSubviews: (sender) => {
                             const windowWidth = sender.frame.width;
                             if (windowWidth > 600) {
                                 this._useLoosedLayout();
@@ -225,8 +227,8 @@ class TabBar extends base_1.Base {
                             else {
                                 this._useTightenedLayout();
                             }
-                        }
-                    }
+                        },
+                    },
                 };
             }
             else {
@@ -234,16 +236,18 @@ class TabBar extends base_1.Base {
                     type: "blur",
                     props: {
                         id: this.id,
-                        style: 10
+                        style: 10,
                     },
                     layout: (make, view) => {
                         make.left.right.bottom.inset(0);
-                        make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
+                        make.top
+                            .equalTo(view.super.safeAreaBottom)
+                            .inset(-this._props.height);
                     },
                     views: [line, stack],
                     events: {
-                        ready: sender => (this.index = this._index),
-                        layoutSubviews: sender => {
+                        ready: (sender) => (this.index = this._index),
+                        layoutSubviews: (sender) => {
                             const windowWidth = sender.frame.width;
                             if (windowWidth > 600) {
                                 this._useLoosedLayout();
@@ -251,8 +255,8 @@ class TabBar extends base_1.Base {
                             else {
                                 this._useTightenedLayout();
                             }
-                        }
-                    }
+                        },
+                    },
                 };
             }
         };
@@ -267,10 +271,10 @@ class TabBar extends base_1.Base {
                         text: n.title,
                         index: i,
                         selectedSegmentTintColor: this._props.selectedSegmentTintColor,
-                        defaultSegmentTintColor: this._props.defaultSegmentTintColor
+                        defaultSegmentTintColor: this._props.defaultSegmentTintColor,
                     },
                     events: {
-                        tapped: index => {
+                        tapped: (index) => {
                             if (index !== this.index) {
                                 this.index = index;
                                 if (this._events.changed)
@@ -280,8 +284,8 @@ class TabBar extends base_1.Base {
                                 if (this._events.doubleTapped)
                                     this._events.doubleTapped(this, index);
                             }
-                        }
-                    }
+                        },
+                    },
                 });
             }
             else {
@@ -291,10 +295,10 @@ class TabBar extends base_1.Base {
                         image: n.image ? n.image.alwaysTemplate : undefined,
                         index: i,
                         selectedSegmentTintColor: this._props.selectedSegmentTintColor,
-                        defaultSegmentTintColor: this._props.defaultSegmentTintColor
+                        defaultSegmentTintColor: this._props.defaultSegmentTintColor,
                     },
                     events: {
-                        tapped: index => {
+                        tapped: (index) => {
                             if (index !== this.index) {
                                 this.index = index;
                                 if (this._events.changed)
@@ -304,8 +308,8 @@ class TabBar extends base_1.Base {
                                 if (this._events.doubleTapped)
                                     this._events.doubleTapped(this, index);
                             }
-                        }
-                    }
+                        },
+                    },
                 });
             }
         });
@@ -327,7 +331,7 @@ class TabBar extends base_1.Base {
         if (animated) {
             $ui.animate({
                 duration: 0.3,
-                animation: () => this.view.relayout()
+                animation: () => this.view.relayout(),
             });
         }
     }
@@ -339,17 +343,17 @@ class TabBar extends base_1.Base {
         if (animated) {
             $ui.animate({
                 duration: 0.3,
-                animation: () => this.view.relayout()
+                animation: () => this.view.relayout(),
             });
         }
     }
     _useTightenedLayout() {
-        this._cells.forEach(n => {
+        this._cells.forEach((n) => {
             n._useTightenedLayout();
         });
     }
     _useLoosedLayout() {
-        this._cells.forEach(n => {
+        this._cells.forEach((n) => {
             n._useLoosedLayout();
         });
     }

@@ -12,7 +12,7 @@ const l10n_1 = require("../../utils/l10n");
  * @param confirmText 确认按钮文字
  * @returns Promise
  */
-function plainAlert({ title = "", message = "", cancelText = (0, l10n_1.l10n)("CANCEL"), confirmText = (0, l10n_1.l10n)("OK") } = {}) {
+function plainAlert({ title = "", message = "", cancelText = (0, l10n_1.l10n)("CANCEL"), confirmText = (0, l10n_1.l10n)("OK"), } = {}) {
     return new Promise((resolve, reject) => {
         const alertVC = new uialert_1.UIAlertController(title, message, uialert_1.UIAlertControllerStyle.Alert);
         alertVC.addAction(new uialert_1.UIAlertAction(cancelText, uialert_1.UIAlertActionStyle.Destructive, cancelEvent));

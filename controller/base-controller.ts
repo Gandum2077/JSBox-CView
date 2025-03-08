@@ -1,5 +1,5 @@
-import { Base } from '../components/base';
-import { ContentView } from '../components/single-views';
+import { Base } from "../components/base";
+import { ContentView } from "../components/single-views";
 import { cvid } from "../utils/cvid";
 import { router } from "./controller-router";
 
@@ -17,14 +17,14 @@ const controllerStatus = {
   loaded: 1,
   appeared: 2,
   disappeared: 3,
-  removed: 4
+  removed: 4,
 };
 
 export class ControllerRootView extends ContentView {
   constructor({
     props,
     layout,
-    events
+    events,
   }: {
     props: { bgcolor: UIColor };
     layout: (make: MASConstraintMaker, view: UIView) => void;
@@ -34,10 +34,10 @@ export class ControllerRootView extends ContentView {
   }
 
   set views(views: UiTypes.AllViewOptions[] | Base<any, any>[]) {
-    const _views: UiTypes.AllViewOptions[] = views.map(v => {
+    const _views: UiTypes.AllViewOptions[] = views.map((v) => {
       if (v instanceof Base) return v.definition;
       return v;
-    })
+    });
     this._views = _views;
   }
 }
@@ -55,14 +55,14 @@ export interface BaseControllerEvents {
   didRemove?: (controller: BaseController) => void;
 }
 
-/** 
+/**
  * # CView Base Controller
- * 
+ *
  * Cview 控件尽量保持非侵入性和功能专注。而控制器负责控件之间的关联和数据更新。
  * 另外，控制器可以实现一些常用的页面构建形式，比如底部Tab分页，左侧滑动分页，弹出式页面等。
- * 
+ *
  * ## 属性
- * 
+ *
  * - id?: string 可以指定 id，如不指定，会自动赋值全局唯一 id
  * - 只写 bgcolor?: UIColor = $color("primarySurface") rootView 的 bgcolor
  * - 只读 cviews: {}
@@ -73,13 +73,14 @@ export interface BaseControllerEvents {
  *   - appearing = 2 处于可显示状态
  *   - disappearing = 3 处于不显示状态
  *   - removed = 4 根视图被移除
- * 
+ *
  * ## 事件
- * 
+ *
  * 5 个生命周期节点：创建、加载、显示、隐藏、销毁。后面四个具有生命周期事件。
- * 
- * 创建阶段没有对应事件，此阶段适合为 rootView 添加子 view，不能涉及对 UIView 的任何操作，因为此时 rootView 还未加载。
- * 
+ *
+ * 创建阶段没有对应事件，此阶段适合为 rootView 添加子 view，
+ * 不能涉及对 UIView 的任何操作，因为此时 rootView 还未加载。
+ *
  * 生命周期事件：
  *
  * 1. didLoad: controller => void 在 rootView 被加载之后执行
@@ -94,25 +95,27 @@ export interface BaseControllerEvents {
  * 4. didRemove: controller => void 在 rootView 被移除的时候执行
  *    - 应该在此节点释放自定义的 objc
  *    - 数据持久化
- * 
+ *
  * ## 方法
- * 
+ *
  * 加载方法：
- * 
+ *
  * 1. uirender(props) 此方法只能使用一次，对应的 Controller 将成为顶级 Controller
  * 2. uipush(props)
  * 3. 直接让 rootView.definition 包含在其他 View 的 views 参数中
- * 
+ *
  * 生命周期管理：
- * 
+ *
  * 1. load() 会在 rootView 的 ready 事件中自动调用，也可以手动调用，以加速运行
  * 2. appear()
  * 3. disappear()
- * 4. remove() 用来移除 Router 中的当前 Controller，**请注意此方法和 rootView 的移除无关**，如果通过 uirender 和 uipush，可以在销毁时自动执行 remove()
- * 
+ * 4. remove() 用来移除 Router 中的当前 Controller，**请注意此方法和 rootView 的移除无关**，
+ *    如果通过 uirender 和 uipush，可以在销毁时自动执行 remove()
+ *
  * ## 其他
- * 
- * - rootView 可以直接通过 rootView.views 设置其_views 属性，其中元素可以为 view 定义也可以为 cview
+ *
+ * - rootView 可以直接通过 rootView.views 设置其_views 属性，
+ *   其中元素可以为 view 定义也可以为 cview
  */
 export class BaseController {
   protected _props: BaseControllerProps;
@@ -123,7 +126,11 @@ export class BaseController {
     [key: string]: Base<any, any>;
   };
   readonly rootView: ControllerRootView;
-  constructor({ props, layout = $layout.fill, events = {} }: {
+  constructor({
+    props,
+    layout = $layout.fill,
+    events = {},
+  }: {
     props?: BaseControllerProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: BaseControllerEvents;
@@ -135,13 +142,13 @@ export class BaseController {
     this._status = controllerStatus.created; // status使用额外的get来使其只读
     this.rootView = new ControllerRootView({
       props: {
-        bgcolor: this._props.bgcolor || $color("primarySurface")
+        bgcolor: this._props.bgcolor || $color("primarySurface"),
       },
       layout,
       events: {
-        ready: sender => this.load()
-      }
-    })
+        ready: (sender) => this.load(),
+      },
+    });
     this.cviews = {};
   }
 
@@ -150,7 +157,7 @@ export class BaseController {
     if (this._status !== controllerStatus.created) return;
     this._status = controllerStatus.loaded;
     if (this._events.didLoad) this._events.didLoad(this);
-    router.add(this)
+    router.add(this);
   }
 
   appear() {
@@ -180,7 +187,7 @@ export class BaseController {
     // 如果已经移除，不可以再次运行
     if (this._status === controllerStatus.removed) return;
     if (this._events.didRemove) this._events.didRemove(this);
-    router.delete(this)
+    router.delete(this);
     this._status = controllerStatus.removed;
   }
 
@@ -192,8 +199,8 @@ export class BaseController {
       events: {
         appeared: () => this.appear(),
         disappeared: () => this.disappear(),
-        dealloc: () => this.remove()
-      }
+        dealloc: () => this.remove(),
+      },
     });
   }
 
@@ -204,8 +211,8 @@ export class BaseController {
       events: {
         appeared: () => this.appear(),
         disappeared: () => this.disappear(),
-        dealloc: () => this.remove()
-      }
+        dealloc: () => this.remove(),
+      },
     });
   }
 

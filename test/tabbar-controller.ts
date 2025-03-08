@@ -1,37 +1,40 @@
 import { TabBarController } from "../controller/tabbar-controller";
 import { BaseController } from "../controller/base-controller";
 
-const items = [{
-  controller: new BaseController({
-    props: { bgcolor: $color("red") },
-    events: {
-      didAppear: () => {
-        console.log("Page 1 did appear");
+const items = [
+  {
+    controller: new BaseController({
+      props: { bgcolor: $color("red") },
+      events: {
+        didAppear: () => {
+          console.log("Page 1 did appear");
+        },
+        didDisappear: () => {
+          console.log("Page 1 did disappear");
+        },
       },
-      didDisappear: () => {
-        console.log("Page 1 did disappear");
-      }
-    }
-  }),
-  title: "Page 1"
-}, {
-  controller: new BaseController({ 
-    props: { bgcolor: $color("yellow") },
-    events: {
-      didAppear: () => {
-        console.log("Page 2 did appear");
+    }),
+    title: "Page 1",
+  },
+  {
+    controller: new BaseController({
+      props: { bgcolor: $color("yellow") },
+      events: {
+        didAppear: () => {
+          console.log("Page 2 did appear");
+        },
+        didDisappear: () => {
+          console.log("Page 2 did disappear");
+        },
       },
-      didDisappear: () => {
-        console.log("Page 2 did disappear");
-      }
-    }
-  }),
-  title: "Page 2"
-}]
+    }),
+    title: "Page 2",
+  },
+];
 
 const pageViewerController = new TabBarController({
   props: {
-    items
+    items,
   },
   events: {
     changed: (sender, index) => {
@@ -39,8 +42,8 @@ const pageViewerController = new TabBarController({
     },
     doubleTapped: (sender, index) => {
       console.log(`Double tapped on index ${index}`);
-    }
-  }
+    },
+  },
 });
 
 pageViewerController.uirender({});

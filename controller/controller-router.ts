@@ -2,17 +2,17 @@ import { BaseController } from "./base-controller";
 
 /**
  * 控制器的路由器，用于管理控制器的集合和操作。
- * 
+ *
  * ## 属性
  * - `root`：根控制器。
  * - `appeared`：状态为appeared的控制器列表。
  * - `controllerSet`：控制器集合。
- * 
+ *
  * ## 方法
  * - `add(controller: BaseController)`：添加控制器到路由器中。
  * - `delete(controller: BaseController)`：从路由器中删除控制器。
  * - `get(id: string)`：根据控制器的ID获取控制器。
- * 
+ *
  */
 class Router {
   private _set: Set<BaseController>;

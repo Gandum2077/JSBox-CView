@@ -36,7 +36,7 @@ function split(path) {
     else {
         return [
             protocol + remainingPath.slice(0, lastIndex),
-            remainingPath.slice(lastIndex + 1)
+            remainingPath.slice(lastIndex + 1),
         ];
     }
 }
@@ -73,7 +73,7 @@ function join(...args) {
             return part.trim().replace(/(^[/]*|[/]*$)/g, "");
         }
     })
-        .filter(x => x.length)
+        .filter((x) => x.length)
         .join("/");
 }
 exports.join = join;

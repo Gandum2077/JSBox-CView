@@ -1,4 +1,8 @@
-import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
+import {
+  BaseController,
+  BaseControllerProps,
+  BaseControllerEvents,
+} from "./base-controller";
 import { Base } from "../components/base";
 import { ContentView } from "../components/single-views";
 import { cvid } from "../utils/cvid";
@@ -8,10 +12,14 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
   _layouts: {
     hidden: (make: MASConstraintMaker, view: AllUIView) => void;
     shown: (make: MASConstraintMaker, view: AllUIView) => void;
-  }
+  };
   line: ContentView;
   _defineView: () => UiTypes.ViewOptions;
-  constructor({ props, layout, views = [] }: {
+  constructor({
+    props,
+    layout,
+    views = [],
+  }: {
     props?: UiTypes.BaseViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     views?: UiTypes.AllViewOptions[];
@@ -19,7 +27,7 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
     super();
     this._props = {
       bgcolor: $color("groupedBackground", "secondarySurface"),
-      ...props
+      ...props,
     };
     this._layouts = {
       hidden: (make, view) => {
@@ -35,28 +43,28 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
         make.width.greaterThanOrEqualTo(250);
         make.width.lessThanOrEqualTo(350);
         make.width.equalTo(view.super).dividedBy(2.5).priority(999);
-      }
+      },
     };
     this.line = new ContentView({
       props: {
-        bgcolor: $color("separatorColor")
+        bgcolor: $color("separatorColor"),
       },
       layout: (make, view) => {
         make.top.bottom.right.inset(0);
         make.width.equalTo(0.5);
-      }
+      },
     });
     this._defineView = () => {
       return {
         type: "view",
         props: {
           ...this._props,
-          id: this.id
+          id: this.id,
         },
         layout,
-        views: [...views, this.line.definition]
+        views: [...views, this.line.definition],
       };
-    }
+    };
   }
 
   add(view: UiTypes.AllViewOptions | Base<any, any>) {
@@ -68,7 +76,7 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
     this.view.remakeLayout(this._layouts.shown);
     $ui.animate({
       duration: 0.3,
-      animation: () => this.view.relayout()
+      animation: () => this.view.relayout(),
     });
   }
 
@@ -76,7 +84,7 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
     this.view.remakeLayout(this._layouts.hidden);
     $ui.animate({
       duration: 0.3,
-      animation: () => this.view.relayout()
+      animation: () => this.view.relayout(),
     });
   }
 }
@@ -90,7 +98,10 @@ class MaskView extends Base<UIView, UiTypes.ViewOptions> {
   _dismissEvent: () => void;
   _gestureObject: any;
   _defineView: () => UiTypes.ViewOptions;
-  constructor({ props, layout = $layout.fill }: {
+  constructor({
+    props,
+    layout = $layout.fill,
+  }: {
     props: {
       bgcolor?: UIColor;
       dismissHandler?: () => void;
@@ -110,14 +121,14 @@ class MaskView extends Base<UIView, UiTypes.ViewOptions> {
         props: {
           ...this._props,
           hidden: true,
-          id: this.id
+          id: this.id,
         },
         layout,
         events: {
-          ready: sender => this._addGesture(sender, this._dismissEvent)
-        }
+          ready: (sender) => this._addGesture(sender, this._dismissEvent),
+        },
       };
-    }
+    };
   }
 
   _addGesture(view: UIView, event: () => void) {
@@ -126,11 +137,12 @@ class MaskView extends Base<UIView, UiTypes.ViewOptions> {
       type: objectId + ": NSObject",
       events: {
         swipeEvent: event,
-        tapEvent: event
-      }
+        tapEvent: event,
+      },
     });
     const object = $objc(objectId).$new();
-    $objc_retain(object); // 此步骤是必须的，否则将很快被系统释放掉，但是必须在关闭时手动释放掉，否则再次启动可能会有问题
+    $objc_retain(object); // 此步骤是必须的，否则将很快被系统释放掉，
+    // 但是必须在关闭时手动释放掉，否则再次启动可能会有问题
     this._gestureObject = object;
     const swipeGestureRecognizer = $objc("UISwipeGestureRecognizer")
       .$alloc()
@@ -160,19 +172,21 @@ class MaskView extends Base<UIView, UiTypes.ViewOptions> {
 }
 
 interface SplitViewControllerProps extends BaseControllerProps {
-  items: { controller: BaseController, bgcolor: UIColor }[];
+  items: { controller: BaseController; bgcolor: UIColor }[];
 }
 
 /** # CView SplitView Controller
- * 
+ *
  * 实现左右分栏布局的控制器, 本身不提供除了分割线以外的视觉效果
- * 
+ *
  * 此控制器加载后，会禁用原本的ScreenEdgePanGesture，此控制器应该作为根控制器使用
- * 
- * @param options.props.items: { controller: Controller, bgcolor: UIColor }[] 其中第一个放在主视图上, 第二个放在次视图上
- * 
+ *
+ * @param options.props.items: { controller: Controller, bgcolor: UIColor }[]
+ *  其中第一个放在主视图上, 第二个放在次视图上
+ *
  * @property sideBarShown: boolean = false 侧栏是否显示
- * @property canShowSidebar: boolean = true 是否启动显示侧栏的动作（若为false，依然可以用sideBarShown来控制侧栏的显示）
+ * @property canShowSidebar: boolean = true 是否启动显示侧栏的动作
+ *  （若为false，依然可以用sideBarShown来控制侧栏的显示）
  */
 export class SplitViewController extends BaseController {
   private _screenEdgePanGestureObject: any;
@@ -185,7 +199,11 @@ export class SplitViewController extends BaseController {
     secondaryView: SecondaryView;
     maskView: MaskView;
   };
-  constructor({ props, layout, events }: {
+  constructor({
+    props,
+    layout,
+    events,
+  }: {
     props: SplitViewControllerProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: BaseControllerEvents;
@@ -193,12 +211,12 @@ export class SplitViewController extends BaseController {
     super({
       props: {
         id: props.id,
-        bgcolor: props.bgcolor
+        bgcolor: props.bgcolor,
       },
       layout,
       events: {
         ...events,
-        didAppear: sender => {
+        didAppear: (sender) => {
           if (this._sideBarShown) {
             this._secondaryController.appear();
           } else {
@@ -210,8 +228,8 @@ export class SplitViewController extends BaseController {
           this._primaryController.disappear();
           this._secondaryController.disappear();
           events?.didDisappear?.(this);
-        }
-      }
+        },
+      },
     });
     this._sideBarShown = false;
     this._canShowSidebar = true;
@@ -224,25 +242,23 @@ export class SplitViewController extends BaseController {
     };
     this.cviews.secondaryView = new SecondaryView({
       props: {
-        bgcolor: props.items[1].bgcolor || $color("clear")
+        bgcolor: props.items[1].bgcolor || $color("clear"),
       },
       layout: (make, view) => {
         make.top.bottom.inset(0);
         make.right.equalTo(view.super.left);
         make.width.equalTo(view.super).dividedBy(3);
       },
-      views: [
-        props.items[1].controller.rootView.definition
-      ]
+      views: [props.items[1].controller.rootView.definition],
     });
     this.cviews.maskView = new MaskView({
       props: {
-        dismissHandler: () => (this.sideBarShown = false)
-      }
+        dismissHandler: () => (this.sideBarShown = false),
+      },
     });
     this.cviews.primaryView = new ContentView({
       props: {
-        bgcolor: props.items[0].bgcolor || $color("clear")
+        bgcolor: props.items[0].bgcolor || $color("clear"),
       },
       layout: (make, view) => {
         make.top.bottom.inset(0);
@@ -251,8 +267,8 @@ export class SplitViewController extends BaseController {
       },
       views: [
         props.items[0].controller.rootView.definition,
-        this.cviews.maskView.definition
-      ]
+        this.cviews.maskView.definition,
+      ],
     });
     this._screenEdgePanGestureObject = this._defineGestureObject(() => {
       if (!this.sideBarShown && this._canShowSidebar) this.sideBarShown = true;
@@ -274,7 +290,7 @@ export class SplitViewController extends BaseController {
   uirender() {
     const props: UiTypes.RootViewPrefs = {
       navBarHidden: true,
-      statusBarStyle: 0
+      statusBarStyle: 0,
     };
     super.uirender(props);
   }
@@ -282,7 +298,7 @@ export class SplitViewController extends BaseController {
   uipush() {
     const props: UiTypes.RootViewPrefs = {
       navBarHidden: true,
-      statusBarStyle: 0
+      statusBarStyle: 0,
     };
     super.uipush(props);
   }
@@ -292,8 +308,8 @@ export class SplitViewController extends BaseController {
     $define({
       type: objectId + ": NSObject",
       events: {
-        screenEdgePanEvent: event
-      }
+        screenEdgePanEvent: event,
+      },
     });
     const object = $objc(objectId).$new();
     $objc_retain(object);

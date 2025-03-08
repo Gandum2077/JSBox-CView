@@ -12,7 +12,7 @@ const UIModalPresentationStyle = {
     overFullScreen: 5,
     overCurrentContext: 6,
     popover: 7,
-    none: -1
+    none: -1,
 };
 /**
  *
@@ -32,7 +32,7 @@ const UIModalPresentationStyle = {
  *
  */
 class Sheet {
-    constructor({ presentMode = UIModalPresentationStyle.pageSheet, animated = true, interactiveDismissalDisabled = false, bgcolor = $color("secondarySurface"), cview, dismissalHandler }) {
+    constructor({ presentMode = UIModalPresentationStyle.pageSheet, animated = true, interactiveDismissalDisabled = false, bgcolor = $color("secondarySurface"), cview, dismissalHandler, }) {
         this._animated = animated;
         this._presentMode = presentMode;
         this._interactiveDismissalDisabled = interactiveDismissalDisabled;
@@ -59,8 +59,8 @@ class Sheet {
                 "viewDidDisappear:": () => {
                     if (this._dismissalHandler)
                         this._dismissalHandler();
-                }
-            }
+                },
+            },
         });
     }
     _add(cview) {

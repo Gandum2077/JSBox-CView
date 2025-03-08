@@ -17,7 +17,13 @@ export class SingleView<
   _events?: E;
   _views?: UiTypes.AllViewOptions[];
   _defineView: () => O;
-  constructor({ type, props, layout, events, views }: {
+  constructor({
+    type,
+    props,
+    layout,
+    events,
+    views,
+  }: {
     type: T;
     props?: P;
     layout?: (make: MASConstraintMaker, view: V) => void;
@@ -35,13 +41,13 @@ export class SingleView<
         type: this._type,
         props: {
           ...this._props,
-          id: this.id
+          id: this.id,
         },
         layout: this._layout,
         events: this._events,
-        views: this._views
+        views: this._views,
       } as O;
-    }
+    };
   }
 }
 
@@ -56,7 +62,7 @@ export class ClearView extends SingleView<
     props,
     layout = $layout.fill,
     events,
-    views
+    views,
   }: {
     props?: UiTypes.BaseViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
@@ -68,7 +74,7 @@ export class ClearView extends SingleView<
       props: { ...props },
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -84,7 +90,7 @@ export class ContentView extends SingleView<
     props,
     layout = $layout.fillSafeArea,
     events = {},
-    views
+    views,
   }: {
     props?: UiTypes.BaseViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
@@ -96,7 +102,7 @@ export class ContentView extends SingleView<
       props: { bgcolor: $color("primarySurface"), ...props },
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -118,7 +124,7 @@ export class MaskView extends SingleView<
     props,
     layout = $layout.fill,
     events,
-    views
+    views,
   }: {
     props?: UiTypes.BaseViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
@@ -130,11 +136,11 @@ export class MaskView extends SingleView<
       props: {
         bgcolor: $rgba(0, 0, 0, 0.2),
         ...props,
-        userInteractionEnabled: true
+        userInteractionEnabled: true,
       },
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -146,7 +152,12 @@ export class Label extends SingleView<
   UiTypes.BaseViewEvents<UILabelView>,
   UiTypes.LabelOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.LabelProps;
     layout?: (make: MASConstraintMaker, view: UILabelView) => void;
     events?: UiTypes.BaseViewEvents<UILabelView>;
@@ -157,7 +168,7 @@ export class Label extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -169,7 +180,12 @@ export class Button extends SingleView<
   UiTypes.BaseViewEvents<UIButtonView>,
   UiTypes.ButtonOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ButtonProps;
     layout?: (make: MASConstraintMaker, view: UIButtonView) => void;
     events?: UiTypes.BaseViewEvents<UIButtonView>;
@@ -180,7 +196,7 @@ export class Button extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -192,7 +208,12 @@ export class Input extends SingleView<
   UiTypes.InputEvents,
   UiTypes.InputOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.InputProps;
     layout?: (make: MASConstraintMaker, view: UIInputView) => void;
     events?: UiTypes.InputEvents;
@@ -203,7 +224,7 @@ export class Input extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -215,7 +236,12 @@ export class Slider extends SingleView<
   UiTypes.SliderEvents,
   UiTypes.SliderOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.SliderProps;
     layout?: (make: MASConstraintMaker, view: UISliderView) => void;
     events?: UiTypes.SliderEvents;
@@ -226,7 +252,7 @@ export class Slider extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -238,7 +264,12 @@ export class Switch extends SingleView<
   UiTypes.SwitchEvents,
   UiTypes.SwitchOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.SwitchProps;
     layout?: (make: MASConstraintMaker, view: UISwitchView) => void;
     events?: UiTypes.SwitchEvents;
@@ -249,7 +280,7 @@ export class Switch extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -261,7 +292,12 @@ export class Spinner extends SingleView<
   UiTypes.BaseViewEvents<UISpinnerView>,
   UiTypes.SpinnerOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.SpinnerProps;
     layout?: (make: MASConstraintMaker, view: UISpinnerView) => void;
     events?: UiTypes.BaseViewEvents<UISpinnerView>;
@@ -272,7 +308,7 @@ export class Spinner extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -284,7 +320,12 @@ export class Progress extends SingleView<
   UiTypes.BaseViewEvents<UIProgressView>,
   UiTypes.ProgressOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ProgressProps;
     layout?: (make: MASConstraintMaker, view: UIProgressView) => void;
     events?: UiTypes.BaseViewEvents<UIProgressView>;
@@ -295,7 +336,7 @@ export class Progress extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -307,7 +348,12 @@ export class Gallery extends SingleView<
   UiTypes.GalleryEvents,
   UiTypes.GalleryOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.GalleryProps;
     layout?: (make: MASConstraintMaker, view: UIGalleryView) => void;
     events?: UiTypes.GalleryEvents;
@@ -318,7 +364,7 @@ export class Gallery extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -330,7 +376,12 @@ export class Stepper extends SingleView<
   UiTypes.StepperEvents,
   UiTypes.StepperOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.StepperProps;
     layout?: (make: MASConstraintMaker, view: UIStepperView) => void;
     events?: UiTypes.StepperEvents;
@@ -341,7 +392,7 @@ export class Stepper extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -353,7 +404,12 @@ export class Text extends SingleView<
   UiTypes.TextEvents,
   UiTypes.TextOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.TextProps;
     layout?: (make: MASConstraintMaker, view: UITextView) => void;
     events?: UiTypes.TextEvents;
@@ -364,7 +420,7 @@ export class Text extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -376,7 +432,12 @@ export class Image extends SingleView<
   UiTypes.BaseViewEvents<UIImageView>,
   UiTypes.ImageOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ImageProps;
     layout?: (make: MASConstraintMaker, view: UIImageView) => void;
     events?: UiTypes.BaseViewEvents<UIImageView>;
@@ -387,7 +448,7 @@ export class Image extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -399,7 +460,12 @@ export class Video extends SingleView<
   UiTypes.BaseViewEvents<UIVideoView>,
   UiTypes.VideoOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.VideoProps;
     layout?: (make: MASConstraintMaker, view: UIVideoView) => void;
     events?: UiTypes.BaseViewEvents<UIVideoView>;
@@ -410,7 +476,7 @@ export class Video extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -422,7 +488,12 @@ export class Scroll extends SingleView<
   UiTypes.ScrollEvents,
   UiTypes.ScrollOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ScrollProps;
     layout?: (make: MASConstraintMaker, view: UIScrollView) => void;
     events?: UiTypes.ScrollEvents;
@@ -433,7 +504,7 @@ export class Scroll extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -445,7 +516,12 @@ export class Stack extends SingleView<
   UiTypes.BaseViewEvents<UIStackView>,
   UiTypes.StackOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.StackProps;
     layout?: (make: MASConstraintMaker, view: UIStackView) => void;
     events?: UiTypes.BaseViewEvents<UIStackView>;
@@ -456,7 +532,7 @@ export class Stack extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -468,7 +544,12 @@ export class Tab extends SingleView<
   UiTypes.TabEvents,
   UiTypes.TabOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.TabProps;
     layout?: (make: MASConstraintMaker, view: UITabView) => void;
     events?: UiTypes.TabEvents;
@@ -479,7 +560,7 @@ export class Tab extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -491,7 +572,12 @@ export class Menu extends SingleView<
   UiTypes.MenuEvents,
   UiTypes.MenuOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.MenuProps;
     layout?: (make: MASConstraintMaker, view: UIMenuView) => void;
     events?: UiTypes.MenuEvents;
@@ -502,7 +588,7 @@ export class Menu extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -514,7 +600,12 @@ export class Map extends SingleView<
   UiTypes.BaseViewEvents<UIMapView>,
   UiTypes.MapOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.MapProps;
     layout?: (make: MASConstraintMaker, view: UIMapView) => void;
     events?: UiTypes.BaseViewEvents<UIMapView>;
@@ -525,7 +616,7 @@ export class Map extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -537,7 +628,12 @@ export class Web extends SingleView<
   UiTypes.WebEvents,
   UiTypes.WebOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.WebProps;
     layout?: (make: MASConstraintMaker, view: UIWebView) => void;
     events?: UiTypes.WebEvents;
@@ -548,7 +644,7 @@ export class Web extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -560,7 +656,12 @@ export class List extends SingleView<
   UiTypes.ListEvents,
   UiTypes.ListOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ListProps;
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
     events?: UiTypes.ListEvents;
@@ -571,7 +672,7 @@ export class List extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -583,7 +684,12 @@ export class Matrix extends SingleView<
   UiTypes.MatrixEvents,
   UiTypes.MatrixOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.MatrixProps;
     layout?: (make: MASConstraintMaker, view: UIMatrixView) => void;
     events?: UiTypes.MatrixEvents;
@@ -594,7 +700,7 @@ export class Matrix extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -606,7 +712,12 @@ export class Blur extends SingleView<
   UiTypes.BaseViewEvents<UIBlurView>,
   UiTypes.BlurOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.BlurProps;
     layout?: (make: MASConstraintMaker, view: UIBlurView) => void;
     events?: UiTypes.BaseViewEvents<UIBlurView>;
@@ -617,7 +728,7 @@ export class Blur extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -629,7 +740,12 @@ export class Gradient extends SingleView<
   UiTypes.BaseViewEvents<UIGradientView>,
   UiTypes.GradientOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.GradientProps;
     layout?: (make: MASConstraintMaker, view: UIGradientView) => void;
     events?: UiTypes.BaseViewEvents<UIGradientView>;
@@ -640,7 +756,7 @@ export class Gradient extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -652,7 +768,12 @@ export class DatePicker extends SingleView<
   UiTypes.DatePickerEvents,
   UiTypes.DatePickerOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.DatePickerProps;
     layout?: (make: MASConstraintMaker, view: UIDatePickerView) => void;
     events?: UiTypes.DatePickerEvents;
@@ -663,7 +784,7 @@ export class DatePicker extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -675,7 +796,12 @@ export class Picker extends SingleView<
   UiTypes.PickerEvents,
   UiTypes.PickerOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.PickerProps;
     layout?: (make: MASConstraintMaker, view: UIPickerView) => void;
     events?: UiTypes.PickerEvents;
@@ -686,7 +812,7 @@ export class Picker extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -698,7 +824,12 @@ export class Canvas extends SingleView<
   UiTypes.CanvasEvents,
   UiTypes.CanvasOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.BaseViewProps;
     layout?: (make: MASConstraintMaker, view: UICanvasView) => void;
     events?: UiTypes.CanvasEvents;
@@ -709,7 +840,7 @@ export class Canvas extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -721,7 +852,12 @@ export class Markdown extends SingleView<
   UiTypes.BaseViewEvents<UIMarkdownView>,
   UiTypes.MarkdownOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.MarkdownProps;
     layout?: (make: MASConstraintMaker, view: UIMarkdownView) => void;
     events?: UiTypes.BaseViewEvents<UIMarkdownView>;
@@ -732,7 +868,7 @@ export class Markdown extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -744,7 +880,12 @@ export class Lottie extends SingleView<
   UiTypes.BaseViewEvents<UILottieView>,
   UiTypes.LottieOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.LottieProps;
     layout?: (make: MASConstraintMaker, view: UILottieView) => void;
     events?: UiTypes.BaseViewEvents<UILottieView>;
@@ -755,7 +896,7 @@ export class Lottie extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -767,7 +908,12 @@ export class Chart extends SingleView<
   UiTypes.ChartEvents,
   UiTypes.ChartOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.ChartProps;
     layout?: (make: MASConstraintMaker, view: UIChartView) => void;
     events?: UiTypes.ChartEvents;
@@ -778,7 +924,7 @@ export class Chart extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -790,7 +936,12 @@ export class Code extends SingleView<
   UiTypes.BaseViewEvents<UICodeView>,
   UiTypes.CodeOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.CodeProps;
     layout?: (make: MASConstraintMaker, view: UICodeView) => void;
     events?: UiTypes.BaseViewEvents<UICodeView>;
@@ -801,7 +952,7 @@ export class Code extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }
@@ -813,7 +964,12 @@ export class Runtime extends SingleView<
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.RuntimeOptions
 > {
-  constructor({ props, layout, events, views }: {
+  constructor({
+    props,
+    layout,
+    events,
+    views,
+  }: {
     props?: UiTypes.RuntimeProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: UiTypes.BaseViewEvents<UIView>;
@@ -824,7 +980,7 @@ export class Runtime extends SingleView<
       props,
       layout,
       events,
-      views
+      views,
     });
   }
 }

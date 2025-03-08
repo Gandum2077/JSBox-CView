@@ -12,16 +12,11 @@ exports.selectableTypes = [
     "date",
     "interactive-info",
     "link",
-    "action"
+    "action",
 ];
-exports.excludedTypes = [
-    "info",
-    "interactive-info",
-    "link",
-    "action"
-];
+exports.excludedTypes = ["info", "interactive-info", "link", "action"];
 class Cell extends base_1.Base {
-    constructor({ key, title, value, titleColor = $color("primaryText"), changedEvent }, values) {
+    constructor({ key, title, value, titleColor = $color("primaryText"), changedEvent, }, values) {
         super();
         this._key = key;
         this._title = title;
@@ -34,10 +29,10 @@ class Cell extends base_1.Base {
                 type: "view",
                 props: {
                     selectable: exports.selectableTypes.includes(this._type),
-                    id: this.id
+                    id: this.id,
                 },
                 layout: $layout.fill,
-                views: [this._defineTitleView(), this._defineValueView()]
+                views: [this._defineTitleView(), this._defineValueView()],
             };
         };
     }
@@ -64,13 +59,13 @@ class Cell extends base_1.Base {
                 id: "title",
                 text: this._title,
                 textColor: this._titleColor,
-                font: $font(17)
+                font: $font(17),
             },
             layout: (make, view) => {
                 make.centerY.equalTo(view.super);
                 make.width.equalTo((0, uitools_1.getTextWidth)(this._title || ""));
                 make.left.inset(15);
-            }
+            },
         };
     }
 }
@@ -97,13 +92,13 @@ class BaseStringCell extends Cell {
                     props: {
                         symbol: "chevron.right",
                         tintColor: $color("lightGray", "darkGray"),
-                        contentMode: 1
+                        contentMode: 1,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.size.equalTo($size(17, 17));
                         make.right.inset(0);
-                    }
+                    },
                 },
                 {
                     type: "label",
@@ -114,15 +109,15 @@ class BaseStringCell extends Cell {
                         font: $font(17),
                         textColor: this._textColor,
                         bgcolor: $color("clear"),
-                        userInteractionEnabled: false
+                        userInteractionEnabled: false,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.left.inset(0);
                         make.right.equalTo(view.prev.left).inset(5);
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         };
     }
     _handleValue(text) {
@@ -205,39 +200,39 @@ class StepperCell extends Cell {
                         id: "stepper",
                         value: this._value || this._min,
                         max: this._max,
-                        min: this._min
+                        min: this._min,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.right.inset(0);
                     },
                     events: {
-                        changed: sender => {
+                        changed: (sender) => {
                             this.value = sender.value;
                             if (this._changedEvent)
                                 this._changedEvent();
-                        }
-                    }
+                        },
+                    },
                 },
                 {
                     type: "label",
                     props: {
                         id: "label",
                         text: this._value || this._min,
-                        align: $align.right
+                        align: $align.right,
                     },
                     layout: (make, view) => {
                         make.top.bottom.inset(0);
                         make.right.equalTo(view.prev.left).inset(10);
                         make.width.equalTo(30);
-                    }
-                }
+                    },
+                },
             ],
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.prev.right).inset(10);
                 make.right.inset(15);
-            }
+            },
         };
     }
     _handleValue(num) {
@@ -269,7 +264,7 @@ class BooleanCell extends Cell {
                 id: "switch",
                 on: this._value,
                 onColor: this._onColor,
-                thumbColor: this._thumbColor
+                thumbColor: this._thumbColor,
             },
             layout: (make, view) => {
                 make.size.equalTo($size(51, 31));
@@ -277,12 +272,12 @@ class BooleanCell extends Cell {
                 make.right.inset(15);
             },
             events: {
-                changed: sender => {
+                changed: (sender) => {
                     this.value = sender.on;
                     if (this._changedEvent)
                         this._changedEvent();
-                }
-            }
+                },
+            },
         };
     }
     _handleValue(bool) {
@@ -295,7 +290,7 @@ class SliderCell extends Cell {
     constructor(props, values) {
         super(props, values);
         this._type = "slider";
-        const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor } = props;
+        const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor, } = props;
         this._decimal = decimal;
         this._min = min;
         this._max = max;
@@ -313,12 +308,12 @@ class SliderCell extends Cell {
                     props: {
                         id: "label",
                         text: this._value.toFixed(this._decimal),
-                        align: $align.center
+                        align: $align.center,
                     },
                     layout: (make, view) => {
                         make.top.right.bottom.inset(0);
                         make.width.equalTo(44);
-                    }
+                    },
                 },
                 {
                     type: "slider",
@@ -330,14 +325,14 @@ class SliderCell extends Cell {
                         minColor: this._minColor,
                         maxColor: this._maxColor,
                         thumbColor: this._thumbColor,
-                        continuous: true
+                        continuous: true,
                     },
                     layout: (make, view) => {
                         make.top.left.bottom.inset(0);
                         make.right.equalTo(view.prev.left);
                     },
                     events: {
-                        changed: sender => {
+                        changed: (sender) => {
                             const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
                             const label = sender.prev;
                             label.text = adjustedValue.toString();
@@ -346,21 +341,21 @@ class SliderCell extends Cell {
                                 this._value = adjustedValue;
                             }
                         },
-                        touchesEnded: sender => {
+                        touchesEnded: (sender) => {
                             const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
                             this.value = adjustedValue;
                             if (this._changedEvent)
                                 this._changedEvent();
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             ],
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.lessThanOrEqualTo(view.prev.right).inset(10).priority(999);
                 make.width.lessThanOrEqualTo(250);
                 make.right.inset(15);
-            }
+            },
         };
     }
     _handleValue(num) {
@@ -400,13 +395,13 @@ class ListCell extends Cell {
                     props: {
                         symbol: "chevron.right",
                         tintColor: $color("lightGray", "darkGray"),
-                        contentMode: 1
+                        contentMode: 1,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.size.equalTo($size(17, 17));
                         make.right.inset(0);
-                    }
+                    },
                 },
                 {
                     type: "label",
@@ -414,15 +409,15 @@ class ListCell extends Cell {
                         id: "label",
                         text: this._items[this._value],
                         textColor: $color("secondaryText"),
-                        align: $align.right
+                        align: $align.right,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.left.inset(0);
                         make.right.equalTo(view.prev.left).inset(5);
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         };
     }
     _handleValue(num) {
@@ -445,7 +440,7 @@ class TabCell extends Cell {
             props: {
                 id: "tab",
                 items: this._items,
-                index: this._value
+                index: this._value,
             },
             layout: (make, view) => {
                 make.centerY.equalTo(view.super);
@@ -455,12 +450,12 @@ class TabCell extends Cell {
                 make.right.inset(15);
             },
             events: {
-                changed: sender => {
+                changed: (sender) => {
                     this.value = sender.index;
                     if (this._changedEvent)
                         this._changedEvent();
-                }
-            }
+                },
+            },
         };
     }
     _handleValue(num) {
@@ -473,10 +468,10 @@ function dateToString(mode, date) {
     if (!date)
         return "";
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
     if (mode === 0 || mode === 3) {
         return `${hours}:${minutes}`;
     }
@@ -513,13 +508,13 @@ class DateCell extends Cell {
                     props: {
                         symbol: "chevron.right",
                         tintColor: $color("lightGray", "darkGray"),
-                        contentMode: 1
+                        contentMode: 1,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.size.equalTo($size(17, 17));
                         make.right.inset(0);
-                    }
+                    },
                 },
                 {
                     type: "label",
@@ -527,15 +522,15 @@ class DateCell extends Cell {
                         id: "label",
                         text: dateToString(this._mode, this._value),
                         textColor: $color("secondaryText"),
-                        align: $align.right
+                        align: $align.right,
                     },
                     layout: (make, view) => {
                         make.centerY.equalTo(view.super);
                         make.left.inset(0);
                         make.right.equalTo(view.prev.left).inset(5);
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         };
     }
     _handleValue(date) {
@@ -556,13 +551,13 @@ class InfoCell extends Cell {
                 id: "label",
                 text: this._value,
                 textColor: $color("secondaryText"),
-                align: $align.right
+                align: $align.right,
             },
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.prev.right).inset(10);
                 make.right.inset(15);
-            }
+            },
         };
     }
     _handleValue(text) {
@@ -585,13 +580,13 @@ class InteractiveInfoCell extends Cell {
                 id: "label",
                 text: this._value,
                 textColor: $color("secondaryText"),
-                align: $align.right
+                align: $align.right,
             },
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.prev.right).inset(10);
                 make.right.inset(15);
-            }
+            },
         };
     }
     _handleValue(text) {
@@ -616,17 +611,17 @@ class LinkCell extends Cell {
                     styles: [
                         {
                             range: $range(0, this._value.length),
-                            link: this._value
-                        }
-                    ]
+                            link: this._value,
+                        },
+                    ],
                 },
-                align: $align.right
+                align: $align.right,
             },
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.prev.right).inset(10);
                 make.right.inset(15);
-            }
+            },
         };
     }
     _handleValue(text) {
@@ -637,9 +632,9 @@ class LinkCell extends Cell {
             styles: [
                 {
                     range: $range(0, text.length),
-                    link: text
-                }
-            ]
+                    link: text,
+                },
+            ],
         };
         return text;
     }
@@ -656,7 +651,7 @@ class ActionCell extends Cell {
         return {
             type: "label",
             props: {},
-            layout: make => make.width.equalTo(0)
+            layout: (make) => make.width.equalTo(0),
         };
     }
     _defineValueView() {
@@ -664,13 +659,13 @@ class ActionCell extends Cell {
             type: "label",
             props: {
                 text: this._title,
-                textColor: this._destructive ? $color("red") : $color("systemLink")
+                textColor: this._destructive ? $color("red") : $color("systemLink"),
             },
             layout: (make, view) => {
                 make.top.bottom.inset(0);
                 make.left.equalTo(view.prev.left);
                 make.left.right.inset(15);
-            }
+            },
         };
     }
     _handleValue() {
@@ -680,7 +675,9 @@ class ActionCell extends Cell {
 /**
  * # cview PreferenceListView_static
  *
- * 便捷的设置列表实现. 其所有 cell 均为静态 cell, 可以同时使用 list 控件的 props(除了 template, data)和 events(除了 didSelect), 同时具有独特方法 set(key, value), 以及独特方法 changed
+ * 便捷的设置列表实现. 其所有 cell 均为静态 cell,
+ * 可以同时使用 list 控件的 props(除了 template, data)和 events(除了 didSelect),
+ * 同时具有独特方法 set(key, value), 以及独特方法 changed
  *
  * sections 为 Array, 里面的 section 定义:
  *
@@ -691,7 +688,9 @@ class ActionCell extends Cell {
  *
  * - 通用:
  *
- *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper','boolean', 'slider', 'list', 'tab', 'interactive-info', 'info', 'link', 'action'
+ *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper',
+ *       'boolean', 'slider', 'list', 'tab', 'interactive-info', 'info',
+ *       'link', 'action'
  *     - key?: string 键. 如没有则不会返回其值.
  *     - title?: string 标题
  *     - value?: any 在下面专项里详解.
@@ -780,12 +779,12 @@ class ActionCell extends Cell {
  * - changed: values => {}
  */
 class PreferenceListView extends base_1.Base {
-    constructor({ sections, props = {}, layout, events = {} }) {
+    constructor({ sections, props = {}, layout, events = {}, }) {
         super();
         this._sections = sections;
         this._values = {};
-        sections.forEach(section => {
-            section.rows.forEach(row => {
+        sections.forEach((section) => {
+            section.rows.forEach((row) => {
                 if (row.key && !exports.excludedTypes.includes(row.type)) {
                     this._values[row.key] = row.value;
                 }
@@ -793,23 +792,23 @@ class PreferenceListView extends base_1.Base {
         });
         this._props = props;
         this._layout = layout;
-        this._cells = this._sections.map(section => ({
+        this._cells = this._sections.map((section) => ({
             title: section.title,
-            rows: section.rows.map(props => {
+            rows: section.rows.map((props) => {
                 if (events.changed)
                     props.changedEvent = () => {
                         if (events.changed)
                             events.changed(this.values);
                     };
                 return this._createCell(props);
-            })
+            }),
         }));
         this._defineView = () => {
             return {
                 type: "list",
-                props: Object.assign(Object.assign({ style: 2 }, this._props), { id: this.id, data: this._cells.map(section => ({
+                props: Object.assign(Object.assign({ style: 2 }, this._props), { id: this.id, data: this._cells.map((section) => ({
                         title: section.title,
-                        rows: section.rows.map(cell => cell.definition)
+                        rows: section.rows.map((cell) => cell.definition),
                     })) }),
                 layout: this._layout,
                 events: {
@@ -821,11 +820,11 @@ class PreferenceListView extends base_1.Base {
                                     text: cell.value,
                                     type: $kbType.default,
                                     placeholder: cell._placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         cell.value = text;
                                         if (cell._changedEvent)
                                             cell._changedEvent();
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -834,11 +833,11 @@ class PreferenceListView extends base_1.Base {
                                     text: cell.value,
                                     type: $kbType.decimal,
                                     placeholder: cell._placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         cell.value = parseFloat(text);
                                         if (cell._changedEvent)
                                             cell._changedEvent();
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -847,11 +846,11 @@ class PreferenceListView extends base_1.Base {
                                     text: cell.value,
                                     type: $kbType.number,
                                     placeholder: cell._placeholder,
-                                    handler: text => {
+                                    handler: (text) => {
                                         cell.value = parseInt(text);
                                         if (cell._changedEvent)
                                             cell._changedEvent();
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -862,7 +861,7 @@ class PreferenceListView extends base_1.Base {
                                         cell.value = index;
                                         if (cell._changedEvent)
                                             cell._changedEvent();
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -884,7 +883,7 @@ class PreferenceListView extends base_1.Base {
                                         cell.value = date;
                                         if (cell._changedEvent)
                                             cell._changedEvent();
-                                    }
+                                    },
                                 });
                                 break;
                             }
@@ -895,21 +894,21 @@ class PreferenceListView extends base_1.Base {
                                         message: cell.value,
                                         actions: [
                                             {
-                                                title: "取消"
+                                                title: "取消",
                                             },
                                             {
                                                 title: "复制",
                                                 handler: () => {
                                                     $clipboard.text = cell.value;
-                                                }
-                                            }
-                                        ]
+                                                },
+                                            },
+                                        ],
                                     });
                                 }
                                 else {
                                     $ui.alert({
                                         title: cell._title,
-                                        message: cell.value
+                                        message: cell.value,
                                     });
                                 }
                                 break;
@@ -925,8 +924,8 @@ class PreferenceListView extends base_1.Base {
                             default:
                                 break;
                         }
-                    }
-                }
+                    },
+                },
             };
         };
     }
@@ -966,8 +965,8 @@ class PreferenceListView extends base_1.Base {
         return this._values;
     }
     set(key, value) {
-        this._cells.forEach(section => {
-            section.rows.forEach(row => {
+        this._cells.forEach((section) => {
+            section.rows.forEach((row) => {
                 if (row.key === key)
                     row.value = value;
             });

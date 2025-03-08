@@ -19,7 +19,7 @@ class DialogSheet extends sheet_1.Sheet {
     constructor(props) {
         super({
             presentMode: props.presentMode || ($device.isIpad ? 2 : 1),
-            bgcolor: props.bgcolor
+            bgcolor: props.bgcolor,
         });
         this._props = props;
         this._done = false;
@@ -37,12 +37,12 @@ class DialogSheet extends sheet_1.Sheet {
             props: {
                 title: this._props.title,
                 leftBarButtonItems: [
-                    { symbol: "xmark", handler: () => this.dismiss() }
+                    { symbol: "xmark", handler: () => this.dismiss() },
                 ],
                 rightBarButtonItems: this._props.doneButtonHidden
                     ? []
-                    : [{ title: (0, l10n_1.l10n)("DONE"), handler: () => this.done() }]
-            }
+                    : [{ title: (0, l10n_1.l10n)("DONE"), handler: () => this.done() }],
+            },
         });
         this._props.cview._layout = (make, view) => {
             make.bottom.equalTo(view.super);
@@ -51,7 +51,7 @@ class DialogSheet extends sheet_1.Sheet {
         };
         this._cview = new single_views_1.ContentView({
             props: { bgcolor: $color("clear") },
-            views: [this._navbar.definition, this._props.cview.definition]
+            views: [this._navbar.definition, this._props.cview.definition],
         });
         super.present();
     }

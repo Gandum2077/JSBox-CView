@@ -12,7 +12,8 @@ const cvid_1 = require("../utils/cvid");
  * - definition: R  获得对应的 view 的定义
  *
  * ## 方法
- * - add(view: UiTypes.AllViewOptions | Base<any, any>): void  添加子 view。其中 `view` 参数可以是 CView，或 view 的定义
+ * - add(view: UiTypes.AllViewOptions | Base<any, any>): void  添加子 view。
+ *   其中 `view` 参数可以是 CView，或 view 的定义
  *
  * ## 说明
  * 视图是 CView 框架的重点，其名称的含义为“组件化视图”。设计目的是：

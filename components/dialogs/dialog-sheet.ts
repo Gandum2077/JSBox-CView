@@ -7,7 +7,7 @@ import { Base } from "../base";
 
 /**
  * dialog所需要的sheet
- * 
+ *
  * @param title 标题
  * @param cview 内容视图
  * @param doneHandler 完成时的回调
@@ -15,7 +15,11 @@ import { Base } from "../base";
  * @param bgcolor 背景颜色
  * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
  */
-export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions> {
+export class DialogSheet extends Sheet<
+  ContentView,
+  UIView,
+  UiTypes.ViewOptions
+> {
   _props: {
     title: string;
     cview: Base<any, any>;
@@ -23,7 +27,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     presentMode?: number;
     bgcolor?: UIColor;
     doneButtonHidden?: boolean;
-  }
+  };
   _done: boolean;
   private _navbar?: CustomNavigationBar;
   resolve?: (value: any) => void;
@@ -39,7 +43,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
   }) {
     super({
       presentMode: props.presentMode || ($device.isIpad ? 2 : 1),
-      bgcolor: props.bgcolor
+      bgcolor: props.bgcolor,
     });
     this._props = props;
     this._done = false;
@@ -58,12 +62,12 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
       props: {
         title: this._props.title,
         leftBarButtonItems: [
-          { symbol: "xmark", handler: () => this.dismiss() }
+          { symbol: "xmark", handler: () => this.dismiss() },
         ],
         rightBarButtonItems: this._props.doneButtonHidden
           ? []
-          : [{ title: l10n("DONE"), handler: () => this.done() }]
-      }
+          : [{ title: l10n("DONE"), handler: () => this.done() }],
+      },
     });
     this._props.cview._layout = (make, view) => {
       make.bottom.equalTo(view.super);
@@ -72,7 +76,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     };
     this._cview = new ContentView({
       props: { bgcolor: $color("clear") },
-      views: [this._navbar.definition, this._props.cview.definition]
+      views: [this._navbar.definition, this._props.cview.definition],
     });
     super.present();
   }

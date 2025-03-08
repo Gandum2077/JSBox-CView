@@ -9,7 +9,7 @@ const navBarStyles = {
     hidden: 0,
     minimized: 1,
     normal: 2,
-    expanded: 3
+    expanded: 3,
 };
 const navBarLayouts = [
     (make, view) => {
@@ -27,7 +27,7 @@ const navBarLayouts = [
     (make, view) => {
         make.left.right.top.inset(0);
         make.bottom.equalTo(view.super.safeAreaTop).inset(-100);
-    }
+    },
 ];
 /**
  * # CView Custom NavigationBar
@@ -39,7 +39,8 @@ const navBarLayouts = [
  * - 拥有隐藏、最小化、普通、扩展四种布局方式
  *   - 隐藏: 什么都不显示
  *   - 最小化: safeAreaHeight 为 25, 只显示 titleView, 若用 title, font 为\$font(14)
- *   - 普通: safeAreaHeight 为 50, 显示 titleView, leftBarButtonItems 或 popButton, rightBarButtonItems, 若用 title, font 为\$font("bold", 17)
+ *   - 普通: safeAreaHeight 为 50, 显示 titleView, leftBarButtonItems 或 popButton,
+ *     rightBarButtonItems, 若用 title, font 为\$font("bold", 17)
  *   - 扩展: safeAreaHeight 为 100, 除上面的之外, 再显示一个 toolView
  * - 自动适应全面屏和非全面屏
  *
@@ -57,7 +58,8 @@ const navBarLayouts = [
  *   | {symbol: string, handler: () => void, tintColor?: UIColor}[]
  *   | {title: string, handler: () => void, tintColor?: UIColor}[]
  *   | {image: UIImage, handler: () => void, tintColor?: UIColor}[]
- *   如果用的是 cview，其布局将被重新指定，即不需要（也不能）指定布局。可以通过 cview.width 来指定应有的宽度，如果没有此属性，则宽度为 50
+ *   如果用的是 cview，其布局将被重新指定，即不需要（也不能）指定布局。
+ *   可以通过 cview.width 来指定应有的宽度，如果没有此属性，则宽度为 50
  *   建议最多放两个
  * - rightBarButtonItems 定义同上，建议最多放两个
  * - toolView: cview 在 expanded 模式下才会显现的
@@ -82,7 +84,7 @@ const navBarLayouts = [
  * - expand() 扩展布局
  */
 class CustomNavigationBar extends base_1.Base {
-    constructor({ props = {}, events = {} } = {}) {
+    constructor({ props = {}, events = {}, } = {}) {
         super();
         this._props = Object.assign({ leftBarButtonItems: [], rightBarButtonItems: [], style: navBarStyles.normal, tintColor: $color("primaryText") }, props);
         this._events = events;
@@ -108,7 +110,7 @@ class CustomNavigationBar extends base_1.Base {
                 const chevronOptions = {
                     type: "view",
                     props: {
-                        userInteractionEnabled: false
+                        userInteractionEnabled: false,
                     },
                     layout: (make) => {
                         make.left.top.bottom.inset(0);
@@ -120,11 +122,11 @@ class CustomNavigationBar extends base_1.Base {
                             props: {
                                 symbol: "chevron.left",
                                 contentMode: 1,
-                                tintColor: this._props.tintColor
+                                tintColor: this._props.tintColor,
                             },
-                            layout: (make) => make.edges.insets($insets(12.5, 10, 12.5, 0))
-                        }
-                    ]
+                            layout: (make) => make.edges.insets($insets(12.5, 10, 12.5, 0)),
+                        },
+                    ],
                 };
                 views.push(chevronOptions);
                 if (this._props.popButtonTitle) {
@@ -134,19 +136,19 @@ class CustomNavigationBar extends base_1.Base {
                             align: $align.left,
                             text: this._props.popButtonTitle,
                             font: $font(17),
-                            textColor: this._props.tintColor
+                            textColor: this._props.tintColor,
                         },
                         layout: (make, view) => {
                             make.top.bottom.right.inset(0);
                             make.left.equalTo(view.prev.right);
-                        }
+                        },
                     };
                     views.push(popButtonTitleOptions);
                 }
                 this.cviews.leftItemView = new single_views_1.Button({
                     props: {
                         bgcolor: $color("clear"),
-                        cornerRadius: 0
+                        cornerRadius: 0,
                     },
                     views,
                     layout: (make, view) => {
@@ -154,45 +156,45 @@ class CustomNavigationBar extends base_1.Base {
                         make.left.top.bottom.inset(0);
                     },
                     events: {
-                        tapped: sender => {
+                        tapped: (sender) => {
                             if (this._events.popHandler)
                                 this._events.popHandler(this);
                             $ui.pop();
                         },
                         longPressed: this._props.popToRootEnabled
-                            ? sender => {
+                            ? (sender) => {
                                 if (this._events.popToRootHandler)
                                     this._events.popToRootHandler(this);
                                 $ui.popToRoot();
                             }
-                            : undefined
-                    }
+                            : undefined,
+                    },
                 });
             }
             else {
                 leftInset = this._calculateItemViewWidth(this._props.leftBarButtonItems);
                 this.cviews.leftItemView = new single_views_1.ContentView({
                     props: {
-                        bgcolor: undefined
+                        bgcolor: undefined,
                     },
                     layout: (make, view) => {
                         make.width.equalTo(leftInset);
                         make.left.top.bottom.inset(0);
                     },
-                    views: this._createCviewsOnItemView(this._props.leftBarButtonItems).map(n => n.definition)
+                    views: this._createCviewsOnItemView(this._props.leftBarButtonItems).map((n) => n.definition),
                 });
             }
             // rightItemView
             const rightInset = this._calculateItemViewWidth(this._props.rightBarButtonItems);
             this.cviews.rightItemView = new single_views_1.ContentView({
                 props: {
-                    bgcolor: undefined
+                    bgcolor: undefined,
                 },
                 layout: (make, view) => {
                     make.width.equalTo(rightInset);
                     make.right.top.bottom.inset(0);
                 },
-                views: this._createCviewsOnItemView(this._props.rightBarButtonItems).map(n => n.definition)
+                views: this._createCviewsOnItemView(this._props.rightBarButtonItems).map((n) => n.definition),
             });
             // titleView
             const titleViewInset = Math.max(leftInset, rightInset);
@@ -203,36 +205,36 @@ class CustomNavigationBar extends base_1.Base {
                         font: $font("bold", 17),
                         align: $align.center,
                         textColor: this._props.tintColor,
-                        userInteractionEnabled: true
+                        userInteractionEnabled: true,
                     },
                     layout: (make, view) => {
                         make.left.right.inset(titleViewInset);
                         make.top.bottom.inset(0);
                     },
                     events: {
-                        tapped: sender => {
+                        tapped: (sender) => {
                             if (this._events.titleTapped)
                                 this._events.titleTapped(this);
-                        }
-                    }
+                        },
+                    },
                 });
             }
             else {
                 this.cviews.titleViewWrapper = new single_views_1.ContentView({
                     props: {
-                        bgcolor: undefined
+                        bgcolor: undefined,
                     },
                     layout: (make, view) => {
                         make.left.right.inset(titleViewInset);
                         make.top.bottom.inset(0);
                     },
-                    views: this._props.titleView && [this._props.titleView.definition]
+                    views: this._props.titleView && [this._props.titleView.definition],
                 });
             }
             // contentView
             this.cviews.contentView = new single_views_1.ContentView({
                 props: {
-                    bgcolor: undefined
+                    bgcolor: undefined,
                 },
                 layout: (make, view) => {
                     make.top.inset(0);
@@ -242,44 +244,44 @@ class CustomNavigationBar extends base_1.Base {
                 views: [
                     this.cviews.titleViewWrapper.definition,
                     this.cviews.leftItemView.definition,
-                    this.cviews.rightItemView.definition
-                ]
+                    this.cviews.rightItemView.definition,
+                ],
             });
             // toolView
             this.cviews.toolViewWrapper = new single_views_1.ContentView({
                 props: {
-                    bgcolor: undefined
+                    bgcolor: undefined,
                 },
                 layout: (make, view) => {
                     make.left.right.bottom.equalTo(view.super);
                     make.top.equalTo(view.super).inset(50);
                 },
-                views: this._props.toolView && [this._props.toolView.definition]
+                views: this._props.toolView && [this._props.toolView.definition],
             });
             if (this._props.bgcolor) {
                 this.cviews.bgview = new single_views_1.ContentView({
                     props: {
-                        bgcolor: this._props.bgcolor
+                        bgcolor: this._props.bgcolor,
                     },
-                    layout: $layout.fill
+                    layout: $layout.fill,
                 });
             }
             else {
                 this.cviews.bgview = new single_views_1.Blur({
                     props: {
-                        style: 10
+                        style: 10,
                     },
-                    layout: $layout.fill
+                    layout: $layout.fill,
                 });
             }
             this.cviews.separator = new single_views_1.ContentView({
                 props: {
-                    bgcolor: $color("separatorColor")
+                    bgcolor: $color("separatorColor"),
                 },
                 layout: (make, view) => {
                     make.bottom.left.right.inset(0);
                     make.height.equalTo(0.5);
-                }
+                },
             });
             return {
                 type: "view",
@@ -288,7 +290,7 @@ class CustomNavigationBar extends base_1.Base {
                 },
                 layout: navBarLayouts[this._props.style],
                 events: {
-                    ready: () => (this.style = this.style)
+                    ready: () => (this.style = this.style),
                 },
                 views: [
                     this.cviews.bgview.definition,
@@ -298,11 +300,11 @@ class CustomNavigationBar extends base_1.Base {
                         layout: $layout.fillSafeArea,
                         views: [
                             this.cviews.contentView.definition,
-                            this.cviews.toolViewWrapper.definition
-                        ]
+                            this.cviews.toolViewWrapper.definition,
+                        ],
                     },
-                    this.cviews.separator.definition
-                ]
+                    this.cviews.separator.definition,
+                ],
             };
         };
     }
@@ -310,7 +312,7 @@ class CustomNavigationBar extends base_1.Base {
         if (!items || items.length === 0)
             return 0;
         let width = 0;
-        items.forEach(n => {
+        items.forEach((n) => {
             if (n.cview)
                 width += n.width || 50;
             else if (n.title)
@@ -321,7 +323,7 @@ class CustomNavigationBar extends base_1.Base {
         return width;
     }
     _createCviewsOnItemView(items) {
-        return items.map(n => {
+        return items.map((n) => {
             if (n.cview) {
                 const width = n.width || 50;
                 n.cview._layout = (make, view) => {
@@ -338,7 +340,7 @@ class CustomNavigationBar extends base_1.Base {
                         title: n.title,
                         bgcolor: $color("clear"),
                         titleColor: n.tintColor || this._props.tintColor,
-                        cornerRadius: 0
+                        cornerRadius: 0,
                     },
                     layout: (make, view) => {
                         make.top.bottom.inset(0);
@@ -346,8 +348,8 @@ class CustomNavigationBar extends base_1.Base {
                         make.left.equalTo((view.prev && view.prev.right) || 0);
                     },
                     events: {
-                        tapped: n.handler
-                    }
+                        tapped: n.handler,
+                    },
                 });
             }
             else if (n.symbol || n.image) {
@@ -355,7 +357,7 @@ class CustomNavigationBar extends base_1.Base {
                     props: {
                         symbol: n.symbol,
                         image: n.image,
-                        tintColor: n.tintColor || this._props.tintColor
+                        tintColor: n.tintColor || this._props.tintColor,
                     },
                     layout: (make, view) => {
                         make.top.bottom.inset(0);
@@ -363,8 +365,8 @@ class CustomNavigationBar extends base_1.Base {
                         make.left.equalTo((view.prev && view.prev.right) || 0);
                     },
                     events: {
-                        tapped: n.handler
-                    }
+                        tapped: n.handler,
+                    },
                 });
             }
             else {
@@ -389,7 +391,7 @@ class CustomNavigationBar extends base_1.Base {
         this.cviews.toolViewWrapper.view.hidden = true;
         this.cviews.titleViewWrapper.view.hidden = true;
         this.view.remakeLayout(navBarLayouts[navBarStyles.hidden]);
-        this.cviews.contentView.view.updateLayout(make => make.height.equalTo(0));
+        this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(0));
         if (animated) {
             $ui.animate({
                 duration: 0.3,
@@ -401,7 +403,7 @@ class CustomNavigationBar extends base_1.Base {
                     this.view.hidden = true;
                     if (this._events.hidden)
                         this._events.hidden(this);
-                }
+                },
             });
         }
         else {
@@ -417,7 +419,7 @@ class CustomNavigationBar extends base_1.Base {
         this.cviews.toolViewWrapper.view.hidden = true;
         this.cviews.titleViewWrapper.view.hidden = false;
         this.view.remakeLayout(navBarLayouts[navBarStyles.minimized]);
-        this.cviews.contentView.view.updateLayout(make => make.height.equalTo(25));
+        this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(25));
         if (animated) {
             $ui.animate({
                 duration: 0.3,
@@ -430,7 +432,7 @@ class CustomNavigationBar extends base_1.Base {
                 completion: () => {
                     if (this._events.minimized)
                         this._events.minimized(this);
-                }
+                },
             });
         }
         else {
@@ -445,7 +447,7 @@ class CustomNavigationBar extends base_1.Base {
         this.cviews.titleViewWrapper.view.hidden = false;
         //this.cviews.toolViewWrapper.view.hidden = true;
         this.view.remakeLayout(navBarLayouts[navBarStyles.normal]);
-        this.cviews.contentView.view.updateLayout(make => make.height.equalTo(50));
+        this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
         if (animated) {
             $ui.animate({
                 duration: 0.3,
@@ -460,7 +462,7 @@ class CustomNavigationBar extends base_1.Base {
                     this.cviews.rightItemView.view.hidden = false;
                     if (this._events.restored)
                         this._events.restored(this);
-                }
+                },
             });
         }
         else {
@@ -477,7 +479,7 @@ class CustomNavigationBar extends base_1.Base {
         this.cviews.toolViewWrapper.view.hidden = false;
         this.cviews.titleViewWrapper.view.hidden = false;
         this.view.remakeLayout(navBarLayouts[navBarStyles.expanded]);
-        this.cviews.contentView.view.updateLayout(make => make.height.equalTo(50));
+        this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
         if (animated) {
             $ui.animate({
                 duration: 0.3,
@@ -493,7 +495,7 @@ class CustomNavigationBar extends base_1.Base {
                     //this.cviews.toolViewWrapper.view.hidden = false;
                     if (this._events.expanded)
                         this._events.expanded(this);
-                }
+                },
             });
         }
         else {

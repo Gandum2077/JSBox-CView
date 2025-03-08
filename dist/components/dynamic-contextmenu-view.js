@@ -9,13 +9,16 @@ const RegisteredOCClassName = new Set();
  *
  * 此视图除了一般UIView的props, layout, events, views四个参数外，还有必须的特殊参数：
  * 1. classname?: string OC类名，如果不指定则会自动生成一个唯一的类名。
- *    如果有不同的DynamicContextMenuView实例使用相同的OC类，那么无法确定弹出的contextMenu是绑定了哪个实例。换言之，实例A弹出的Menu可能是绑定的实例B。
+ *    如果有不同的DynamicContextMenuView实例使用相同的OC类，
+ *    那么无法确定弹出的contextMenu是绑定了哪个实例。
+ *    换言之，实例A弹出的Menu可能是绑定的实例B。
  *    如果这样做，必须使用下面generateContextMenu的sender参数来定位。
- * 2. generateContextMenu: (sender: UIView) => { title: string; items: MenuItem[]; } 生成上下文菜单的回调函数。
+ * 2. generateContextMenu: (sender: UIView) => { title: string; items: MenuItem[]; }
+ *    生成上下文菜单的回调函数。
  *
  */
 class DynamicContextMenuView extends base_1.Base {
-    constructor({ classname, generateContextMenu, props, layout, events, views }) {
+    constructor({ classname, generateContextMenu, props, layout, events, views, }) {
         super();
         this._ocClassName = classname || `DynamicContextMenuView_${cvid_1.cvid.newId}`;
         this.generateContextMenu = generateContextMenu;
@@ -26,7 +29,7 @@ class DynamicContextMenuView extends base_1.Base {
                 props: Object.assign(Object.assign({}, props), { id: this.id, view: runtimeView }),
                 layout,
                 events,
-                views
+                views,
             };
         };
     }
@@ -41,13 +44,13 @@ class DynamicContextMenuView extends base_1.Base {
                     const view = interacton.$view().jsValue();
                     const menu = this.generateContextMenu(view);
                     return this.createContextMenuConfiguration(menu);
-                }
-            }
+                },
+            },
         });
     }
-    createContextMenuConfiguration({ title, items }) {
+    createContextMenuConfiguration({ title, items, }) {
         return $objc("UIContextMenuConfiguration").$configurationWithIdentifier_previewProvider_actionProvider(null, null, $block("UIMenu *, NSArray *", () => {
-            const actions = items.map(item => {
+            const actions = items.map((item) => {
                 const action = $objc("UIAction").$actionWithTitle_image_identifier_handler(item.title, item.symbol, null, $block("void, UIAction *", () => item.handler()));
                 if (item.destructive)
                     action.$setAttributes(1 << 1);
