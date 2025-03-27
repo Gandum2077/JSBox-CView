@@ -82,11 +82,17 @@ class TabBarController extends base_controller_1.BaseController {
         this.rootView.views = [this.cviews.pageContentView, this.cviews.tabbar];
     }
     set index(num) {
+        var _a;
+        if (this._props.index === num)
+            return;
         this.cviews.tabbar.index = num;
         this.pages.forEach((n, i) => {
             n.view.hidden = i !== num;
         });
         this._props.index = num;
+        (_a = this._props.items
+            .find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
+        this._props.items[num].controller.appear();
     }
     get index() {
         return this._props.index || 0;

@@ -121,11 +121,16 @@ export class TabBarController extends BaseController {
   }
 
   set index(num) {
+    if (this._props.index === num) return;
     this.cviews.tabbar.index = num;
     this.pages.forEach((n, i) => {
       n.view.hidden = i !== num;
     });
     this._props.index = num;
+    this._props.items
+      .find((item) => item.controller.status === 2)
+      ?.controller.disappear();
+    this._props.items[num].controller.appear();
   }
 
   get index() {
