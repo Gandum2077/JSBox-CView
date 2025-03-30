@@ -3,7 +3,7 @@ import { cvid } from "../utils/cvid";
 
 type MenuItem = {
   title: string;
-  symbol: string;
+  symbol?: string;
   handler: () => void;
   destructive?: boolean;
 };
@@ -28,7 +28,7 @@ export class DynamicContextMenuView extends Base<
   UiTypes.RuntimeOptions
 > {
   private generateContextMenu: (sender: UIView) => {
-    title: string;
+    title?: string;
     items: MenuItem[];
   };
   private _ocClassName: string;
@@ -44,7 +44,7 @@ export class DynamicContextMenuView extends Base<
   }: {
     classname?: string;
     generateContextMenu: (sender: UIView) => {
-      title: string;
+      title?: string;
       items: MenuItem[];
     };
     props: UiTypes.BaseViewProps;
@@ -93,7 +93,7 @@ export class DynamicContextMenuView extends Base<
     title,
     items,
   }: {
-    title: string;
+    title?: string;
     items: MenuItem[];
   }) {
     return $objc(
@@ -107,14 +107,14 @@ export class DynamicContextMenuView extends Base<
             "UIAction"
           ).$actionWithTitle_image_identifier_handler(
             item.title,
-            item.symbol,
+            item.symbol || null,
             null,
             $block("void, UIAction *", () => item.handler())
           );
           if (item.destructive) action.$setAttributes(1 << 1);
           return action;
         });
-        return $objc("UIMenu").$menuWithTitle_children(title, actions);
+        return title ? $objc("UIMenu").$menuWithTitle_children(title, actions) : $objc("UIMenu").$menuWithChildren(actions);
       })
     );
   }

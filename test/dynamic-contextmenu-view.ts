@@ -23,18 +23,15 @@ const menuList = [
     ],
   },
   {
-    title: "菜单2",
     items: [
       {
         title: "变成菜单1",
-        symbol: "plus",
         handler: () => {
           menuIndex = 0;
         },
       },
       {
         title: "变成菜单2",
-        symbol: "plus",
         handler: () => {
           menuIndex = 1;
         },
