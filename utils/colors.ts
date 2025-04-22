@@ -10,3 +10,8 @@ export const sectionHeaderColor = $color({
   dark: "#acacac",
   black: "#ababab",
 });
+export const sliderMaxColor = $color({
+  light: "#E4E4E6",
+  dark: "#38373B",
+  black: "#2B2A2E",
+});
