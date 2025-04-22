@@ -14,6 +14,7 @@ type PreferenceCellTypes =
   | "info"
   | "interactive-info"
   | "link"
+  | "symbol-action"
   | "action";
 
 export interface PreferenceSection {
@@ -34,6 +35,7 @@ export type PrefsRow =
   | PrefsRowInfo
   | PrefsRowInteractiveInfo
   | PrefsRowLink
+  | PrefsRowSymbolAction
   | PrefsRowAction;
 
 interface PrefsRowBase {
@@ -131,6 +133,15 @@ export interface PrefsRowLink extends PrefsRowBase {
   value?: string;
 }
 
+export interface PrefsRowSymbolAction extends PrefsRowBase {
+  type: "symbol-action";
+  symbol?: string;
+  tintColor?: UIColor;
+  contentMode?: number;
+  symbolSize?: JBSize;
+  value?: () => void;
+}
+
 export interface PrefsRowAction extends PrefsRowBase {
   type: "action";
   value?: () => void;
@@ -146,10 +157,17 @@ export const selectableTypes = [
   "date",
   "interactive-info",
   "link",
+  "symbol-action",
   "action",
 ];
 
-export const excludedTypes = ["info", "interactive-info", "link", "action"];
+export const excludedTypes = [
+  "info",
+  "interactive-info",
+  "link",
+  "symbol-action",
+  "action",
+];
 
 type PreferenceValues = { [key: string]: any };
 
@@ -166,6 +184,7 @@ type AllCells =
   | InteractiveInfoCell
   | InfoCell
   | LinkCell
+  | SymbolActionCell
   | ActionCell;
 
 abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
@@ -875,6 +894,42 @@ class LinkCell extends Cell {
   }
 }
 
+class SymbolActionCell extends Cell {
+  readonly _type = "symbol-action";
+  _symbol: string;
+  _tintColor: UIColor;
+  _contentMode: number;
+  _symbolSize: JBSize;
+  constructor(props: PrefsRowSymbolAction, values: PreferenceValues) {
+    super(props, values);
+    this._symbol = props.symbol || "";
+    this._tintColor = props.tintColor ?? $color("primaryText");
+    this._contentMode = props.contentMode ?? 1;
+    this._symbolSize = props.symbolSize ?? $size(24, 24);
+  }
+
+  _defineValueView(): UiTypes.ImageOptions {
+    return {
+      type: "image",
+      props: {
+        id: "image",
+        symbol: this._symbol,
+        tintColor: this._tintColor,
+        contentMode: this._contentMode,
+      },
+      layout: (make, view) => {
+        make.centerY.equalTo(view.super);
+        make.size.equalTo(this._symbolSize);
+        make.right.inset(15);
+      },
+    };
+  }
+
+  _handleValue() {
+    return;
+  }
+}
+
 class ActionCell extends Cell {
   readonly _type = "action";
   _destructive: boolean;
@@ -1004,6 +1059,14 @@ class ActionCell extends Cell {
  * - link:
  *
  *     - value?: string url
+ *
+ * - symbol-action:
+ *
+ *    - symbol?: string;
+ *    - tintColor?: UIColor;
+ *    - contentMode?: number;
+ *    - symbolSize?: JBSize;
+ *    - value?: function 点击后会执行的函数
  *
  * - action:
  *
@@ -1173,8 +1236,12 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
                 $safari.open({ url: cell.value });
                 break;
               }
+              case "symbol-action": {
+                if (cell.value) cell.value();
+                break;
+              }
               case "action": {
-                cell.value();
+                if (cell.value) cell.value();
                 break;
               }
               default:
@@ -1212,6 +1279,8 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
         return new InteractiveInfoCell(props, this._values);
       case "link":
         return new LinkCell(props, this._values);
+      case "symbol-action":
+        return new SymbolActionCell(props, this._values);
       case "action":
         return new ActionCell(props, this._values);
       default:

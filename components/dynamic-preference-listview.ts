@@ -14,6 +14,7 @@ import {
   PrefsRowInfo,
   PrefsRowInteractiveInfo,
   PrefsRowLink,
+  PrefsRowSymbolAction,
   PrefsRowAction,
   selectableTypes,
   excludedTypes,
@@ -25,6 +26,7 @@ interface CunstomProps extends UiTypes.ListProps {
   infoAndLinkLeftInset?: number;
   sliderWidth?: number;
   tabWidth?: number;
+  symbolSizeForSymbolAction?: JBSize;
 }
 
 interface RequiredCunstomProps extends UiTypes.ListProps {
@@ -32,6 +34,7 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
   infoAndLinkLeftInset: number;
   sliderWidth: number;
   tabWidth: number;
+  symbolSizeForSymbolAction: JBSize;
 }
 
 /**
@@ -55,6 +58,7 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
  * - tabWidth?: number = 200 作用于 tab
+ * - symbolSizeForSymbolAction?: size = $size(24, 24) 作用于symbol-action
  *   注意以上的修改是应用于 template, 而不是应用于单个 cell 的
  *
  * 独特方法:
@@ -91,6 +95,7 @@ export class DynamicPreferenceListView extends Base<
       infoAndLinkLeftInset: 120,
       sliderWidth: 200,
       tabWidth: 200,
+      symbolSizeForSymbolAction: $size(24, 24),
       ...props,
     };
     this._layout = layout;
@@ -317,6 +322,17 @@ export class DynamicPreferenceListView extends Base<
                       make.right.inset(0);
                     },
                   },
+                  {
+                    type: "image",
+                    props: {
+                      id: "symbol",
+                    },
+                    layout: (make, view) => {
+                      make.centerY.equalTo(view.super);
+                      make.size.equalTo(this._props.symbolSizeForSymbolAction);
+                      make.right.inset(0);
+                    },
+                  },
                 ],
               },
             ],
@@ -433,6 +449,10 @@ export class DynamicPreferenceListView extends Base<
                 if (row.value) $safari.open({ url: row.value });
                 break;
               }
+              case "symbol-action": {
+                if (row.value) row.value();
+                break;
+              }
               case "action": {
                 if (row.value) row.value();
                 break;
@@ -499,6 +519,7 @@ export class DynamicPreferenceListView extends Base<
         switch: { hidden: true }, // 用于boolean
         tab: { hidden: true }, // 用于tab
         label_info_link: { hidden: true }, // 用于info, link
+        symbol: { hidden: true },
       };
     }
     return sections.map((section, sectionIndex) => ({
@@ -623,6 +644,15 @@ export class DynamicPreferenceListView extends Base<
             data.label_info_link = {
               hidden: false,
               styledText: `[${n.value}]()`,
+            };
+            break;
+          }
+          case "symbol-action": {
+            data.symbol = {
+              hidden: false,
+              symbol: n.symbol,
+              tintColor: n.tintColor ?? $color("primaryText"),
+              contentMode: n.contentMode ?? 1,
             };
             break;
           }

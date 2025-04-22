@@ -12,9 +12,16 @@ exports.selectableTypes = [
     "date",
     "interactive-info",
     "link",
+    "symbol-action",
     "action",
 ];
-exports.excludedTypes = ["info", "interactive-info", "link", "action"];
+exports.excludedTypes = [
+    "info",
+    "interactive-info",
+    "link",
+    "symbol-action",
+    "action",
+];
 class Cell extends base_1.Base {
     constructor({ key, title, value, titleColor = $color("primaryText"), changedEvent, }, values) {
         super();
@@ -639,6 +646,36 @@ class LinkCell extends Cell {
         return text;
     }
 }
+class SymbolActionCell extends Cell {
+    constructor(props, values) {
+        var _a, _b, _c;
+        super(props, values);
+        this._type = "symbol-action";
+        this._symbol = props.symbol || "";
+        this._tintColor = (_a = props.tintColor) !== null && _a !== void 0 ? _a : $color("primaryText");
+        this._contentMode = (_b = props.contentMode) !== null && _b !== void 0 ? _b : 1;
+        this._symbolSize = (_c = props.symbolSize) !== null && _c !== void 0 ? _c : $size(24, 24);
+    }
+    _defineValueView() {
+        return {
+            type: "image",
+            props: {
+                id: "image",
+                symbol: this._symbol,
+                tintColor: this._tintColor,
+                contentMode: this._contentMode,
+            },
+            layout: (make, view) => {
+                make.centerY.equalTo(view.super);
+                make.size.equalTo(this._symbolSize);
+                make.right.inset(15);
+            },
+        };
+    }
+    _handleValue() {
+        return;
+    }
+}
 class ActionCell extends Cell {
     constructor(props, values) {
         super(props, values);
@@ -763,6 +800,14 @@ class ActionCell extends Cell {
  * - link:
  *
  *     - value?: string url
+ *
+ * - symbol-action:
+ *
+ *    - symbol?: string;
+ *    - tintColor?: UIColor;
+ *    - contentMode?: number;
+ *    - symbolSize?: JBSize;
+ *    - value?: function 点击后会执行的函数
  *
  * - action:
  *
@@ -917,8 +962,14 @@ class PreferenceListView extends base_1.Base {
                                 $safari.open({ url: cell.value });
                                 break;
                             }
+                            case "symbol-action": {
+                                if (cell.value)
+                                    cell.value();
+                                break;
+                            }
                             case "action": {
-                                cell.value();
+                                if (cell.value)
+                                    cell.value();
                                 break;
                             }
                             default:
@@ -955,6 +1006,8 @@ class PreferenceListView extends base_1.Base {
                 return new InteractiveInfoCell(props, this._values);
             case "link":
                 return new LinkCell(props, this._values);
+            case "symbol-action":
+                return new SymbolActionCell(props, this._values);
             case "action":
                 return new ActionCell(props, this._values);
             default:

@@ -88,6 +88,14 @@ const sections = [
                 value: "https://apple.com",
             },
             {
+                type: "symbol-action",
+                title: "种类1",
+                symbol: "checkmark",
+                tintColor: $color("systemLink"),
+                titleColor: $color("systemLink"),
+                value: () => console.info(0),
+            },
+            {
                 type: "action",
                 title: "action",
                 value: () => console.info(0),

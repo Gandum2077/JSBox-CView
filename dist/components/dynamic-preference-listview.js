@@ -24,6 +24,7 @@ const static_preference_listview_1 = require("./static-preference-listview");
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
  * - tabWidth?: number = 200 作用于 tab
+ * - symbolSizeForSymbolAction?: size = $size(24, 24) 作用于symbol-action
  *   注意以上的修改是应用于 template, 而不是应用于单个 cell 的
  *
  * 独特方法:
@@ -37,7 +38,7 @@ class DynamicPreferenceListView extends base_1.Base {
             title: n.title,
             rows: n.rows.map((r) => (Object.assign({}, r))),
         }));
-        this._props = Object.assign({ stringLeftInset: 120, infoAndLinkLeftInset: 120, sliderWidth: 200, tabWidth: 200 }, props);
+        this._props = Object.assign({ stringLeftInset: 120, infoAndLinkLeftInset: 120, sliderWidth: 200, tabWidth: 200, symbolSizeForSymbolAction: $size(24, 24) }, props);
         this._layout = layout;
         this._defineView = () => {
             return {
@@ -250,6 +251,17 @@ class DynamicPreferenceListView extends base_1.Base {
                                             make.right.inset(0);
                                         },
                                     },
+                                    {
+                                        type: "image",
+                                        props: {
+                                            id: "symbol",
+                                        },
+                                        layout: (make, view) => {
+                                            make.centerY.equalTo(view.super);
+                                            make.size.equalTo(this._props.symbolSizeForSymbolAction);
+                                            make.right.inset(0);
+                                        },
+                                    },
                                 ],
                             },
                         ],
@@ -384,6 +396,11 @@ class DynamicPreferenceListView extends base_1.Base {
                                     $safari.open({ url: row.value });
                                 break;
                             }
+                            case "symbol-action": {
+                                if (row.value)
+                                    row.value();
+                                break;
+                            }
                             case "action": {
                                 if (row.value)
                                     row.value();
@@ -451,12 +468,13 @@ class DynamicPreferenceListView extends base_1.Base {
                 switch: { hidden: true }, // 用于boolean
                 tab: { hidden: true }, // 用于tab
                 label_info_link: { hidden: true }, // 用于info, link
+                symbol: { hidden: true },
             };
         }
         return sections.map((section, sectionIndex) => ({
             title: section.title,
             rows: section.rows.map((n, rowIndex) => {
-                var _a;
+                var _a, _b, _c;
                 const data = generateDefaultRow(n);
                 switch (n.type) {
                     case "string": {
@@ -571,6 +589,15 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.label_info_link = {
                             hidden: false,
                             styledText: `[${n.value}]()`,
+                        };
+                        break;
+                    }
+                    case "symbol-action": {
+                        data.symbol = {
+                            hidden: false,
+                            symbol: n.symbol,
+                            tintColor: (_b = n.tintColor) !== null && _b !== void 0 ? _b : $color("primaryText"),
+                            contentMode: (_c = n.contentMode) !== null && _c !== void 0 ? _c : 1,
                         };
                         break;
                     }
