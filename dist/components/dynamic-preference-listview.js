@@ -594,7 +594,7 @@ class DynamicPreferenceListView extends base_1.Base {
                     }
                     case "symbol-action": {
                         data.symbol = {
-                            hidden: false,
+                            hidden: n.symbol ? false : true,
                             symbol: n.symbol,
                             tintColor: (_b = n.tintColor) !== null && _b !== void 0 ? _b : $color("primaryText"),
                             contentMode: (_c = n.contentMode) !== null && _c !== void 0 ? _c : 1,

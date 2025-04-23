@@ -649,7 +649,7 @@ export class DynamicPreferenceListView extends Base<
           }
           case "symbol-action": {
             data.symbol = {
-              hidden: false,
+              hidden: n.symbol ? false : true,
               symbol: n.symbol,
               tintColor: n.tintColor ?? $color("primaryText"),
               contentMode: n.contentMode ?? 1,
