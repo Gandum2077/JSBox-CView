@@ -8,7 +8,7 @@ import { ContentView } from "../components/single-views";
 import { cvid } from "../utils/cvid";
 
 class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
-  _props: UiTypes.BaseViewProps;
+  _props: UiTypes.ViewProps;
   _layouts: {
     hidden: (make: MASConstraintMaker, view: AllUIView) => void;
     shown: (make: MASConstraintMaker, view: AllUIView) => void;
@@ -20,7 +20,7 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
     layout,
     views = [],
   }: {
-    props?: UiTypes.BaseViewProps;
+    props?: UiTypes.ViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     views?: UiTypes.AllViewOptions[];
   }) {

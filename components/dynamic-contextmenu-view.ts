@@ -47,7 +47,7 @@ export class DynamicContextMenuView extends Base<
       title?: string;
       items: MenuItem[];
     };
-    props: UiTypes.BaseViewProps;
+    props: UiTypes.ViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: UiTypes.BaseViewEvents;
     views?: UiTypes.AllViewOptions[];

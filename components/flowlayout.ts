@@ -215,7 +215,7 @@ class WrapperView<T extends FlowlayoutItem> extends Base<
   }) {
     super();
     this.item = item;
-    const props: UiTypes.BaseViewProps = {
+    const props: UiTypes.ViewProps = {
       id: this.id,
       frame: $rect(0, 0, 0, 0),
       userInteractionEnabled: true,

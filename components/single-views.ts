@@ -54,7 +54,7 @@ export class SingleView<
 export class ClearView extends SingleView<
   "view",
   UIView,
-  UiTypes.BaseViewProps,
+  UiTypes.ViewProps,
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
@@ -64,7 +64,7 @@ export class ClearView extends SingleView<
     events,
     views,
   }: {
-    props?: UiTypes.BaseViewProps;
+    props?: UiTypes.ViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: UiTypes.BaseViewEvents<UIView>;
     views?: UiTypes.AllViewOptions[];
@@ -82,7 +82,7 @@ export class ClearView extends SingleView<
 export class ContentView extends SingleView<
   "view",
   UIView,
-  UiTypes.BaseViewProps,
+  UiTypes.ViewProps,
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
@@ -92,7 +92,7 @@ export class ContentView extends SingleView<
     events = {},
     views,
   }: {
-    props?: UiTypes.BaseViewProps;
+    props?: UiTypes.ViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: UiTypes.BaseViewEvents;
     views?: UiTypes.AllViewOptions[];
@@ -116,7 +116,7 @@ export class ContentView extends SingleView<
 export class MaskView extends SingleView<
   "view",
   UIView,
-  UiTypes.BaseViewProps,
+  UiTypes.ViewProps,
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
@@ -126,7 +126,7 @@ export class MaskView extends SingleView<
     events,
     views,
   }: {
-    props?: UiTypes.BaseViewProps;
+    props?: UiTypes.ViewProps;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
     events?: UiTypes.BaseViewEvents;
     views?: UiTypes.AllViewOptions[];
@@ -820,7 +820,7 @@ export class Picker extends SingleView<
 export class Canvas extends SingleView<
   "canvas",
   UICanvasView,
-  UiTypes.BaseViewProps,
+  UiTypes.CanvasProps,
   UiTypes.CanvasEvents,
   UiTypes.CanvasOptions
 > {
@@ -830,7 +830,7 @@ export class Canvas extends SingleView<
     events,
     views,
   }: {
-    props?: UiTypes.BaseViewProps;
+    props?: UiTypes.CanvasProps;
     layout?: (make: MASConstraintMaker, view: UICanvasView) => void;
     events?: UiTypes.CanvasEvents;
     views?: UiTypes.AllViewOptions[];
