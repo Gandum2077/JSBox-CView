@@ -41,7 +41,7 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<
     itemHeight: number;
     fixedRows?: number;
     fixedHeight?: boolean;
-    menu?: UiTypes.ContextMenuOptions;
+    menu?: UiTypes.ContextMenuOptions<UIView>;
     bgcolor?: UIColor;
   };
   private _wrappers: WrapperView<T>[];
@@ -62,7 +62,7 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<
       itemHeight: number;
       fixedRows?: number;
       fixedHeight?: boolean;
-      menu?: UiTypes.ContextMenuOptions;
+      menu?: UiTypes.ContextMenuOptions<UIView>;
       bgcolor?: UIColor;
     };
     layout: (make: MASConstraintMaker, view: UIView) => void;
@@ -207,7 +207,7 @@ class WrapperView<T extends FlowlayoutItem> extends Base<
     index,
   }: {
     item: T;
-    menu?: UiTypes.ContextMenuOptions;
+    menu?: UiTypes.ContextMenuOptions<UIView>;
     didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
     didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
     flowlayout: Flowlayout<T>;

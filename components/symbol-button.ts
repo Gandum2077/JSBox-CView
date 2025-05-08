@@ -8,7 +8,7 @@ interface SymbolButtonProps {
   tintColor: UIColor;
   contentMode: number;
   insets: JBInsets;
-  menu?: UiTypes.ContextMenuOptions;
+  menu?: UiTypes.ContextMenuOptions<UIButtonView>;
   hidden: boolean;
 }
 
