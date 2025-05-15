@@ -12,6 +12,10 @@ interface PresentedPageControllerProps extends BaseControllerProps {
   interactiveDismissalDisabled?: boolean;
 }
 
+interface PresentedPageControllerEvents extends BaseControllerEvents {
+  dismissed?: (controller: PresentedPageController) => void;
+}
+
 /** # CView PresentedPageController
  *
  * ## Props
@@ -20,6 +24,10 @@ interface PresentedPageControllerProps extends BaseControllerProps {
  * - animated?: boolean = true
  * - interactiveDismissalDisabled?: boolean = false
  * - bgcolor?: UIColor = $color("secondarySurface")
+ *
+ * ## 专用事件
+ *
+ * - dismissed: function  退出时的回调
  *
  * ## 专用方法
  *
@@ -38,7 +46,7 @@ export class PresentedPageController extends BaseController {
   }: {
     props?: Partial<PresentedPageControllerProps>;
     layout?: (make: MASConstraintMaker, view: UIView) => void;
-    events?: BaseControllerEvents;
+    events?: PresentedPageControllerEvents;
   } = {}) {
     super({
       props: {
@@ -55,7 +63,10 @@ export class PresentedPageController extends BaseController {
         props?.interactiveDismissalDisabled || false,
       bgcolor: props?.bgcolor || $color("secondarySurface"),
       cview: this.rootView,
-      dismissalHandler: () => this.remove(),
+      dismissalHandler: () => {
+        events?.dismissed?.(this);
+        this.remove();
+      },
     });
   }
 

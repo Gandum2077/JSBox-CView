@@ -12,6 +12,10 @@ const sheet_1 = require("../components/sheet");
  * - interactiveDismissalDisabled?: boolean = false
  * - bgcolor?: UIColor = $color("secondarySurface")
  *
+ * ## 专用事件
+ *
+ * - dismissed: function  退出时的回调
+ *
  * ## 专用方法
  *
  * - present() 在 `sheet.present()` 之后会先后执行 `load()` 和 `appear()`
@@ -37,7 +41,11 @@ class PresentedPageController extends base_controller_1.BaseController {
             interactiveDismissalDisabled: (props === null || props === void 0 ? void 0 : props.interactiveDismissalDisabled) || false,
             bgcolor: (props === null || props === void 0 ? void 0 : props.bgcolor) || $color("secondarySurface"),
             cview: this.rootView,
-            dismissalHandler: () => this.remove(),
+            dismissalHandler: () => {
+                var _a;
+                (_a = events === null || events === void 0 ? void 0 : events.dismissed) === null || _a === void 0 ? void 0 : _a.call(events, this);
+                this.remove();
+            },
         });
     }
     present() {
