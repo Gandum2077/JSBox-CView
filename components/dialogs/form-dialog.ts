@@ -23,11 +23,11 @@ class DialogSheetForm extends DialogSheet {
   }
 
   done() {
-    this._done = true;
     if (this.resolve && this._props.doneHandler) {
       const values = this._props.doneHandler();
       const success = this._checkHandler(values);
       if (success) {
+        this._done = true;
         this.resolve(values);
         this.dismiss();
       }
