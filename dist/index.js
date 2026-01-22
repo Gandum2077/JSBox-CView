@@ -23,6 +23,7 @@ __exportStar(require("./components/dynamic-rowheight-list"), exports);
 __exportStar(require("./components/enhanced-imageview"), exports);
 __exportStar(require("./components/flowlayout"), exports);
 __exportStar(require("./components/image-pager"), exports);
+__exportStar(require("./components/oc-webview"), exports);
 __exportStar(require("./components/page-control"), exports);
 __exportStar(require("./components/pageviewer-titlebar"), exports);
 __exportStar(require("./components/pageviewer"), exports);
