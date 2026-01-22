@@ -45,8 +45,7 @@ class DialogSheet extends sheet_1.Sheet {
             },
         });
         this._props.cview._layout = (make, view) => {
-            make.bottom.equalTo(view.super);
-            make.left.right.equalTo(view.super.safeArea);
+            make.left.right.bottom.equalTo(view.super);
             make.top.equalTo(view.prev.bottom);
         };
         this._cview = new single_views_1.ContentView({
