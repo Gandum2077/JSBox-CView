@@ -26,7 +26,7 @@ function _getColumnsAndItemSizeWidth(
   containerWidth: number,
   minItemWidth: number,
   maxColumns: number,
-  spacing: number
+  spacing: number,
 ) {
   if (minItemWidth > containerWidth - 2 * spacing) {
     return {
@@ -37,13 +37,13 @@ function _getColumnsAndItemSizeWidth(
   const columns = Math.max(
     Math.min(
       Math.floor((containerWidth - spacing) / (minItemWidth + spacing)),
-      maxColumns
+      maxColumns,
     ),
-    1 // 最少一列
+    1, // 最少一列
   );
   const itemSizeWidth = Math.max(
     Math.floor((containerWidth - spacing * (columns + 1)) / columns),
-    minItemWidth // 最小宽度
+    minItemWidth, // 最小宽度
   );
   return {
     columns,
@@ -156,7 +156,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
               sender.frame.width,
               this._props.minItemWidth,
               this._props.maxColumns,
-              this._props.spacing
+              this._props.spacing,
             );
             this._columns = columns;
             this._itemSizeWidth = itemSizeWidth;
@@ -182,9 +182,11 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
       width,
       this._props.minItemWidth,
       this._props.maxColumns,
-      this._props.spacing
+      this._props.spacing,
     );
-    const rows = Math.ceil(this._props.data.length / columns);
+    const rows = this._props.data
+      ? Math.ceil(this._props.data.length / columns)
+      : 0;
     const itemSizeHeight = this._events.itemHeight
       ? this._events.itemHeight(itemSizeWidth)
       : this._props.fixedItemHeight;
