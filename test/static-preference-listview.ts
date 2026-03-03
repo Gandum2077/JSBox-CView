@@ -1,7 +1,4 @@
-import {
-  PreferenceListView,
-  PreferenceSection,
-} from "../components/static-preference-listview";
+import { PreferenceListView, PreferenceSection } from "../components/static-preference-listview";
 const sections: PreferenceSection[] = [
   {
     title: "Section 1",

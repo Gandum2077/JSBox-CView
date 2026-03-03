@@ -35,10 +35,7 @@ function _getColumnsAndItemSizeWidth(
     };
   }
   const columns = Math.max(
-    Math.min(
-      Math.floor((containerWidth - spacing) / (minItemWidth + spacing)),
-      maxColumns,
-    ),
+    Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns),
     1, // 最少一列
   );
   const itemSizeWidth = Math.max(
@@ -167,8 +164,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
             if (this._props.dynamicHeightEnabled) {
               const height = this.heightToWidth(sender.frame.width);
               sender.updateLayout((make) => make.height.equalTo(height));
-              if (this._events.heightChanged)
-                this._events.heightChanged(this, height);
+              if (this._events.heightChanged) this._events.heightChanged(this, height);
             }
           },
         },
@@ -184,9 +180,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
       this._props.maxColumns,
       this._props.spacing,
     );
-    const rows = this._props.data
-      ? Math.ceil(this._props.data.length / columns)
-      : 0;
+    const rows = this._props.data ? Math.ceil(this._props.data.length / columns) : 0;
     const itemSizeHeight = this._events.itemHeight
       ? this._events.itemHeight(itemSizeWidth)
       : this._props.fixedItemHeight;

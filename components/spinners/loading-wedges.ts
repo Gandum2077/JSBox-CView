@@ -4,13 +4,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   _tintColor: UIColor;
   startAngle: number;
   _defineView: () => UiTypes.CanvasOptions;
-  constructor({
-    tintColor,
-    startAngle,
-  }: {
-    tintColor: UIColor;
-    startAngle: number;
-  }) {
+  constructor({ tintColor, startAngle }: { tintColor: UIColor; startAngle: number }) {
     super();
     this._tintColor = tintColor;
     this.startAngle = startAngle;
@@ -32,7 +26,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
               radius / 2,
               this.startAngle,
               this.startAngle + (Math.PI * 2 * 1) / 4,
-              true
+              true,
             );
             ctx.addLineToPoint(radius / 2, radius / 2);
             ctx.closePath();
@@ -59,12 +53,7 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
    * @param layout 布局
    */
   constructor({
-    colors = [
-      $color("#f5542e"),
-      $color("#f2c327"),
-      $color("#008b6e"),
-      $color("#00aede"),
-    ],
+    colors = [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")],
     layout,
   }: {
     colors?: UIColor[];
@@ -94,12 +83,7 @@ export class Wedges extends Base<UIView, UiTypes.ViewOptions> {
         props: {
           id: this.id,
         },
-        views: [
-          canvas1.definition,
-          canvas2.definition,
-          canvas3.definition,
-          canvas4.definition,
-        ],
+        views: [canvas1.definition, canvas2.definition, canvas3.definition, canvas4.definition],
         layout,
         events: {
           ready: async (sender) => {

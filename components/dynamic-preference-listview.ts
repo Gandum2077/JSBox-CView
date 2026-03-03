@@ -65,10 +65,7 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
  *
  * - cview.sections = sections 可以写入新的 sections
  */
-export class DynamicPreferenceListView extends Base<
-  UIListView,
-  UiTypes.ListOptions
-> {
+export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
   _defineView: () => UiTypes.ListOptions;
   private _sections: PreferenceSection[];
   private _props: RequiredCunstomProps;
@@ -189,8 +186,7 @@ export class DynamicPreferenceListView extends Base<
                         events: {
                           changed: (sender) => {
                             const { section, row } = sender.info;
-                            this._sections[section].rows[row].value =
-                              sender.value;
+                            this._sections[section].rows[row].value = sender.value;
                             const label = sender.next as UILabelView;
                             label.text = sender.value.toString();
                             if (events.changed) events.changed(this.values);
@@ -233,29 +229,24 @@ export class DynamicPreferenceListView extends Base<
                         events: {
                           changed: (sender) => {
                             const { section, row } = sender.info;
-                            const options = this._sections[section].rows[
-                              row
-                            ] as PrefsRowSlider;
+                            const options = this._sections[section].rows[row] as PrefsRowSlider;
                             const label = sender.next as UILabelView;
                             label.text = this._handleSliderValue(
                               sender.value * (options.max ?? 1),
                               options.decimal,
                               options.min,
-                              options.max
+                              options.max,
                             ).toString();
                           },
                           touchesEnded: (sender) => {
                             const { section, row } = sender.info;
-                            const options = this._sections[section].rows[
-                              row
-                            ] as PrefsRowSlider;
-                            this._sections[section].rows[row].value =
-                              this._handleSliderValue(
-                                sender.value * (options.max ?? 1),
-                                options.decimal,
-                                options.min,
-                                options.max
-                              );
+                            const options = this._sections[section].rows[row] as PrefsRowSlider;
+                            this._sections[section].rows[row].value = this._handleSliderValue(
+                              sender.value * (options.max ?? 1),
+                              options.decimal,
+                              options.min,
+                              options.max,
+                            );
                             if (events.changed) events.changed(this.values);
                           },
                         },
@@ -488,12 +479,7 @@ export class DynamicPreferenceListView extends Base<
     }
   }
 
-  _handleSliderValue(
-    num?: number,
-    decimal?: number,
-    min?: number,
-    max?: number
-  ): number {
+  _handleSliderValue(num?: number, decimal?: number, min?: number, max?: number): number {
     if (num === undefined) return min || 0;
     if (decimal === undefined) decimal = 1;
     if (isNaN(num)) num = min || 0;
@@ -577,12 +563,7 @@ export class DynamicPreferenceListView extends Base<
           }
           case "slider": {
             data.slider_and_number.hidden = false;
-            const adjustedValue = this._handleSliderValue(
-              n.value,
-              n.decimal,
-              n.min,
-              n.max
-            );
+            const adjustedValue = this._handleSliderValue(n.value, n.decimal, n.min, n.max);
             data.label_slider = {
               textColor: $color("primaryText"),
               text: adjustedValue,
@@ -657,9 +638,7 @@ export class DynamicPreferenceListView extends Base<
             break;
           }
           case "action": {
-            data.title.textColor = n.destructive
-              ? $color("red")
-              : $color("systemLink");
+            data.title.textColor = n.destructive ? $color("red") : $color("systemLink");
             break;
           }
           default:

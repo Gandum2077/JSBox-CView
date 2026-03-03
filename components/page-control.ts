@@ -67,14 +67,9 @@ export class PageControl extends Runtime {
     const pageControl = $objc("UIPageControl").$new();
     pageControl.$setNumberOfPages(this._numberOfPages);
     pageControl.$setCurrentPage(this._currentPage);
-    if (this._pageIndicatorTintColor)
-      pageControl.$setPageIndicatorTintColor(
-        this._pageIndicatorTintColor.ocValue()
-      );
+    if (this._pageIndicatorTintColor) pageControl.$setPageIndicatorTintColor(this._pageIndicatorTintColor.ocValue());
     if (this._currentPageIndicatorTintColor)
-      pageControl.$setCurrentPageIndicatorTintColor(
-        this._currentPageIndicatorTintColor.ocValue()
-      );
+      pageControl.$setCurrentPageIndicatorTintColor(this._currentPageIndicatorTintColor.ocValue());
 
     pageControl.$addEventHandler({
       events: $UIEvent.valueChanged,

@@ -55,13 +55,8 @@ const matrix = new DynamicItemSizeMatrix({
     didScroll: (sender) => {
       matrix.columns;
       console.log(sender.contentOffset.y);
-      console.log(
-        Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5))
-      );
-      console.log(
-        Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)) *
-          matrix.columns
-      );
+      console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)));
+      console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)) * matrix.columns);
     },
   },
 });

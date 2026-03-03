@@ -1,9 +1,4 @@
-import {
-  BaseController,
-  BaseControllerProps,
-  BaseControllerEvents,
-  ControllerRootView,
-} from "./base-controller";
+import { BaseController, BaseControllerProps, BaseControllerEvents, ControllerRootView } from "./base-controller";
 import { Sheet } from "../components/sheet";
 
 interface PresentedPageControllerProps extends BaseControllerProps {
@@ -59,8 +54,7 @@ export class PresentedPageController extends BaseController {
     this._sheet = new Sheet<ControllerRootView, UIView, UiTypes.ViewOptions>({
       presentMode: props?.presentMode ?? 1,
       animated: props?.animated ?? true,
-      interactiveDismissalDisabled:
-        props?.interactiveDismissalDisabled || false,
+      interactiveDismissalDisabled: props?.interactiveDismissalDisabled || false,
       bgcolor: props?.bgcolor || $color("secondarySurface"),
       cview: this.rootView,
       dismissalHandler: () => {

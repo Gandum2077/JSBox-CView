@@ -1,8 +1,4 @@
-import {
-  BaseController,
-  BaseControllerProps,
-  BaseControllerEvents,
-} from "./base-controller";
+import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { ContentView } from "../components/single-views";
 import { TabBar } from "../components/tabbar";
 
@@ -88,9 +84,7 @@ export class TabBarController extends BaseController {
       events: {
         changed: (cview, index) => {
           this.index = index;
-          this._props.items
-            .find((item) => item.controller.status === 2)
-            ?.controller.disappear();
+          this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
           this._props.items[index].controller.appear();
           events.changed?.(this, index);
         },
@@ -127,9 +121,7 @@ export class TabBarController extends BaseController {
       n.view.hidden = i !== num;
     });
     this._props.index = num;
-    this._props.items
-      .find((item) => item.controller.status === 2)
-      ?.controller.disappear();
+    this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
     this._props.items[num].controller.appear();
   }
 

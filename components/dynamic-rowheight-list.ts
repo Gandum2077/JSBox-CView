@@ -1,9 +1,7 @@
 import { Base } from "./base";
 
-interface DynamicRowHeightListProps
-  extends Omit<UiTypes.ListProps, "data" | "template"> {}
-interface DynamicRowHeightListEvents
-  extends Omit<UiTypes.ListEvents, "rowHeight"> {}
+interface DynamicRowHeightListProps extends Omit<UiTypes.ListProps, "data" | "template"> {}
+interface DynamicRowHeightListEvents extends Omit<UiTypes.ListEvents, "rowHeight"> {}
 interface DynamicRowHeightListCView extends Base<any, any> {
   heightToWidth: (width: number) => number;
 }
@@ -24,10 +22,7 @@ interface DynamicRowHeightListCView extends Base<any, any> {
  *
  * 除了 props.data, props.template 和 events.rowHeight 不可用，其他均和 list 一致
  */
-export class DynamicRowHeightList extends Base<
-  UIListView,
-  UiTypes.ListOptions
-> {
+export class DynamicRowHeightList extends Base<UIListView, UiTypes.ListOptions> {
   _defineView: () => UiTypes.ListOptions;
   constructor({
     sections,

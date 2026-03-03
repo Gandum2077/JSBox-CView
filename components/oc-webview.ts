@@ -17,7 +17,7 @@ import { Base } from "./base";
  * - didStart?: (sender: any) => void;
  * - didFinish?: (sender: any) => void;
  * - didFail?: (sender: any, error: NSError | null) => void;
- * 
+ *
  * events中sender的any类型实际为WKWebView OC类型
  *
  * ## Methods
@@ -50,15 +50,8 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
     super();
     // ====== 创建 WebView ======
     const config = $objc("WKWebViewConfiguration").invoke("new");
-    config.invoke(
-      "setWebsiteDataStore:",
-      $objc("WKWebsiteDataStore").invoke("defaultDataStore"),
-    );
-    const webView = $objc("WKWebView").invoke(
-      "alloc.initWithFrame:configuration:",
-      $rect(0, 0, 0, 0),
-      config,
-    );
+    config.invoke("setWebsiteDataStore:", $objc("WKWebsiteDataStore").invoke("defaultDataStore"));
+    const webView = $objc("WKWebView").invoke("alloc.initWithFrame:configuration:", $rect(0, 0, 0, 0), config);
     this.webView = webView;
 
     this._defineView = () => {
@@ -75,27 +68,16 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
             const navDelegate = $delegate({
               type: "WKNavigationDelegate",
               events: {
-                "webView:didStartProvisionalNavigation:": (
-                  wv: any,
-                  nav: any,
-                ) => {
+                "webView:didStartProvisionalNavigation:": (wv: any, nav: any) => {
                   events.didStart && events.didStart(wv);
                 },
                 "webView:didFinishNavigation:": (wv: any, nav: any) => {
                   events.didFinish && events.didFinish(wv);
                 },
-                "webView:didFailNavigation:withError:": (
-                  wv: any,
-                  nav: any,
-                  e: any,
-                ) => {
+                "webView:didFailNavigation:withError:": (wv: any, nav: any, e: any) => {
                   events.didFail && events.didFail(wv, e ? e.jsValue() : null);
                 },
-                "webView:didFailProvisionalNavigation:withError:": (
-                  wv: any,
-                  nav: any,
-                  e: any,
-                ) => {
+                "webView:didFailProvisionalNavigation:withError:": (wv: any, nav: any, e: any) => {
                   events.didFail && events.didFail(wv, e ? e.jsValue() : null);
                 },
               },

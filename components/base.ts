@@ -18,10 +18,7 @@ import { cvid } from "../utils/cvid";
  * - 通过组件化的方式，将JSBox view的定义和实例绑定，使用起来更加方便
  * - 可以便利地创建自定义组件
  */
-export abstract class Base<
-  T extends AllUIView,
-  R extends UiTypes.AllViewOptions
-> {
+export abstract class Base<T extends AllUIView, R extends UiTypes.AllViewOptions> {
   readonly id: string;
   private _view?: T;
   abstract _defineView: () => R;

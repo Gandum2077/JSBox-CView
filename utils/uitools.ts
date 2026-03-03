@@ -12,10 +12,7 @@ export function getWindowSize(): JBSize {
  * 获取单行字符串应有的宽度
  * 默认额外添加3 inset
  */
-export function getTextWidth(
-  text: string,
-  { font = $font(17), inset = 3 } = {}
-): number {
+export function getTextWidth(text: string, { font = $font(17), inset = 3 } = {}): number {
   return (
     Math.ceil(
       $text.sizeThatFits({
@@ -23,7 +20,7 @@ export function getTextWidth(
         width: 10000,
         font,
         lineSpacing: 0,
-      }).width
+      }).width,
     ) + inset
   );
 }
@@ -34,7 +31,7 @@ export function getTextWidth(
  */
 export function getTextHeight(
   text: string,
-  { width = 300, font = $font(17), inset = 3, lineSpacing = 0 } = {}
+  { width = 300, font = $font(17), inset = 3, lineSpacing = 0 } = {},
 ): number {
   return (
     Math.ceil(
@@ -43,7 +40,7 @@ export function getTextHeight(
         width,
         font,
         lineSpacing,
-      }).height
+      }).height,
     ) + inset
   );
 }
@@ -114,7 +111,7 @@ export function setLayer(
     shadowOpacity = 0,
     shadowOffset = $size(0, 0),
     shadowColor = $color("clear"),
-  } = {}
+  } = {},
 ): void {
   const layer = view.ocValue().invoke("layer");
   layer.invoke("setCornerRadius", cornerRadius);

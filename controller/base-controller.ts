@@ -162,22 +162,14 @@ export class BaseController {
 
   appear() {
     // 只有status为loaded或者disappeared，才可以运行
-    if (
-      this._status !== controllerStatus.loaded &&
-      this._status !== controllerStatus.disappeared
-    )
-      return;
+    if (this._status !== controllerStatus.loaded && this._status !== controllerStatus.disappeared) return;
     if (this._events.didAppear) this._events.didAppear(this);
     this._status = controllerStatus.appeared;
   }
 
   disappear() {
     // 只有status为loaded或者appeared，才可以运行
-    if (
-      this._status !== controllerStatus.loaded &&
-      this._status !== controllerStatus.appeared
-    )
-      return;
+    if (this._status !== controllerStatus.loaded && this._status !== controllerStatus.appeared) return;
     if (this._events.didDisappear) this._events.didDisappear(this);
     this._status = controllerStatus.disappeared;
   }

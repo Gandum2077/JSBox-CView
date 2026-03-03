@@ -127,10 +127,7 @@ interface NavigationBarCViews {
  * - restore() 普通布局
  * - expand() 扩展布局
  */
-export class CustomNavigationBar extends Base<
-  UIView | UIBlurView,
-  UiTypes.ViewOptions | UiTypes.BlurOptions
-> {
+export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
   _props: NavigationBarProps;
   _events: NavigationBarEvents;
   cviews: Required<NavigationBarCViews>;
@@ -165,9 +162,7 @@ export class CustomNavigationBar extends Base<
       // leftItemView
       let leftInset = 0;
       if (this._props.popButtonEnabled) {
-        const titleWidth = this._props.popButtonTitle
-          ? getTextWidth(this._props.popButtonTitle)
-          : 0;
+        const titleWidth = this._props.popButtonTitle ? getTextWidth(this._props.popButtonTitle) : 0;
         leftInset = titleWidth + 35;
         const views = [];
         const chevronOptions: UiTypes.ViewOptions = {
@@ -187,8 +182,7 @@ export class CustomNavigationBar extends Base<
                 contentMode: 1,
                 tintColor: this._props.tintColor,
               },
-              layout: (make: MASConstraintMaker) =>
-                make.edges.insets($insets(12.5, 10, 12.5, 0)),
+              layout: (make: MASConstraintMaker) => make.edges.insets($insets(12.5, 10, 12.5, 0)),
             },
           ],
         };
@@ -226,17 +220,14 @@ export class CustomNavigationBar extends Base<
             },
             longPressed: this._props.popToRootEnabled
               ? (sender) => {
-                  if (this._events.popToRootHandler)
-                    this._events.popToRootHandler(this);
+                  if (this._events.popToRootHandler) this._events.popToRootHandler(this);
                   $ui.popToRoot();
                 }
               : undefined,
           },
         });
       } else {
-        leftInset = this._calculateItemViewWidth(
-          this._props.leftBarButtonItems
-        );
+        leftInset = this._calculateItemViewWidth(this._props.leftBarButtonItems);
         this.cviews.leftItemView = new ContentView({
           props: {
             bgcolor: undefined,
@@ -245,16 +236,12 @@ export class CustomNavigationBar extends Base<
             make.width.equalTo(leftInset);
             make.left.top.bottom.inset(0);
           },
-          views: this._createCviewsOnItemView(
-            this._props.leftBarButtonItems
-          ).map((n) => n.definition),
+          views: this._createCviewsOnItemView(this._props.leftBarButtonItems).map((n) => n.definition),
         });
       }
 
       // rightItemView
-      const rightInset = this._calculateItemViewWidth(
-        this._props.rightBarButtonItems
-      );
+      const rightInset = this._calculateItemViewWidth(this._props.rightBarButtonItems);
       this.cviews.rightItemView = new ContentView({
         props: {
           bgcolor: undefined,
@@ -263,9 +250,7 @@ export class CustomNavigationBar extends Base<
           make.width.equalTo(rightInset);
           make.right.top.bottom.inset(0);
         },
-        views: this._createCviewsOnItemView(
-          this._props.rightBarButtonItems
-        ).map((n) => n.definition),
+        views: this._createCviewsOnItemView(this._props.rightBarButtonItems).map((n) => n.definition),
       });
 
       // titleView
@@ -369,10 +354,7 @@ export class CustomNavigationBar extends Base<
             type: "view",
             props: {},
             layout: $layout.fillSafeArea,
-            views: [
-              this.cviews.contentView.definition,
-              this.cviews.toolViewWrapper.definition,
-            ],
+            views: [this.cviews.contentView.definition, this.cviews.toolViewWrapper.definition],
           },
           this.cviews.separator.definition,
         ],
@@ -448,8 +430,7 @@ export class CustomNavigationBar extends Base<
   set title(title: string) {
     if (this._props.title === undefined) return;
     this._props.title = title;
-    if ("text" in this.cviews.titleViewWrapper.view)
-      this.cviews.titleViewWrapper.view.text = title;
+    if ("text" in this.cviews.titleViewWrapper.view) this.cviews.titleViewWrapper.view.text = title;
   }
 
   hide(animated = true) {
@@ -485,9 +466,7 @@ export class CustomNavigationBar extends Base<
     this.cviews.toolViewWrapper.view.hidden = true;
     this.cviews.titleViewWrapper.view.hidden = false;
     this.view.remakeLayout(navBarLayouts[navBarStyles.minimized]);
-    this.cviews.contentView.view.updateLayout((make) =>
-      make.height.equalTo(25)
-    );
+    this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(25));
     if (animated) {
       $ui.animate({
         duration: 0.3,
@@ -513,9 +492,7 @@ export class CustomNavigationBar extends Base<
     this.cviews.titleViewWrapper.view.hidden = false;
     //this.cviews.toolViewWrapper.view.hidden = true;
     this.view.remakeLayout(navBarLayouts[navBarStyles.normal]);
-    this.cviews.contentView.view.updateLayout((make) =>
-      make.height.equalTo(50)
-    );
+    this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
     if (animated) {
       $ui.animate({
         duration: 0.3,
@@ -545,9 +522,7 @@ export class CustomNavigationBar extends Base<
     this.cviews.toolViewWrapper.view.hidden = false;
     this.cviews.titleViewWrapper.view.hidden = false;
     this.view.remakeLayout(navBarLayouts[navBarStyles.expanded]);
-    this.cviews.contentView.view.updateLayout((make) =>
-      make.height.equalTo(50)
-    );
+    this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
     if (animated) {
       $ui.animate({
         duration: 0.3,

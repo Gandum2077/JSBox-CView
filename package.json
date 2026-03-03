@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "browserify": "^17.0.1",
-    "jsbox-types": "^2.0.0"
+    "jsbox-types": "^2.0.0",
+    "prettier": "^3.8.1"
   }
 }

@@ -110,8 +110,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
         placeholder: this._props.placeholder,
         bgcolor: $color("clear"),
         radius: 0,
-        accessoryView:
-          this._props.accessoryCview && this._props.accessoryCview.definition,
+        accessoryView: this._props.accessoryCview && this._props.accessoryCview.definition,
       },
       layout: (make, view) => {
         make.left.equalTo(view.prev.right);
@@ -201,11 +200,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
           clipsToBounds: true,
         },
         layout,
-        views: [
-          this.cviews.bgview.definition,
-          this.cviews.iconInput.definition,
-          this.cviews.cancelButton.definition,
-        ],
+        views: [this.cviews.bgview.definition, this.cviews.iconInput.definition, this.cviews.cancelButton.definition],
       };
     };
   }
@@ -214,17 +209,11 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     switch (this._props.style) {
       case 0: {
         const IconInputLayout = $layout.fill;
-        const IconInputLayoutFocused = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const IconInputLayoutFocused = (make: MASConstraintMaker, view: AllUIView) => {
           make.left.top.bottom.inset(0);
           make.right.inset(cancelButtonWidth);
         };
-        const cancelButtonLayout = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const cancelButtonLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.right.top.bottom.inset(0);
           make.width.equalTo(cancelButtonWidth);
         };
@@ -243,19 +232,13 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
           make.left.top.bottom.inset(0);
           make.right.equalTo(view.prev);
         };
-        const cancelButtonLayout = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const cancelButtonLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.top.bottom.inset(0);
           make.left.equalTo(view.prev.prev.right);
           make.width.equalTo(cancelButtonWidth);
         };
         const bgviewLayoutNormal = $layout.fill;
-        const bgviewLayoutFocused = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const bgviewLayoutFocused = (make: MASConstraintMaker, view: AllUIView) => {
           make.left.top.bottom.inset(0);
           make.right.inset(cancelButtonWidth);
         };
@@ -266,34 +249,22 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
         };
       }
       case 2: {
-        const IconInputLayoutNormal = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const IconInputLayoutNormal = (make: MASConstraintMaker, view: AllUIView) => {
           make.center.equalTo(view.super);
           make.top.bottom.inset(0);
           make.width.equalTo(placeholderWidth + 50);
         };
-        const IconInputLayoutFocused = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const IconInputLayoutFocused = (make: MASConstraintMaker, view: AllUIView) => {
           make.left.top.bottom.inset(0);
           make.right.inset(cancelButtonWidth);
         };
-        const cancelButtonLayout = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const cancelButtonLayout = (make: MASConstraintMaker, view: AllUIView) => {
           make.right.top.bottom.inset(0);
           make.left.equalTo(view.prev.prev.right);
           make.width.equalTo(cancelButtonWidth);
         };
         const bgviewLayoutNormal = $layout.fill;
-        const bgviewLayoutFocused = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const bgviewLayoutFocused = (make: MASConstraintMaker, view: AllUIView) => {
           make.left.top.bottom.inset(0);
           make.right.inset(cancelButtonWidth);
         };
@@ -313,8 +284,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
 
   _onFocused() {
     this._focused = true;
-    if (this._layouts.iconInput.focused)
-      this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
+    if (this._layouts.iconInput.focused) this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
     switch (this._props.style) {
       case 0: {
         $ui.animate({
@@ -327,8 +297,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
         break;
       }
       case 1: {
-        if (this._layouts.bgview.focused)
-          this.cviews.bgview.view.remakeLayout(this._layouts.bgview.focused);
+        if (this._layouts.bgview.focused) this.cviews.bgview.view.remakeLayout(this._layouts.bgview.focused);
         $ui.animate({
           duration: 0.2,
           animation: () => {
@@ -339,12 +308,8 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
         break;
       }
       case 2: {
-        if (this._layouts.iconInput.focused)
-          this.cviews.iconInput.view.remakeLayout(
-            this._layouts.iconInput.focused
-          );
-        if (this._layouts.bgview.focused)
-          this.cviews.bgview.view.remakeLayout(this._layouts.bgview.focused);
+        if (this._layouts.iconInput.focused) this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
+        if (this._layouts.bgview.focused) this.cviews.bgview.view.remakeLayout(this._layouts.bgview.focused);
         $ui.animate({
           duration: 0.2,
           animation: () => {
@@ -390,15 +355,10 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
           inset: 20,
         });
         const textWidth = getTextWidth(this.text, { inset: 20 });
-        const IconInputLayoutInputing = (
-          make: MASConstraintMaker,
-          view: AllUIView
-        ) => {
+        const IconInputLayoutInputing = (make: MASConstraintMaker, view: AllUIView) => {
           make.center.equalTo(view.super);
           make.top.bottom.inset(0);
-          make.width
-            .equalTo(Math.max(textWidth, placeholderWidth) + 50)
-            .priority(999);
+          make.width.equalTo(Math.max(textWidth, placeholderWidth) + 50).priority(999);
           make.width.lessThanOrEqualTo(view.super).priority(1000);
         };
         this.cviews.iconInput.view.remakeLayout(IconInputLayoutInputing);

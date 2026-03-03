@@ -12,10 +12,7 @@ interface AndroidStyleSpinnerProps {
  * 安卓风格的加载指示器, 基于Lottie实现, 效果是一个圆环一边旋转一边缩放。
  * 由于帧数有限，不建议在大视图上使用。
  */
-export class AndroidStyleSpinner extends Base<
-  UILottieView,
-  UiTypes.LottieOptions
-> {
+export class AndroidStyleSpinner extends Base<UILottieView, UiTypes.LottieOptions> {
   private _props: AndroidStyleSpinnerProps;
   _defineView: () => UiTypes.LottieOptions;
 
@@ -260,9 +257,7 @@ export class AndroidStyleSpinner extends Base<
         layout:
           layout ||
           ((make, view) => {
-            make.size.equalTo(
-              $size(this._props.diameter, this._props.diameter)
-            );
+            make.size.equalTo($size(this._props.diameter, this._props.diameter));
             make.center.equalTo(view.super);
           }),
         events: {

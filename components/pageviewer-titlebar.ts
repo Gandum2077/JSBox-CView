@@ -63,17 +63,13 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
     };
     const { changed, ...restEvents } = events;
     this._floatedIndex = this._props.index;
-    this._lineStartLocationPercentage =
-      this._floatedIndex / this._props.items.length;
+    this._lineStartLocationPercentage = this._floatedIndex / this._props.items.length;
     this.labels = this._props.items.map((n, i) => {
       return new Label({
         props: {
           text: n,
           font: $font("bold", 17),
-          textColor:
-            i === this.index
-              ? this._props.selectedItemColor
-              : this._props.defaultItemColor,
+          textColor: i === this.index ? this._props.selectedItemColor : this._props.defaultItemColor,
           align: $align.center,
           userInteractionEnabled: true,
         },
@@ -101,9 +97,7 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
       },
       layout: (make, view) => {
         make.left.bottom.inset(0);
-        make.width
-          .equalTo(view.super)
-          .multipliedBy(this._floatedIndex / this._props.items.length);
+        make.width.equalTo(view.super).multipliedBy(this._floatedIndex / this._props.items.length);
       },
     });
     this.line = new ContentView({
@@ -125,11 +119,7 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
         },
         layout,
         events: restEvents,
-        views: [
-          this.stack.definition,
-          this.placeholderView.definition,
-          this.line.definition,
-        ],
+        views: [this.stack.definition, this.placeholderView.definition, this.line.definition],
       };
     };
   }
@@ -158,7 +148,7 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
         n.view.textColor = weightedAverageColors(
           this._props.selectedItemColor,
           this._props.defaultItemColor,
-          floatedIndex - i > 0 ? 1 - (floatedIndex - i) : 1 - (i - floatedIndex)
+          floatedIndex - i > 0 ? 1 - (floatedIndex - i) : 1 - (i - floatedIndex),
         );
       } else {
         n.view.textColor = this._props.defaultItemColor;

@@ -29,10 +29,7 @@ export function split(path: string): [string, string] {
   } else if (lastIndex === 0) {
     return [protocol + "/", remainingPath.slice(1)];
   } else {
-    return [
-      protocol + remainingPath.slice(0, lastIndex),
-      remainingPath.slice(lastIndex + 1),
-    ];
+    return [protocol + remainingPath.slice(0, lastIndex), remainingPath.slice(lastIndex + 1)];
   }
 }
 

@@ -161,13 +161,7 @@ export const selectableTypes = [
   "action",
 ];
 
-export const excludedTypes = [
-  "info",
-  "interactive-info",
-  "link",
-  "symbol-action",
-  "action",
-];
+export const excludedTypes = ["info", "interactive-info", "link", "symbol-action", "action"];
 
 type PreferenceValues = { [key: string]: any };
 
@@ -210,7 +204,7 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
       titleColor?: UIColor;
       changedEvent?: () => void;
     },
-    values: PreferenceValues
+    values: PreferenceValues,
   ) {
     super();
     this._key = key;
@@ -276,10 +270,7 @@ abstract class BaseStringCell extends Cell {
   abstract _type: string;
   _placeholder?: string;
   _textColor?: UIColor;
-  constructor(
-    props: PrefsRowString | PrefsRowNumber | PrefsRowInteger,
-    values: PreferenceValues
-  ) {
+  constructor(props: PrefsRowString | PrefsRowNumber | PrefsRowInteger, values: PreferenceValues) {
     super(props, values);
     const { placeholder, textColor } = props;
     this._placeholder = placeholder;
@@ -514,14 +505,7 @@ class SliderCell extends Cell {
   _thumbColor?: UIColor;
   constructor(props: PrefsRowSlider, values: PreferenceValues) {
     super(props, values);
-    const {
-      decimal = 1,
-      min = 0,
-      max = 1,
-      minColor = $color("systemLink"),
-      maxColor,
-      thumbColor,
-    } = props;
+    const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor } = props;
     this._decimal = decimal;
     this._min = min;
     this._max = max;
@@ -565,9 +549,7 @@ class SliderCell extends Cell {
           },
           events: {
             changed: (sender) => {
-              const adjustedValue = parseFloat(
-                sender.value.toFixed(this._decimal)
-              );
+              const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
               const label = sender.prev as UILabelView;
               label.text = adjustedValue.toString();
               if (this._key) {
@@ -576,9 +558,7 @@ class SliderCell extends Cell {
               }
             },
             touchesEnded: (sender) => {
-              const adjustedValue = parseFloat(
-                sender.value.toFixed(this._decimal)
-              );
+              const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
               this.value = adjustedValue;
               if (this._changedEvent) this._changedEvent();
             },

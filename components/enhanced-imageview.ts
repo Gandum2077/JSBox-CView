@@ -63,19 +63,14 @@ export class EnhancedImageView extends Base<UIView, UiTypes.ViewOptions> {
           $delay(0.1, () =>
             this._addGesture(view, (gesture: any) => {
               const location = gesture.$locationInView(view.ocValue());
-              const realLocation = $point(
-                location.x - view.bounds.x,
-                location.y - view.bounds.y
-              );
+              const realLocation = $point(location.x - view.bounds.x, location.y - view.bounds.y);
               const frame = this.view.frame;
               if (realLocation.y <= frame.height / 2) {
-                if (events.upperLocationTouched)
-                  events.upperLocationTouched(this);
+                if (events.upperLocationTouched) events.upperLocationTouched(this);
               } else {
-                if (events.lowerLocationTouched)
-                  events.lowerLocationTouched(this);
+                if (events.lowerLocationTouched) events.lowerLocationTouched(this);
               }
-            })
+            }),
           );
         },
       },

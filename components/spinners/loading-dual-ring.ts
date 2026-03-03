@@ -4,13 +4,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
   _tintColor: UIColor;
   startAngle: number;
   _defineView: () => UiTypes.CanvasOptions;
-  constructor({
-    tintColor,
-    startAngle,
-  }: {
-    tintColor: UIColor;
-    startAngle: number;
-  }) {
+  constructor({ tintColor, startAngle }: { tintColor: UIColor; startAngle: number }) {
     super();
     this._tintColor = tintColor;
     this.startAngle = startAngle;
@@ -34,7 +28,7 @@ class CanvasComponet extends Base<UICanvasView, UiTypes.CanvasOptions> {
               radius / 2 - 20,
               this.startAngle,
               this.startAngle + (Math.PI * 2 * 1) / 4,
-              false
+              false,
             );
             ctx.strokePath();
           },

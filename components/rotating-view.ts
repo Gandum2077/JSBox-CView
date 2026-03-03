@@ -60,9 +60,7 @@ export class RotatingView extends Base<UIView, UiTypes.ViewOptions> {
       if (!this._props.image) throw new Error("image is required");
       this._innerView = new Image({
         props: {
-          image: this._props.tintColor
-            ? this._props.image.alwaysTemplate
-            : this._props.image,
+          image: this._props.tintColor ? this._props.image.alwaysTemplate : this._props.image,
           tintColor: this._props.tintColor,
           contentMode: this._props.contentMode,
         },

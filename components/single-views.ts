@@ -9,7 +9,7 @@ export class SingleView<
   V extends UIBaseView,
   P extends UiTypes.BaseViewProps,
   E extends UiTypes.BaseViewEvents<V>,
-  O extends UiTypes.AllViewOptions
+  O extends UiTypes.AllViewOptions,
 > extends Base<V, O> {
   _type: T;
   _props?: P;
@@ -397,13 +397,7 @@ export class Stepper extends SingleView<
   }
 }
 
-export class Text extends SingleView<
-  "text",
-  UITextView,
-  UiTypes.TextProps,
-  UiTypes.TextEvents,
-  UiTypes.TextOptions
-> {
+export class Text extends SingleView<"text", UITextView, UiTypes.TextProps, UiTypes.TextEvents, UiTypes.TextOptions> {
   constructor({
     props,
     layout,
@@ -537,13 +531,7 @@ export class Stack extends SingleView<
   }
 }
 
-export class Tab extends SingleView<
-  "tab",
-  UITabView,
-  UiTypes.TabProps,
-  UiTypes.TabEvents,
-  UiTypes.TabOptions
-> {
+export class Tab extends SingleView<"tab", UITabView, UiTypes.TabProps, UiTypes.TabEvents, UiTypes.TabOptions> {
   constructor({
     props,
     layout,
@@ -565,13 +553,7 @@ export class Tab extends SingleView<
   }
 }
 
-export class Menu extends SingleView<
-  "menu",
-  UIMenuView,
-  UiTypes.MenuProps,
-  UiTypes.MenuEvents,
-  UiTypes.MenuOptions
-> {
+export class Menu extends SingleView<"menu", UIMenuView, UiTypes.MenuProps, UiTypes.MenuEvents, UiTypes.MenuOptions> {
   constructor({
     props,
     layout,
@@ -621,13 +603,7 @@ export class Map extends SingleView<
   }
 }
 
-export class Web extends SingleView<
-  "web",
-  UIWebView,
-  UiTypes.WebProps,
-  UiTypes.WebEvents,
-  UiTypes.WebOptions
-> {
+export class Web extends SingleView<"web", UIWebView, UiTypes.WebProps, UiTypes.WebEvents, UiTypes.WebOptions> {
   constructor({
     props,
     layout,
@@ -649,13 +625,7 @@ export class Web extends SingleView<
   }
 }
 
-export class List extends SingleView<
-  "list",
-  UIListView,
-  UiTypes.ListProps,
-  UiTypes.ListEvents,
-  UiTypes.ListOptions
-> {
+export class List extends SingleView<"list", UIListView, UiTypes.ListProps, UiTypes.ListEvents, UiTypes.ListOptions> {
   constructor({
     props,
     layout,

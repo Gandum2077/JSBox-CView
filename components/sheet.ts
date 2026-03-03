@@ -31,11 +31,7 @@ const UIModalPresentationStyle = {
  * - dismiss()
  *
  */
-export class Sheet<
-  T extends Base<U, R>,
-  U extends AllUIView,
-  R extends UiTypes.AllViewOptions
-> {
+export class Sheet<T extends Base<U, R>, U extends AllUIView, R extends UiTypes.AllViewOptions> {
   id: string;
   _animated: boolean;
   _presentMode: number;
@@ -76,8 +72,7 @@ export class Sheet<
     this._PSViewControllerView = this._PSViewController.$view();
     this._PSViewControllerView.$setBackgroundColor(this._bgcolor);
     this._PSViewController.$setModalPresentationStyle(this._presentMode);
-    if (this._interactiveDismissalDisabled)
-      this._PSViewController.$setModalInPresentation(true);
+    if (this._interactiveDismissalDisabled) this._PSViewController.$setModalInPresentation(true);
     if (this._cview) this._add(this._cview);
   }
 
@@ -100,19 +95,10 @@ export class Sheet<
 
   present() {
     this._create();
-    $ui.controller
-      .ocValue()
-      .invoke(
-        "presentModalViewController:animated",
-        this._PSViewController,
-        this._animated
-      );
+    $ui.controller.ocValue().invoke("presentModalViewController:animated", this._PSViewController, this._animated);
   }
 
   dismiss() {
-    this._PSViewController.invoke(
-      "dismissModalViewControllerAnimated",
-      this._animated
-    );
+    this._PSViewController.invoke("dismissModalViewControllerAnimated", this._animated);
   }
 }

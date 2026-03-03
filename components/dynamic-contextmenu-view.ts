@@ -23,10 +23,7 @@ const RegisteredOCClassName: Set<string> = new Set();
  *    生成上下文菜单的回调函数。
  *
  */
-export class DynamicContextMenuView extends Base<
-  UIView,
-  UiTypes.RuntimeOptions
-> {
+export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions> {
   private generateContextMenu: (sender: UIView) => {
     title?: string;
     items: MenuItem[];
@@ -77,10 +74,7 @@ export class DynamicContextMenuView extends Base<
     $define({
       type: this._ocClassName + " : UIView <UIContextMenuInteractionDelegate>",
       events: {
-        "contextMenuInteraction:configurationForMenuAtLocation:": (
-          interacton: any,
-          point: JBPoint
-        ) => {
+        "contextMenuInteraction:configurationForMenuAtLocation:": (interacton: any, point: JBPoint) => {
           const view = interacton.$view().jsValue();
           const menu = this.generateContextMenu(view);
           return this.createContextMenuConfiguration(menu);
@@ -89,42 +83,32 @@ export class DynamicContextMenuView extends Base<
     });
   }
 
-  private createContextMenuConfiguration({
-    title,
-    items,
-  }: {
-    title?: string;
-    items: MenuItem[];
-  }) {
-    return $objc(
-      "UIContextMenuConfiguration"
-    ).$configurationWithIdentifier_previewProvider_actionProvider(
+  private createContextMenuConfiguration({ title, items }: { title?: string; items: MenuItem[] }) {
+    return $objc("UIContextMenuConfiguration").$configurationWithIdentifier_previewProvider_actionProvider(
       null,
       null,
       $block("UIMenu *, NSArray *", () => {
         const actions = items.map((item) => {
-          const action = $objc(
-            "UIAction"
-          ).$actionWithTitle_image_identifier_handler(
+          const action = $objc("UIAction").$actionWithTitle_image_identifier_handler(
             item.title,
             item.symbol || null,
             null,
-            $block("void, UIAction *", () => item.handler())
+            $block("void, UIAction *", () => item.handler()),
           );
           if (item.destructive) action.$setAttributes(1 << 1);
           return action;
         });
-        return title ? $objc("UIMenu").$menuWithTitle_children(title, actions) : $objc("UIMenu").$menuWithChildren(actions);
-      })
+        return title
+          ? $objc("UIMenu").$menuWithTitle_children(title, actions)
+          : $objc("UIMenu").$menuWithChildren(actions);
+      }),
     );
   }
 
   private createRuntimeView() {
     this.defineOCClass();
     const view = $objc(this._ocClassName).invoke("alloc.init");
-    const interaction = $objc("UIContextMenuInteraction")
-      .invoke("alloc")
-      .invoke("initWithDelegate", view);
+    const interaction = $objc("UIContextMenuInteraction").invoke("alloc").invoke("initWithDelegate", view);
     view.$addInteraction(interaction);
     return view;
   }

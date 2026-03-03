@@ -94,9 +94,7 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
 
   set selected(selected) {
     this._props.selected = selected;
-    const color = selected
-      ? this._props.selectedSegmentTintColor
-      : this._props.defaultSegmentTintColor;
+    const color = selected ? this._props.selectedSegmentTintColor : this._props.defaultSegmentTintColor;
     this.view.get("image").tintColor = color;
     const label = this.view.get("label") as UILabelView;
     label.textColor = color;
@@ -192,9 +190,7 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
 
   set selected(selected) {
     this._props.selected = selected;
-    const color = selected
-      ? this._props.selectedSegmentTintColor
-      : this._props.defaultSegmentTintColor;
+    const color = selected ? this._props.selectedSegmentTintColor : this._props.defaultSegmentTintColor;
     this.view.get("image").tintColor = color;
   }
 
@@ -235,10 +231,7 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
  * - hide(animated=true) 隐藏
  * - show(animated=true) 显示
  */
-export class TabBar extends Base<
-  UIView | UIBlurView,
-  UiTypes.ViewOptions | UiTypes.BlurOptions
-> {
+export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
   _props: {
     height: number;
     items: { symbol?: string; image?: UIImage; title?: string }[];
@@ -319,9 +312,7 @@ export class TabBar extends Base<
           },
           layout: (make, view) => {
             make.left.right.bottom.inset(0);
-            make.top
-              .equalTo(view.super.safeAreaBottom)
-              .inset(-this._props.height);
+            make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
           },
           views: [line, stack],
           events: {
@@ -345,9 +336,7 @@ export class TabBar extends Base<
           },
           layout: (make, view) => {
             make.left.right.bottom.inset(0);
-            make.top
-              .equalTo(view.super.safeAreaBottom)
-              .inset(-this._props.height);
+            make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
           },
           views: [line, stack],
           events: {
@@ -384,8 +373,7 @@ export class TabBar extends Base<
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
               } else {
-                if (this._events.doubleTapped)
-                  this._events.doubleTapped(this, index);
+                if (this._events.doubleTapped) this._events.doubleTapped(this, index);
               }
             },
           },
@@ -405,8 +393,7 @@ export class TabBar extends Base<
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
               } else {
-                if (this._events.doubleTapped)
-                  this._events.doubleTapped(this, index);
+                if (this._events.doubleTapped) this._events.doubleTapped(this, index);
               }
             },
           },

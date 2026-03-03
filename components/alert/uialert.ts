@@ -14,11 +14,7 @@ export class UIAlertAction {
   style: number;
   instance: any;
 
-  constructor(
-    title: string,
-    style = UIAlertActionStyle.Default,
-    handler: Function
-  ) {
+  constructor(title: string, style = UIAlertActionStyle.Default, handler: Function) {
     this.title = title;
     this.style = style;
     this.instance = $objc("UIAlertAction").$actionWithTitle_style_handler(
@@ -28,7 +24,7 @@ export class UIAlertAction {
         if (handler) {
           handler(this);
         }
-      })
+      }),
     );
   }
 }
@@ -41,17 +37,11 @@ export class UIAlertController {
   message: string;
   style: number;
   instance: any;
-  constructor(
-    title: string,
-    message: string,
-    style = UIAlertControllerStyle.ActionSheet
-  ) {
+  constructor(title: string, message: string, style = UIAlertControllerStyle.ActionSheet) {
     this.title = title;
     this.message = message;
     this.style = style;
-    this.instance = $objc(
-      "UIAlertController"
-    ).$alertControllerWithTitle_message_preferredStyle(title, message, style);
+    this.instance = $objc("UIAlertController").$alertControllerWithTitle_message_preferredStyle(title, message, style);
   }
 
   addAction(action: UIAlertAction) {
@@ -98,10 +88,10 @@ export class UIAlertController {
                   }
                 },
               },
-            })
+            }),
           );
         }
-      })
+      }),
     );
   }
 

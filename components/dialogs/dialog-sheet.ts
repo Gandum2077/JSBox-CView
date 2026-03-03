@@ -15,11 +15,7 @@ import { Base } from "../base";
  * @param bgcolor 背景颜色
  * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
  */
-export class DialogSheet extends Sheet<
-  ContentView,
-  UIView,
-  UiTypes.ViewOptions
-> {
+export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions> {
   _props: {
     title: string;
     cview: Base<any, any>;
@@ -61,12 +57,8 @@ export class DialogSheet extends Sheet<
     this._navbar = new CustomNavigationBar({
       props: {
         title: this._props.title,
-        leftBarButtonItems: [
-          { symbol: "xmark", handler: () => this.dismiss() },
-        ],
-        rightBarButtonItems: this._props.doneButtonHidden
-          ? []
-          : [{ title: l10n("DONE"), handler: () => this.done() }],
+        leftBarButtonItems: [{ symbol: "xmark", handler: () => this.dismiss() }],
+        rightBarButtonItems: this._props.doneButtonHidden ? [] : [{ title: l10n("DONE"), handler: () => this.done() }],
       },
     });
     this._props.cview._layout = (make, view) => {
@@ -82,8 +74,7 @@ export class DialogSheet extends Sheet<
 
   done() {
     this._done = true;
-    if (this.resolve && this._props.doneHandler)
-      this.resolve(this._props.doneHandler());
+    if (this.resolve && this._props.doneHandler) this.resolve(this._props.doneHandler());
     this.dismiss();
   }
 

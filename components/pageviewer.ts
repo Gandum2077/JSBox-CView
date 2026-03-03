@@ -75,26 +75,17 @@ export class PageViewer extends Base<UIView, UiTypes.ViewOptions> {
       events: {
         layoutSubviews: (sender) => {
           this._pageWidth = sender.frame.width;
-          if (this._pageWidth)
-            sender.contentSize = $size(
-              this._pageWidth * this._props.cviews.length,
-              0
-            );
+          if (this._pageWidth) sender.contentSize = $size(this._pageWidth * this._props.cviews.length, 0);
         },
         willEndDragging: (sender, velocity, target) => {
           const oldPage = this.page;
           this._props.page = Math.round(target.x / this._pageWidth);
-          if (oldPage !== this.page && this._events.changed)
-            this._events.changed(this, this.page);
+          if (oldPage !== this.page && this._events.changed) this._events.changed(this, this.page);
         },
         didScroll: (sender) => {
           const rawPage = sender.contentOffset.x / this._pageWidth;
-          this._floatPage = Math.min(
-            Math.max(0, rawPage),
-            this._props.cviews.length - 1
-          );
-          if (this._events.floatPageChanged)
-            this._events.floatPageChanged(this, this._floatPage);
+          this._floatPage = Math.min(Math.max(0, rawPage), this._props.cviews.length - 1);
+          if (this._events.floatPageChanged) this._events.floatPageChanged(this, this._floatPage);
         },
       },
       layout: $layout.fill,

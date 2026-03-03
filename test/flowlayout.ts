@@ -21,11 +21,7 @@ class FlowlayoutItem extends Label {
 
 const flowlayout = new Flowlayout({
   props: {
-    items: [
-      new FlowlayoutItem("Hello"),
-      new FlowlayoutItem("World"),
-      new FlowlayoutItem("Flowlayout"),
-    ],
+    items: [new FlowlayoutItem("Hello"), new FlowlayoutItem("World"), new FlowlayoutItem("Flowlayout")],
     spacing: 10,
     itemHeight: 30,
     fixedRows: 2,
@@ -68,15 +64,11 @@ $ui.render({
             new FlowlayoutItem("New Item"),
             new FlowlayoutItem("Hello"),
             new FlowlayoutItem("World"),
-            new FlowlayoutItem(
-              "FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"
-            ),
+            new FlowlayoutItem("FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"),
             new FlowlayoutItem("New Item"),
             new FlowlayoutItem("Hello"),
             new FlowlayoutItem("World"),
-            new FlowlayoutItem(
-              "FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"
-            ),
+            new FlowlayoutItem("FlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayoutFlowlayout"),
             new FlowlayoutItem("New Item"),
           ];
         },

@@ -1,8 +1,5 @@
 import { Base } from "../base";
-import {
-  PreferenceListView,
-  PreferenceSection,
-} from "../static-preference-listview";
+import { PreferenceListView, PreferenceSection } from "../static-preference-listview";
 import { DialogSheet } from "./dialog-sheet";
 
 class DialogSheetForm extends DialogSheet {
@@ -16,7 +13,7 @@ class DialogSheetForm extends DialogSheet {
       bgcolor?: UIColor;
       doneButtonHidden?: boolean;
     },
-    checkHandler: (values: { [key: string]: any }) => boolean
+    checkHandler: (values: { [key: string]: any }) => boolean,
   ) {
     super(sheetProps);
     this._checkHandler = checkHandler;
@@ -57,7 +54,7 @@ export function formDialog({
       cview: view,
       doneHandler: () => view.values,
     },
-    checkHandler || (() => true)
+    checkHandler || (() => true),
   );
   return new Promise((resolve, reject) => {
     sheet.promisify(resolve, reject);

@@ -1,14 +1,7 @@
-import {
-  BaseController,
-  BaseControllerProps,
-  BaseControllerEvents,
-} from "./base-controller";
+import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { PageViewer } from "../components/pageviewer";
 import { PageViewerTitleBar } from "../components/pageviewer-titlebar";
-import {
-  CustomNavigationBar,
-  NavigationBarProps,
-} from "../components/custom-navigation-bar";
+import { CustomNavigationBar, NavigationBarProps } from "../components/custom-navigation-bar";
 
 interface PageViewerControllerProps extends BaseControllerProps {
   items: { controller: BaseController; title: string }[];
@@ -66,8 +59,7 @@ export class PageViewerController extends BaseController {
         make.top.equalTo(view.prev.bottom);
       },
       events: {
-        floatPageChanged: (cview, floatPage) =>
-          (this.cviews.titlebar.floatedIndex = floatPage),
+        floatPageChanged: (cview, floatPage) => (this.cviews.titlebar.floatedIndex = floatPage),
       },
     });
     this.cviews.titlebar = new PageViewerTitleBar({

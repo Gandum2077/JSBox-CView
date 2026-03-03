@@ -30,10 +30,7 @@ import { Base } from "./base";
  * - set items(items: FlowlayoutItem[])  设置子视图
  * - get items(): FlowlayoutItem[]  获取子视图
  */
-export class Flowlayout<T extends FlowlayoutItem> extends Base<
-  UIView,
-  UiTypes.ViewOptions
-> {
+export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
   private _width: number; // 缓存宽度，用于判断是否需要重新布局
   private _props: {
     items: T[];
@@ -84,7 +81,7 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<
           didLongPress: events?.didLongPress,
           flowlayout: this,
           index,
-        })
+        }),
     );
     this._defineView = () => ({
       type: "view",
@@ -98,8 +95,7 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<
           if (this._width !== sender.frame.width) {
             this._width = sender.frame.width;
             const height = this._layoutWrappers();
-            if (!this._props.fixedHeight)
-              sender.updateLayout((make) => make.height.equalTo(height));
+            if (!this._props.fixedHeight) sender.updateLayout((make) => make.height.equalTo(height));
           }
         },
       },
@@ -126,13 +122,12 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<
           didLongPress: this._events?.didLongPress,
           flowlayout: this,
           index,
-        })
+        }),
     );
     this.view.views.forEach((v) => v.remove());
     this._wrappers.forEach((wrapper) => this.view.add(wrapper.definition));
     const height = this._layoutWrappers();
-    if (!this._props.fixedHeight)
-      this.view.updateLayout((make) => make.height.equalTo(height));
+    if (!this._props.fixedHeight) this.view.updateLayout((make) => make.height.equalTo(height));
   }
 
   _layoutWrappers(): number {
@@ -192,10 +187,7 @@ interface FlowlayoutItem extends Base<any, any> {
   itemWidth: () => number;
 }
 
-class WrapperView<T extends FlowlayoutItem> extends Base<
-  UIView,
-  UiTypes.ViewOptions
-> {
+class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
   item: T;
   constructor({
