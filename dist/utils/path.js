@@ -34,10 +34,7 @@ function split(path) {
         return [protocol + "/", remainingPath.slice(1)];
     }
     else {
-        return [
-            protocol + remainingPath.slice(0, lastIndex),
-            remainingPath.slice(lastIndex + 1),
-        ];
+        return [protocol + remainingPath.slice(0, lastIndex), remainingPath.slice(lastIndex + 1)];
     }
 }
 exports.split = split;

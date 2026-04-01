@@ -126,8 +126,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 events: {
                                                     changed: (sender) => {
                                                         const { section, row } = sender.info;
-                                                        this._sections[section].rows[row].value =
-                                                            sender.value;
+                                                        this._sections[section].rows[row].value = sender.value;
                                                         const label = sender.next;
                                                         label.text = sender.value.toString();
                                                         if (events.changed)
@@ -180,8 +179,7 @@ class DynamicPreferenceListView extends base_1.Base {
                                                         var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
-                                                        this._sections[section].rows[row].value =
-                                                            this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
+                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
                                                         if (events.changed)
                                                             events.changed(this.values);
                                                     },
@@ -602,9 +600,7 @@ class DynamicPreferenceListView extends base_1.Base {
                         break;
                     }
                     case "action": {
-                        data.title.textColor = n.destructive
-                            ? $color("red")
-                            : $color("systemLink");
+                        data.title.textColor = n.destructive ? $color("red") : $color("systemLink");
                         break;
                     }
                     default:

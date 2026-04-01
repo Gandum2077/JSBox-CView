@@ -150,11 +150,7 @@ class SearchBar extends base_1.Base {
                     clipsToBounds: true,
                 },
                 layout,
-                views: [
-                    this.cviews.bgview.definition,
-                    this.cviews.iconInput.definition,
-                    this.cviews.cancelButton.definition,
-                ],
+                views: [this.cviews.bgview.definition, this.cviews.iconInput.definition, this.cviews.cancelButton.definition],
             };
         };
     }
@@ -313,9 +309,7 @@ class SearchBar extends base_1.Base {
                 const IconInputLayoutInputing = (make, view) => {
                     make.center.equalTo(view.super);
                     make.top.bottom.inset(0);
-                    make.width
-                        .equalTo(Math.max(textWidth, placeholderWidth) + 50)
-                        .priority(999);
+                    make.width.equalTo(Math.max(textWidth, placeholderWidth) + 50).priority(999);
                     make.width.lessThanOrEqualTo(view.super).priority(1000);
                 };
                 this.cviews.iconInput.view.remakeLayout(IconInputLayoutInputing);

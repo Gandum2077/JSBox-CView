@@ -51,8 +51,7 @@ class TabBarController extends base_controller_1.BaseController {
                 changed: (cview, index) => {
                     var _a, _b;
                     this.index = index;
-                    (_a = this._props.items
-                        .find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
+                    (_a = this._props.items.find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
                     this._props.items[index].controller.appear();
                     (_b = events.changed) === null || _b === void 0 ? void 0 : _b.call(events, this, index);
                 },
@@ -90,8 +89,7 @@ class TabBarController extends base_controller_1.BaseController {
             n.view.hidden = i !== num;
         });
         this._props.index = num;
-        (_a = this._props.items
-            .find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
+        (_a = this._props.items.find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
         this._props.items[num].controller.appear();
     }
     get index() {

@@ -15,13 +15,7 @@ exports.selectableTypes = [
     "symbol-action",
     "action",
 ];
-exports.excludedTypes = [
-    "info",
-    "interactive-info",
-    "link",
-    "symbol-action",
-    "action",
-];
+exports.excludedTypes = ["info", "interactive-info", "link", "symbol-action", "action"];
 class Cell extends base_1.Base {
     constructor({ key, title, value, titleColor = $color("primaryText"), changedEvent, }, values) {
         super();
@@ -297,7 +291,7 @@ class SliderCell extends Cell {
     constructor(props, values) {
         super(props, values);
         this._type = "slider";
-        const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor, } = props;
+        const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor } = props;
         this._decimal = decimal;
         this._min = min;
         this._max = max;

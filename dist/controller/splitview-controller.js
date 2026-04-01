@@ -101,9 +101,7 @@ class MaskView extends base_1.Base {
             .$alloc()
             .$initWithTarget_action(object, "swipeEvent");
         swipeGestureRecognizer.$setDirection(1 << 1); // 从右向左划动
-        const tapGestureRecognizer = $objc("UITapGestureRecognizer")
-            .$alloc()
-            .$initWithTarget_action(object, "tapEvent");
+        const tapGestureRecognizer = $objc("UITapGestureRecognizer").$alloc().$initWithTarget_action(object, "tapEvent");
         view.ocValue().$addGestureRecognizer(tapGestureRecognizer);
         view.ocValue().$addGestureRecognizer(swipeGestureRecognizer);
     }
@@ -188,10 +186,7 @@ class SplitViewController extends base_controller_1.BaseController {
                 make.left.equalTo(view.prev.right);
                 make.width.equalTo(view.super);
             },
-            views: [
-                props.items[0].controller.rootView.definition,
-                this.cviews.maskView.definition,
-            ],
+            views: [props.items[0].controller.rootView.definition, this.cviews.maskView.definition],
         });
         this._screenEdgePanGestureObject = this._defineGestureObject(() => {
             if (!this.sideBarShown && this._canShowSidebar)
@@ -235,18 +230,13 @@ class SplitViewController extends base_controller_1.BaseController {
         return object;
     }
     _renewScreenEdgePanGesture() {
-        const UIScreenEdgePanGestureRecognizer = $ui.controller.view
-            .ocValue()
-            .$gestureRecognizers()
-            .$firstObject();
+        const UIScreenEdgePanGestureRecognizer = $ui.controller.view.ocValue().$gestureRecognizers().$firstObject();
         UIScreenEdgePanGestureRecognizer.invoke("removeTarget:action:", null, null);
         const NewUIScreenEdgePanGestureRecognizer = $objc("UIScreenEdgePanGestureRecognizer")
             .$alloc()
             .$initWithTarget_action(this._screenEdgePanGestureObject, "screenEdgePanEvent");
         NewUIScreenEdgePanGestureRecognizer.$setEdges(1 << 1);
-        this.rootView.view
-            .ocValue()
-            .$addGestureRecognizer(NewUIScreenEdgePanGestureRecognizer);
+        this.rootView.view.ocValue().$addGestureRecognizer(NewUIScreenEdgePanGestureRecognizer);
     }
     _showSideBar() {
         this.cviews.secondaryView.show();

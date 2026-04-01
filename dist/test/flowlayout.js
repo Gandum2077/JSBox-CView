@@ -19,11 +19,7 @@ class FlowlayoutItem extends single_views_1.Label {
 }
 const flowlayout = new flowlayout_1.Flowlayout({
     props: {
-        items: [
-            new FlowlayoutItem("Hello"),
-            new FlowlayoutItem("World"),
-            new FlowlayoutItem("Flowlayout"),
-        ],
+        items: [new FlowlayoutItem("Hello"), new FlowlayoutItem("World"), new FlowlayoutItem("Flowlayout")],
         spacing: 10,
         itemHeight: 30,
         fixedRows: 2,

@@ -14,6 +14,8 @@ const single_views_1 = require("../single-views");
  * @param presentMode 显示模式
  * @param bgcolor 背景颜色
  * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
+ * @param doneButtonValidator 完成按钮验证器，返回true则执行完成逻辑，返回false则不执行
+ * @param doneButtonTitle 完成按钮标题，默认为"完成"
  */
 class DialogSheet extends sheet_1.Sheet {
     constructor(props) {
@@ -36,12 +38,25 @@ class DialogSheet extends sheet_1.Sheet {
         this._navbar = new custom_navigation_bar_1.CustomNavigationBar({
             props: {
                 title: this._props.title,
-                leftBarButtonItems: [
-                    { symbol: "xmark", handler: () => this.dismiss() },
-                ],
+                leftBarButtonItems: [{ symbol: "xmark", handler: () => this.dismiss() }],
                 rightBarButtonItems: this._props.doneButtonHidden
                     ? []
-                    : [{ title: (0, l10n_1.l10n)("DONE"), handler: () => this.done() }],
+                    : [
+                        {
+                            title: this._props.doneButtonTitle || (0, l10n_1.l10n)("DONE"),
+                            handler: () => {
+                                if (this._props.doneButtonValidator) {
+                                    if (this._props.doneButtonValidator()) {
+                                        this.done();
+                                    }
+                                    else {
+                                        return;
+                                    }
+                                }
+                                this.done();
+                            },
+                        },
+                    ],
             },
         });
         this._props.cview._layout = (make, view) => {

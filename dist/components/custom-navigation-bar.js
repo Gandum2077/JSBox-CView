@@ -102,9 +102,7 @@ class CustomNavigationBar extends base_1.Base {
             // leftItemView
             let leftInset = 0;
             if (this._props.popButtonEnabled) {
-                const titleWidth = this._props.popButtonTitle
-                    ? (0, uitools_1.getTextWidth)(this._props.popButtonTitle)
-                    : 0;
+                const titleWidth = this._props.popButtonTitle ? (0, uitools_1.getTextWidth)(this._props.popButtonTitle) : 0;
                 leftInset = titleWidth + 35;
                 const views = [];
                 const chevronOptions = {
@@ -298,10 +296,7 @@ class CustomNavigationBar extends base_1.Base {
                         type: "view",
                         props: {},
                         layout: $layout.fillSafeArea,
-                        views: [
-                            this.cviews.contentView.definition,
-                            this.cviews.toolViewWrapper.definition,
-                        ],
+                        views: [this.cviews.contentView.definition, this.cviews.toolViewWrapper.definition],
                     },
                     this.cviews.separator.definition,
                 ],

@@ -57,8 +57,7 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
             didSelect: (sender, indexPath) => {
                 const data = sender.data;
                 if (multiSelectEnabled) {
-                    data[indexPath.item].image.hidden =
-                        !data[indexPath.item].image.hidden;
+                    data[indexPath.item].image.hidden = !data[indexPath.item].image.hidden;
                 }
                 else {
                     data.forEach((n, i) => {
@@ -74,9 +73,7 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
         bgcolor: $color("insetGroupedBackground"),
         cview: listView,
         doneHandler: () => {
-            const filtered = listView.view.data
-                .map((n, i) => (n.image.hidden ? -1 : i))
-                .filter((n) => n !== -1);
+            const filtered = listView.view.data.map((n, i) => (n.image.hidden ? -1 : i)).filter((n) => n !== -1);
             if (multiSelectEnabled)
                 return filtered;
             else

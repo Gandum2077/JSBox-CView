@@ -21,10 +21,8 @@ function _getColumnsAndItemSizeWidth(containerWidth, minItemWidth, maxColumns, s
             itemSizeWidth: containerWidth - 2 * spacing,
         };
     }
-    const columns = Math.max(Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1 // 最少一列
-    );
-    const itemSizeWidth = Math.max(Math.floor((containerWidth - spacing * (columns + 1)) / columns), minItemWidth // 最小宽度
-    );
+    const columns = Math.max(Math.min(Math.floor((containerWidth - spacing) / (minItemWidth + spacing)), maxColumns), 1);
+    const itemSizeWidth = Math.max(Math.floor((containerWidth - spacing * (columns + 1)) / columns), minItemWidth);
     return {
         columns,
         itemSizeWidth,
@@ -125,7 +123,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
     }
     heightToWidth(width) {
         const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
-        const rows = Math.ceil(this._props.data.length / columns);
+        const rows = this._props.data ? Math.ceil(this._props.data.length / columns) : 0;
         const itemSizeHeight = this._events.itemHeight
             ? this._events.itemHeight(itemSizeWidth)
             : this._props.fixedItemHeight;

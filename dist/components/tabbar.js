@@ -64,9 +64,7 @@ class ImageLabelCell extends base_1.Base {
     }
     set selected(selected) {
         this._props.selected = selected;
-        const color = selected
-            ? this._props.selectedSegmentTintColor
-            : this._props.defaultSegmentTintColor;
+        const color = selected ? this._props.selectedSegmentTintColor : this._props.defaultSegmentTintColor;
         this.view.get("image").tintColor = color;
         const label = this.view.get("label");
         label.textColor = color;
@@ -130,9 +128,7 @@ class ImageCell extends base_1.Base {
     }
     set selected(selected) {
         this._props.selected = selected;
-        const color = selected
-            ? this._props.selectedSegmentTintColor
-            : this._props.defaultSegmentTintColor;
+        const color = selected ? this._props.selectedSegmentTintColor : this._props.defaultSegmentTintColor;
         this.view.get("image").tintColor = color;
     }
     get selected() {
@@ -212,9 +208,7 @@ class TabBar extends base_1.Base {
                     },
                     layout: (make, view) => {
                         make.left.right.bottom.inset(0);
-                        make.top
-                            .equalTo(view.super.safeAreaBottom)
-                            .inset(-this._props.height);
+                        make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
                     },
                     views: [line, stack],
                     events: {
@@ -240,9 +234,7 @@ class TabBar extends base_1.Base {
                     },
                     layout: (make, view) => {
                         make.left.right.bottom.inset(0);
-                        make.top
-                            .equalTo(view.super.safeAreaBottom)
-                            .inset(-this._props.height);
+                        make.top.equalTo(view.super.safeAreaBottom).inset(-this._props.height);
                     },
                     views: [line, stack],
                     events: {

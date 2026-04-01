@@ -14,6 +14,8 @@ import { Base } from "../base";
  * @param presentMode 显示模式
  * @param bgcolor 背景颜色
  * @param doneButtonHidden 是否隐藏完成按钮, 默认为false，如果隐藏则需要自行实现完成逻辑
+ * @param doneButtonValidator 完成按钮验证器，返回true则执行完成逻辑，返回false则不执行
+ * @param doneButtonTitle 完成按钮标题，默认为"完成"
  */
 export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions> {
   _props: {
@@ -23,6 +25,8 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     presentMode?: number;
     bgcolor?: UIColor;
     doneButtonHidden?: boolean;
+    doneButtonValidator?: () => boolean;
+    doneButtonTitle?: string;
   };
   _done: boolean;
   private _navbar?: CustomNavigationBar;
@@ -36,6 +40,8 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     presentMode?: number;
     bgcolor?: UIColor;
     doneButtonHidden?: boolean;
+    doneButtonValidator?: () => boolean;
+    doneButtonTitle?: string;
   }) {
     super({
       presentMode: props.presentMode || ($device.isIpad ? 2 : 1),
@@ -58,7 +64,23 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
       props: {
         title: this._props.title,
         leftBarButtonItems: [{ symbol: "xmark", handler: () => this.dismiss() }],
-        rightBarButtonItems: this._props.doneButtonHidden ? [] : [{ title: l10n("DONE"), handler: () => this.done() }],
+        rightBarButtonItems: this._props.doneButtonHidden
+          ? []
+          : [
+              {
+                title: this._props.doneButtonTitle || l10n("DONE"),
+                handler: () => {
+                  if (this._props.doneButtonValidator) {
+                    if (this._props.doneButtonValidator()) {
+                      this.done();
+                    } else {
+                      return;
+                    }
+                  }
+                  this.done();
+                },
+              },
+            ],
       },
     });
     this._props.cview._layout = (make, view) => {

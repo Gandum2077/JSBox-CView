@@ -70,9 +70,7 @@ class Sheet {
     }
     present() {
         this._create();
-        $ui.controller
-            .ocValue()
-            .invoke("presentModalViewController:animated", this._PSViewController, this._animated);
+        $ui.controller.ocValue().invoke("presentModalViewController:animated", this._PSViewController, this._animated);
     }
     dismiss() {
         this._PSViewController.invoke("dismissModalViewControllerAnimated", this._animated);

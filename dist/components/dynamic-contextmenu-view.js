@@ -48,7 +48,7 @@ class DynamicContextMenuView extends base_1.Base {
             },
         });
     }
-    createContextMenuConfiguration({ title, items, }) {
+    createContextMenuConfiguration({ title, items }) {
         return $objc("UIContextMenuConfiguration").$configurationWithIdentifier_previewProvider_actionProvider(null, null, $block("UIMenu *, NSArray *", () => {
             const actions = items.map((item) => {
                 const action = $objc("UIAction").$actionWithTitle_image_identifier_handler(item.title, item.symbol || null, null, $block("void, UIAction *", () => item.handler()));
@@ -56,15 +56,15 @@ class DynamicContextMenuView extends base_1.Base {
                     action.$setAttributes(1 << 1);
                 return action;
             });
-            return title ? $objc("UIMenu").$menuWithTitle_children(title, actions) : $objc("UIMenu").$menuWithChildren(actions);
+            return title
+                ? $objc("UIMenu").$menuWithTitle_children(title, actions)
+                : $objc("UIMenu").$menuWithChildren(actions);
         }));
     }
     createRuntimeView() {
         this.defineOCClass();
         const view = $objc(this._ocClassName).invoke("alloc.init");
-        const interaction = $objc("UIContextMenuInteraction")
-            .invoke("alloc")
-            .invoke("initWithDelegate", view);
+        const interaction = $objc("UIContextMenuInteraction").invoke("alloc").invoke("initWithDelegate", view);
         view.$addInteraction(interaction);
         return view;
     }

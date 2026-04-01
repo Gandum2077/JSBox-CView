@@ -57,8 +57,7 @@ const matrix = new dynamic_itemsize_matrix_1.DynamicItemSizeMatrix({
             matrix.columns;
             console.log(sender.contentOffset.y);
             console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)));
-            console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)) *
-                matrix.columns);
+            console.log(Math.ceil(sender.contentOffset.y / (matrix.itemSize.height + 5)) * matrix.columns);
         },
     },
 });

@@ -35,9 +35,7 @@ class RotatingView extends base_1.Base {
                 throw new Error("image is required");
             this._innerView = new single_views_1.Image({
                 props: {
-                    image: this._props.tintColor
-                        ? this._props.image.alwaysTemplate
-                        : this._props.image,
+                    image: this._props.tintColor ? this._props.image.alwaysTemplate : this._props.image,
                     tintColor: this._props.tintColor,
                     contentMode: this._props.contentMode,
                 },

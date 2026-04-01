@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wedges = void 0;
 const base_1 = require("../base");
 class CanvasComponet extends base_1.Base {
-    constructor({ tintColor, startAngle, }) {
+    constructor({ tintColor, startAngle }) {
         super();
         this._tintColor = tintColor;
         this.startAngle = startAngle;
@@ -49,12 +49,7 @@ class Wedges extends base_1.Base {
      * @param colors 饼图颜色（必须是4个颜色）
      * @param layout 布局
      */
-    constructor({ colors = [
-        $color("#f5542e"),
-        $color("#f2c327"),
-        $color("#008b6e"),
-        $color("#00aede"),
-    ], layout, }) {
+    constructor({ colors = [$color("#f5542e"), $color("#f2c327"), $color("#008b6e"), $color("#00aede")], layout, }) {
         super();
         const interval = 1 / 60;
         this._defineView = () => {
@@ -79,12 +74,7 @@ class Wedges extends base_1.Base {
                 props: {
                     id: this.id,
                 },
-                views: [
-                    canvas1.definition,
-                    canvas2.definition,
-                    canvas3.definition,
-                    canvas4.definition,
-                ],
+                views: [canvas1.definition, canvas2.definition, canvas3.definition, canvas4.definition],
                 layout,
                 events: {
                     ready: (sender) => __awaiter(this, void 0, void 0, function* () {
