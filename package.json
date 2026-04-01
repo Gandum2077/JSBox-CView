@@ -1,6 +1,6 @@
 {
   "name": "jsbox-cview",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "为 JSBox 设计的微型框架",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "browserify": "^17.0.1",
-    "jsbox-types": "^2.0.0",
+    "jsbox-types": "^2.0.3",
     "prettier": "^3.8.1"
   }
 }
