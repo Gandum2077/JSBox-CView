@@ -14,6 +14,32 @@ export function listDialog({
   items,
   multiSelectEnabled,
   value,
+  values,
+  title,
+}: {
+  items: string[];
+  multiSelectEnabled: true;
+  value?: never;
+  values?: number[];
+  title: string;
+}): Promise<number[]>;
+export function listDialog({
+  items,
+  multiSelectEnabled,
+  value,
+  values,
+  title,
+}: {
+  items: string[];
+  multiSelectEnabled?: false | undefined;
+  value?: number;
+  values?: never;
+  title: string;
+}): Promise<number>;
+export function listDialog({
+  items,
+  multiSelectEnabled,
+  value,
   values = [],
   title,
 }: {

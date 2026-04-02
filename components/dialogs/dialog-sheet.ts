@@ -36,7 +36,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
   constructor(props: {
     title: string;
     cview: Base<any, any>;
-    doneHandler?: () => void;
+    doneHandler?: () => any;
     presentMode?: number;
     bgcolor?: UIColor;
     doneButtonHidden?: boolean;
