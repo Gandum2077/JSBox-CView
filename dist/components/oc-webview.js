@@ -31,6 +31,7 @@ const base_1 = require("./base");
  * - goForward()
  * - stopLoading()
  * - reload()
+ * - evaluateJavaScript(script)
  *
  */
 class OCWebView extends base_1.Base {
@@ -84,6 +85,10 @@ class OCWebView extends base_1.Base {
         const nsurl = this.webView.invoke("URL");
         return nsurl ? nsurl.invoke("absoluteString").rawValue() : "";
     }
+    get title() {
+        const title = this.webView.invoke("title");
+        return title ? title.rawValue() : "";
+    }
     get canGoBack() {
         return this.webView.invoke("canGoBack");
     }
@@ -103,6 +108,30 @@ class OCWebView extends base_1.Base {
     }
     reload() {
         this.webView.invoke("reload");
+    }
+    evaluateJavaScript(script) {
+        return new Promise((resolve, reject) => {
+            this.webView.invoke("evaluateJavaScript:completionHandler:", script, $block("void, id, NSError *", (result, error) => {
+                const jsError = error ? error.jsValue() : null;
+                if (jsError) {
+                    reject(jsError);
+                    return;
+                }
+                if (!result) {
+                    resolve(result);
+                    return;
+                }
+                if (typeof result.jsValue === "function") {
+                    resolve(result.jsValue());
+                    return;
+                }
+                if (typeof result.rawValue === "function") {
+                    resolve(result.rawValue());
+                    return;
+                }
+                resolve(result);
+            }));
+        });
     }
 }
 exports.OCWebView = OCWebView;

@@ -29,11 +29,13 @@ import { Base } from "./base";
  * - goForward()
  * - stopLoading()
  * - reload()
+ * - evaluateJavaScript(script)
  *
  */
 export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
   _defineView: () => UiTypes.RuntimeOptions;
   webView: any; // 实际为WKWebView OC类型
+  private _originUrl: string;
   constructor({
     props,
     layout,
@@ -53,6 +55,7 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
     config.invoke("setWebsiteDataStore:", $objc("WKWebsiteDataStore").invoke("defaultDataStore"));
     const webView = $objc("WKWebView").invoke("alloc.initWithFrame:configuration:", $rect(0, 0, 0, 0), config);
     this.webView = webView;
+    this._originUrl = props.url;
 
     this._defineView = () => {
       return {
@@ -101,6 +104,17 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
     return nsurl ? nsurl.invoke("absoluteString").rawValue() : "";
   }
 
+  set url(urlStr: string) {
+    const url = $objc("NSURL").invoke("URLWithString:", urlStr);
+    const req = $objc("NSURLRequest").invoke("requestWithURL:", url);
+    this.webView.invoke("loadRequest:", req);
+  }
+
+  get title(): string {
+    const title = this.webView.invoke("title");
+    return title ? title.rawValue() : "";
+  }
+
   get canGoBack(): boolean {
     return this.webView.invoke("canGoBack");
   }
@@ -123,5 +137,41 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
 
   reload() {
     this.webView.invoke("reload");
+  }
+
+  reloadFromOrigin() {
+    this.url = this._originUrl;
+  }
+
+  exec<T = any>(script: string): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.webView.invoke(
+        "evaluateJavaScript:completionHandler:",
+        script,
+        $block("void, id, NSError *", (result: any, error: any) => {
+          const jsError = error ? error.jsValue() : null;
+          if (jsError) {
+            reject(jsError);
+            return;
+          }
+          if (!result) {
+            resolve(result);
+            return;
+          }
+          if (typeof result.jsValue === "function") {
+            resolve(result.jsValue());
+            return;
+          }
+          resolve(result);
+        }),
+      );
+    });
+  }
+
+  eval({ script, handler }: { script: string; handler: (result: any, error?: NSError) => void }) {
+    this.exec(script).then(
+      (result) => handler(result),
+      (error) => handler(undefined, error),
+    );
   }
 }
