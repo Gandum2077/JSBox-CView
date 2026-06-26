@@ -27,15 +27,17 @@ class TabBarController extends base_controller_1.BaseController {
                 bgcolor: props.bgcolor,
             },
             layout,
-            events: Object.assign(Object.assign({}, events), { didAppear: () => {
-                    var _a;
+            events: {
+                ...events,
+                didAppear: () => {
                     this._props.items[this.index].controller.appear();
-                    (_a = events.didAppear) === null || _a === void 0 ? void 0 : _a.call(events, this);
-                }, didDisappear: () => {
-                    var _a;
+                    events.didAppear?.(this);
+                },
+                didDisappear: () => {
                     this._props.items[this.index].controller.disappear();
-                    (_a = events.didDisappear) === null || _a === void 0 ? void 0 : _a.call(events, this);
-                } }),
+                    events.didDisappear?.(this);
+                },
+            },
         });
         this._props = {
             items: props.items,
@@ -49,15 +51,13 @@ class TabBarController extends base_controller_1.BaseController {
             },
             events: {
                 changed: (cview, index) => {
-                    var _a, _b;
                     this.index = index;
-                    (_a = this._props.items.find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
+                    this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
                     this._props.items[index].controller.appear();
-                    (_b = events.changed) === null || _b === void 0 ? void 0 : _b.call(events, this, index);
+                    events.changed?.(this, index);
                 },
                 doubleTapped: (cview, index) => {
-                    var _a;
-                    (_a = events.doubleTapped) === null || _a === void 0 ? void 0 : _a.call(events, this, index);
+                    events.doubleTapped?.(this, index);
                 },
             },
         });
@@ -81,7 +81,6 @@ class TabBarController extends base_controller_1.BaseController {
         this.rootView.views = [this.cviews.pageContentView, this.cviews.tabbar];
     }
     set index(num) {
-        var _a;
         if (this._props.index === num)
             return;
         this.cviews.tabbar.index = num;
@@ -89,7 +88,7 @@ class TabBarController extends base_controller_1.BaseController {
             n.view.hidden = i !== num;
         });
         this._props.index = num;
-        (_a = this._props.items.find((item) => item.controller.status === 2)) === null || _a === void 0 ? void 0 : _a.controller.disappear();
+        this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
         this._props.items[num].controller.appear();
     }
     get index() {

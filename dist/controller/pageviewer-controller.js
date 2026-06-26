@@ -51,7 +51,10 @@ class PageViewerController extends base_controller_1.BaseController {
             },
         });
         this.cviews.navbar = new custom_navigation_bar_1.CustomNavigationBar({
-            props: Object.assign(Object.assign({}, this._props.navBarProps), { titleView: this.cviews.titlebar }),
+            props: {
+                ...this._props.navBarProps,
+                titleView: this.cviews.titlebar,
+            },
         });
         this.rootView.views = [this.cviews.navbar, this.cviews.pageviewer];
     }

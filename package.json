@@ -11,7 +11,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "tsc && node ./dist/test.js",
-    "build": "tsc"
+    "build:debug": "tsc && npx browserify ${npm_config_entry:-./dist/index.js} > test.js",
+    "build": "tsc",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Gandum2077",

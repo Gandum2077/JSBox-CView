@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.textDialog = void 0;
+exports.textDialog = textDialog;
 const single_views_1 = require("../single-views");
 const dialog_sheet_1 = require("./dialog-sheet");
 /**
@@ -34,4 +34,3 @@ function textDialog({ title, text = "", placeholder = "", editable = true, }) {
         sheet.present();
     });
 }
-exports.textDialog = textDialog;

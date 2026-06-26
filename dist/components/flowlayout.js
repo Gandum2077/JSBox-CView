@@ -41,8 +41,8 @@ class Flowlayout extends base_1.Base {
         this._wrappers = props.items.map((item, index) => new WrapperView({
             item,
             menu: props.menu,
-            didSelect: events === null || events === void 0 ? void 0 : events.didSelect,
-            didLongPress: events === null || events === void 0 ? void 0 : events.didLongPress,
+            didSelect: events?.didSelect,
+            didLongPress: events?.didLongPress,
             flowlayout: this,
             index,
         }));
@@ -74,17 +74,14 @@ class Flowlayout extends base_1.Base {
     }
     set items(items) {
         this._props.items = items;
-        this._wrappers = items.map((item, index) => {
-            var _a, _b;
-            return new WrapperView({
-                item,
-                menu: this._props.menu,
-                didSelect: (_a = this._events) === null || _a === void 0 ? void 0 : _a.didSelect,
-                didLongPress: (_b = this._events) === null || _b === void 0 ? void 0 : _b.didLongPress,
-                flowlayout: this,
-                index,
-            });
-        });
+        this._wrappers = items.map((item, index) => new WrapperView({
+            item,
+            menu: this._props.menu,
+            didSelect: this._events?.didSelect,
+            didLongPress: this._events?.didLongPress,
+            flowlayout: this,
+            index,
+        }));
         this.view.views.forEach((v) => v.remove());
         this._wrappers.forEach((wrapper) => this.view.add(wrapper.definition));
         const height = this._layoutWrappers();

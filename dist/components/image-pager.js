@@ -24,7 +24,12 @@ class ImagePager extends base_1.Base {
      */
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ srcs: [], page: 0, doubleTapToZoom: true }, props);
+        this._props = {
+            srcs: [],
+            page: 0,
+            doubleTapToZoom: true,
+            ...props,
+        };
         this._pageLoadRecorder = {};
         this._matrix = new single_views_1.Matrix({
             props: {

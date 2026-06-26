@@ -36,14 +36,25 @@ class DynamicPreferenceListView extends base_1.Base {
         super();
         this._sections = sections.map((n) => ({
             title: n.title,
-            rows: n.rows.map((r) => (Object.assign({}, r))),
+            rows: n.rows.map((r) => ({ ...r })),
         }));
-        this._props = Object.assign({ stringLeftInset: 120, infoAndLinkLeftInset: 120, sliderWidth: 200, tabWidth: 200, symbolSizeForSymbolAction: $size(24, 24) }, props);
+        this._props = {
+            stringLeftInset: 120,
+            infoAndLinkLeftInset: 120,
+            sliderWidth: 200,
+            tabWidth: 200,
+            symbolSizeForSymbolAction: $size(24, 24),
+            ...props,
+        };
         this._layout = layout;
         this._defineView = () => {
             return {
                 type: "list",
-                props: Object.assign(Object.assign({ style: 2 }, this._props), { id: this.id, template: {
+                props: {
+                    style: 2,
+                    ...this._props,
+                    id: this.id,
+                    template: {
                         views: [
                             {
                                 type: "view",
@@ -169,17 +180,15 @@ class DynamicPreferenceListView extends base_1.Base {
                                                 },
                                                 events: {
                                                     changed: (sender) => {
-                                                        var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
                                                         const label = sender.next;
-                                                        label.text = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max).toString();
+                                                        label.text = this._handleSliderValue(sender.value * (options.max ?? 1), options.decimal, options.min, options.max).toString();
                                                     },
                                                     touchesEnded: (sender) => {
-                                                        var _a;
                                                         const { section, row } = sender.info;
                                                         const options = this._sections[section].rows[row];
-                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value * ((_a = options.max) !== null && _a !== void 0 ? _a : 1), options.decimal, options.min, options.max);
+                                                        this._sections[section].rows[row].value = this._handleSliderValue(sender.value * (options.max ?? 1), options.decimal, options.min, options.max);
                                                         if (events.changed)
                                                             events.changed(this.values);
                                                     },
@@ -263,11 +272,12 @@ class DynamicPreferenceListView extends base_1.Base {
                                 ],
                             },
                         ],
-                    }, data: this._map(this._sections) }),
+                    },
+                    data: this._map(this._sections),
+                },
                 layout: this._layout,
                 events: {
                     didSelect: (sender, indexPath, data) => {
-                        var _a, _b;
                         const row = this._sections[indexPath.section].rows[indexPath.row];
                         if (!static_preference_listview_1.selectableTypes.includes(row.type))
                             return;
@@ -288,7 +298,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             }
                             case "number": {
                                 $input.text({
-                                    text: (_a = row.value) === null || _a === void 0 ? void 0 : _a.toString(),
+                                    text: row.value?.toString(),
                                     type: $kbType.decimal,
                                     placeholder: row.placeholder,
                                     handler: (text) => {
@@ -309,7 +319,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             }
                             case "integer": {
                                 $input.text({
-                                    text: (_b = row.value) === null || _b === void 0 ? void 0 : _b.toString(),
+                                    text: row.value?.toString(),
                                     type: $kbType.number,
                                     placeholder: row.placeholder,
                                     handler: (text) => {
@@ -472,7 +482,6 @@ class DynamicPreferenceListView extends base_1.Base {
         return sections.map((section, sectionIndex) => ({
             title: section.title,
             rows: section.rows.map((n, rowIndex) => {
-                var _a, _b, _c;
                 const data = generateDefaultRow(n);
                 switch (n.type) {
                     case "string": {
@@ -531,7 +540,7 @@ class DynamicPreferenceListView extends base_1.Base {
                             text: adjustedValue,
                         };
                         data.slider = {
-                            value: adjustedValue / ((_a = n.max) !== null && _a !== void 0 ? _a : 1),
+                            value: adjustedValue / (n.max ?? 1),
                             info: { section: sectionIndex, row: rowIndex, key: n.key },
                             //min: n.min, // 不可用，否则会出现slider滑动结束变为0点的bug
                             //max: n.max,
@@ -594,8 +603,8 @@ class DynamicPreferenceListView extends base_1.Base {
                         data.symbol = {
                             hidden: n.symbol ? false : true,
                             symbol: n.symbol,
-                            tintColor: (_b = n.tintColor) !== null && _b !== void 0 ? _b : $color("primaryText"),
-                            contentMode: (_c = n.contentMode) !== null && _c !== void 0 ? _c : 1,
+                            tintColor: n.tintColor ?? $color("primaryText"),
+                            contentMode: n.contentMode ?? 1,
                         };
                         break;
                     }
@@ -616,7 +625,7 @@ class DynamicPreferenceListView extends base_1.Base {
     set sections(sections) {
         this._sections = sections.map((n) => ({
             title: n.title,
-            rows: n.rows.map((r) => (Object.assign({}, r))),
+            rows: n.rows.map((r) => ({ ...r })),
         }));
         this.view.data = this._map(this._sections);
     }

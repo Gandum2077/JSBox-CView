@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formDialog = void 0;
+exports.formDialog = formDialog;
 const static_preference_listview_1 = require("../static-preference-listview");
 const dialog_sheet_1 = require("./dialog-sheet");
 class DialogSheetForm extends dialog_sheet_1.DialogSheet {
@@ -38,4 +38,3 @@ function formDialog({ sections, title, checkHandler, }) {
         sheet.present();
     });
 }
-exports.formDialog = formDialog;

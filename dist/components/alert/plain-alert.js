@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.plainAlert = void 0;
+exports.plainAlert = plainAlert;
 const uialert_1 = require("./uialert");
 const l10n_1 = require("../../utils/l10n");
 /**
@@ -26,4 +26,3 @@ function plainAlert({ title = "", message = "", cancelText = (0, l10n_1.l10n)("C
         }
     });
 }
-exports.plainAlert = plainAlert;

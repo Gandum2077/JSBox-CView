@@ -37,9 +37,14 @@ class DynamicRowHeightList extends base_1.Base {
             }
             return {
                 type: "list",
-                props: Object.assign({ id: this.id, data }, props),
+                props: {
+                    id: this.id,
+                    data,
+                    ...props,
+                },
                 layout,
-                events: Object.assign({ rowHeight: (sender, indexPath) => {
+                events: {
+                    rowHeight: (sender, indexPath) => {
                         if (sections) {
                             const cview = sections[indexPath.section].rows[indexPath.row];
                             return cview.heightToWidth(sender.frame.width);
@@ -50,7 +55,9 @@ class DynamicRowHeightList extends base_1.Base {
                         else {
                             throw new Error("sections or rows must be provided");
                         }
-                    } }, events),
+                    },
+                    ...events,
+                },
             };
         };
     }

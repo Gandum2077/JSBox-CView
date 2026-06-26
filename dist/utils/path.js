@@ -1,7 +1,14 @@
 "use strict";
 // 用于处理路径的工具函数
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFileSize = exports.getModificationDate = exports.getCreationDate = exports.join = exports.extname = exports.basename = exports.dirname = exports.split = void 0;
+exports.split = split;
+exports.dirname = dirname;
+exports.basename = basename;
+exports.extname = extname;
+exports.join = join;
+exports.getCreationDate = getCreationDate;
+exports.getModificationDate = getModificationDate;
+exports.getFileSize = getFileSize;
 function _splitProtocol(path) {
     const regex = /^\w+:\/\//;
     const result = regex.exec(path);
@@ -37,15 +44,12 @@ function split(path) {
         return [protocol + remainingPath.slice(0, lastIndex), remainingPath.slice(lastIndex + 1)];
     }
 }
-exports.split = split;
 function dirname(path) {
     return split(path)[0];
 }
-exports.dirname = dirname;
 function basename(path) {
     return split(path)[1];
 }
-exports.basename = basename;
 function extname(path) {
     const _basename = basename(path);
     if (!_basename)
@@ -58,7 +62,6 @@ function extname(path) {
         return "." + components.slice(-1)[0];
     }
 }
-exports.extname = extname;
 // 拼接目录
 function join(...args) {
     return args
@@ -73,7 +76,6 @@ function join(...args) {
         .filter((x) => x.length)
         .join("/");
 }
-exports.join = join;
 function _getAttributes(path) {
     if (!$file.exists(path))
         throw new Error("invalid path");
@@ -89,16 +91,13 @@ function getCreationDate(path) {
         return 0;
     return NSFileCreationDate.getTime();
 }
-exports.getCreationDate = getCreationDate;
 function getModificationDate(path) {
     const { NSFileModificationDate } = _getAttributes(path);
     if (!NSFileModificationDate)
         return 0;
     return NSFileModificationDate.getTime();
 }
-exports.getModificationDate = getModificationDate;
 function getFileSize(path) {
     const { NSFileSize } = _getAttributes(path);
     return NSFileSize || 0;
 }
-exports.getFileSize = getFileSize;

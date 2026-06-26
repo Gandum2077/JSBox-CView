@@ -1,7 +1,7 @@
 "use strict";
 // 用于自定义的国际化支持
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.l10n = void 0;
+exports.l10n = l10n;
 const language = $device.info.language;
 const strings = {
     "zh-Hans": {
@@ -41,4 +41,3 @@ function l10n(key) {
     const value = strings[language][key];
     return value || key;
 }
-exports.l10n = l10n;

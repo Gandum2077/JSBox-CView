@@ -18,6 +18,7 @@ __exportStar(require("./components/base"), exports);
 __exportStar(require("./components/custom-navigation-bar"), exports);
 __exportStar(require("./components/dynamic-contextmenu-view"), exports);
 __exportStar(require("./components/dynamic-itemsize-matrix"), exports);
+__exportStar(require("./components/dynamic-itemsize-section-matrix"), exports);
 __exportStar(require("./components/dynamic-preference-listview"), exports);
 __exportStar(require("./components/dynamic-rowheight-list"), exports);
 __exportStar(require("./components/enhanced-imageview"), exports);

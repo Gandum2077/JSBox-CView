@@ -39,7 +39,14 @@ class SearchBar extends base_1.Base {
      */
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ placeholder: (0, l10n_1.l10n)("SEARCH"), cancelText: (0, l10n_1.l10n)("CANCEL"), tintColor: $color("systemLink"), bgcolor: colors_1.searchBarBgcolor, style: 0 }, props);
+        this._props = {
+            placeholder: (0, l10n_1.l10n)("SEARCH"),
+            cancelText: (0, l10n_1.l10n)("CANCEL"),
+            tintColor: $color("systemLink"),
+            bgcolor: colors_1.searchBarBgcolor,
+            style: 0,
+            ...props,
+        };
         const cancelButtonWidth = (0, uitools_1.getTextWidth)(this._props.cancelText, {
             inset: 20,
         });

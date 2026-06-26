@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginAlert = void 0;
+exports.loginAlert = loginAlert;
 const uialert_1 = require("./uialert");
 const l10n_1 = require("../../utils/l10n");
 /**
@@ -47,4 +47,3 @@ function loginAlert({ title = "", message = "", placeholder1 = "", placeholder2 
         }
     });
 }
-exports.loginAlert = loginAlert;

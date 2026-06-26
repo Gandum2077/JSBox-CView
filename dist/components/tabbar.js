@@ -168,7 +168,14 @@ class ImageCell extends base_1.Base {
 class TabBar extends base_1.Base {
     constructor({ props, events = {}, }) {
         super();
-        this._props = Object.assign({ height: 50, index: 0, selectedSegmentTintColor: $color("systemLink"), defaultSegmentTintColor: colors_1.footBarDefaultSegmentColor }, props);
+        this._props = {
+            height: 50,
+            index: 0,
+            selectedSegmentTintColor: $color("systemLink"),
+            defaultSegmentTintColor: colors_1.footBarDefaultSegmentColor,
+            //bgcolor: $color("secondarySurface"),
+            ...props,
+        };
         this._index = this._props.index;
         this._events = events;
         this._cells = this._defineCells();

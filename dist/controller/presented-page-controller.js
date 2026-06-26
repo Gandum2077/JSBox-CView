@@ -26,24 +26,22 @@ const sheet_1 = require("../components/sheet");
  */
 class PresentedPageController extends base_controller_1.BaseController {
     constructor({ props, layout, events, } = {}) {
-        var _a, _b;
         super({
             props: {
-                id: props === null || props === void 0 ? void 0 : props.id,
-                bgcolor: props === null || props === void 0 ? void 0 : props.bgcolor,
+                id: props?.id,
+                bgcolor: props?.bgcolor,
             },
             layout,
             events,
         });
         this._sheet = new sheet_1.Sheet({
-            presentMode: (_a = props === null || props === void 0 ? void 0 : props.presentMode) !== null && _a !== void 0 ? _a : 1,
-            animated: (_b = props === null || props === void 0 ? void 0 : props.animated) !== null && _b !== void 0 ? _b : true,
-            interactiveDismissalDisabled: (props === null || props === void 0 ? void 0 : props.interactiveDismissalDisabled) || false,
-            bgcolor: (props === null || props === void 0 ? void 0 : props.bgcolor) || $color("secondarySurface"),
+            presentMode: props?.presentMode ?? 1,
+            animated: props?.animated ?? true,
+            interactiveDismissalDisabled: props?.interactiveDismissalDisabled || false,
+            bgcolor: props?.bgcolor || $color("secondarySurface"),
             cview: this.rootView,
             dismissalHandler: () => {
-                var _a;
-                (_a = events === null || events === void 0 ? void 0 : events.dismissed) === null || _a === void 0 ? void 0 : _a.call(events, this);
+                events?.dismissed?.(this);
                 this.remove();
             },
         });

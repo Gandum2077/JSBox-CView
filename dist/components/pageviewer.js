@@ -23,7 +23,10 @@ class PageViewer extends base_1.Base {
      */
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ page: 0 }, props);
+        this._props = {
+            page: 0,
+            ...props,
+        };
         this._events = events;
         this._pageWidth = 0;
         this._floatPage = this._props.page;

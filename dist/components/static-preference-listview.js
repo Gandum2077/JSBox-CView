@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PreferenceListView = exports.dateToString = exports.excludedTypes = exports.selectableTypes = void 0;
+exports.PreferenceListView = exports.excludedTypes = exports.selectableTypes = void 0;
+exports.dateToString = dateToString;
 const base_1 = require("./base");
 const uitools_1 = require("../utils/uitools");
 exports.selectableTypes = [
@@ -78,7 +79,6 @@ class BaseStringCell extends Cell {
         this._textColor = textColor;
     }
     _defineValueView() {
-        var _a;
         return {
             type: "view",
             props: {},
@@ -105,7 +105,7 @@ class BaseStringCell extends Cell {
                     type: "label",
                     props: {
                         id: "label",
-                        text: (_a = this._handleText(this._value)) === null || _a === void 0 ? void 0 : _a.toString(),
+                        text: this._handleText(this._value)?.toString(),
                         align: $align.right,
                         font: $font(17),
                         textColor: this._textColor,
@@ -483,7 +483,6 @@ function dateToString(mode, date) {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 }
-exports.dateToString = dateToString;
 class DateCell extends Cell {
     constructor(props, values) {
         super(props, values);
@@ -642,13 +641,12 @@ class LinkCell extends Cell {
 }
 class SymbolActionCell extends Cell {
     constructor(props, values) {
-        var _a, _b, _c;
         super(props, values);
         this._type = "symbol-action";
         this._symbol = props.symbol || "";
-        this._tintColor = (_a = props.tintColor) !== null && _a !== void 0 ? _a : $color("primaryText");
-        this._contentMode = (_b = props.contentMode) !== null && _b !== void 0 ? _b : 1;
-        this._symbolSize = (_c = props.symbolSize) !== null && _c !== void 0 ? _c : $size(24, 24);
+        this._tintColor = props.tintColor ?? $color("primaryText");
+        this._contentMode = props.contentMode ?? 1;
+        this._symbolSize = props.symbolSize ?? $size(24, 24);
     }
     _defineValueView() {
         return {
@@ -845,10 +843,15 @@ class PreferenceListView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: "list",
-                props: Object.assign(Object.assign({ style: 2 }, this._props), { id: this.id, data: this._cells.map((section) => ({
+                props: {
+                    style: 2,
+                    ...this._props,
+                    id: this.id,
+                    data: this._cells.map((section) => ({
                         title: section.title,
                         rows: section.rows.map((cell) => cell.definition),
-                    })) }),
+                    })),
+                },
                 layout: this._layout,
                 events: {
                     didSelect: (sender, indexPath, data) => {

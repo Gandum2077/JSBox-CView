@@ -18,7 +18,13 @@ class AndroidStyleSpinner extends base_1.Base {
      */
     constructor({ props, layout, }) {
         super();
-        this._props = Object.assign({ weight: 2, diameter: 24, color: $color("gray"), bgcolor: $color("clear") }, props);
+        this._props = {
+            weight: 2,
+            diameter: 24,
+            color: $color("gray"),
+            bgcolor: $color("clear"),
+            ...props,
+        };
         this._defineView = () => {
             const weight = this._props.weight;
             const color = this._props.color;

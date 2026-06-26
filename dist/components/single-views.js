@@ -16,7 +16,10 @@ class SingleView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: this._type,
-                props: Object.assign(Object.assign({}, this._props), { id: this.id }),
+                props: {
+                    ...this._props,
+                    id: this.id,
+                },
                 layout: this._layout,
                 events: this._events,
                 views: this._views,
@@ -29,7 +32,7 @@ class ClearView extends SingleView {
     constructor({ props, layout = $layout.fill, events, views, }) {
         super({
             type: "view",
-            props: Object.assign({}, props),
+            props: { ...props },
             layout,
             events,
             views,
@@ -41,7 +44,7 @@ class ContentView extends SingleView {
     constructor({ props, layout = $layout.fillSafeArea, events = {}, views, }) {
         super({
             type: "view",
-            props: Object.assign({ bgcolor: $color("primarySurface") }, props),
+            props: { bgcolor: $color("primarySurface"), ...props },
             layout,
             events,
             views,
@@ -59,7 +62,11 @@ class MaskView extends SingleView {
     constructor({ props, layout = $layout.fill, events, views, }) {
         super({
             type: "view",
-            props: Object.assign(Object.assign({ bgcolor: $rgba(0, 0, 0, 0.2) }, props), { userInteractionEnabled: true }),
+            props: {
+                bgcolor: $rgba(0, 0, 0, 0.2),
+                ...props,
+                userInteractionEnabled: true,
+            },
             layout,
             events,
             views,

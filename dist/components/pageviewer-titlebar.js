@@ -1,15 +1,4 @@
 "use strict";
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageViewerTitleBar = void 0;
 const base_1 = require("./base");
@@ -38,8 +27,13 @@ class PageViewerTitleBar extends base_1.Base {
      */
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ index: 0, selectedItemColor: $color("systemLink"), defaultItemColor: $color("secondaryText") }, props);
-        const { changed } = events, restEvents = __rest(events, ["changed"]);
+        this._props = {
+            index: 0,
+            selectedItemColor: $color("systemLink"),
+            defaultItemColor: $color("secondaryText"),
+            ...props,
+        };
+        const { changed, ...restEvents } = events;
         this._floatedIndex = this._props.index;
         this._lineStartLocationPercentage = this._floatedIndex / this._props.items.length;
         this.labels = this._props.items.map((n, i) => {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.inputAlert = void 0;
+exports.inputAlert = inputAlert;
 const uialert_1 = require("./uialert");
 const l10n_1 = require("../../utils/l10n");
 /**
@@ -43,4 +43,3 @@ function inputAlert({ title = "", message = "", text = "", placeholder, type = 0
         }
     });
 }
-exports.inputAlert = inputAlert;

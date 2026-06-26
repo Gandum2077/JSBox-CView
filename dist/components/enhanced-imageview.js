@@ -25,7 +25,7 @@ const cvid_1 = require("../utils/cvid");
 class EnhancedImageView extends base_1.Base {
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ maxZoomScale: 2 }, props);
+        this._props = { maxZoomScale: 2, ...props };
         this._scroll = new single_views_1.Scroll({
             props: {
                 zoomEnabled: true,

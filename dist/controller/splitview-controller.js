@@ -8,7 +8,10 @@ const cvid_1 = require("../utils/cvid");
 class SecondaryView extends base_1.Base {
     constructor({ props, layout, views = [], }) {
         super();
-        this._props = Object.assign({ bgcolor: $color("groupedBackground", "secondarySurface") }, props);
+        this._props = {
+            bgcolor: $color("groupedBackground", "secondarySurface"),
+            ...props,
+        };
         this._layouts = {
             hidden: (make, view) => {
                 make.top.bottom.inset(0);
@@ -37,7 +40,10 @@ class SecondaryView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: "view",
-                props: Object.assign(Object.assign({}, this._props), { id: this.id }),
+                props: {
+                    ...this._props,
+                    id: this.id,
+                },
                 layout,
                 views: [...views, this.line.definition],
             };
@@ -65,7 +71,7 @@ class SecondaryView extends base_1.Base {
 class MaskView extends base_1.Base {
     constructor({ props, layout = $layout.fill, }) {
         super();
-        this._props = Object.assign({ bgcolor: $color("clear") }, props);
+        this._props = { bgcolor: $color("clear"), ...props };
         this._shown = false;
         this._dismissEvent = () => {
             if (!this._shown)
@@ -76,7 +82,11 @@ class MaskView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: "view",
-                props: Object.assign(Object.assign({}, this._props), { hidden: true, id: this.id }),
+                props: {
+                    ...this._props,
+                    hidden: true,
+                    id: this.id,
+                },
                 layout,
                 events: {
                     ready: (sender) => this._addGesture(sender, this._dismissEvent),
@@ -140,21 +150,23 @@ class SplitViewController extends base_controller_1.BaseController {
                 bgcolor: props.bgcolor,
             },
             layout,
-            events: Object.assign(Object.assign({}, events), { didAppear: (sender) => {
-                    var _a;
+            events: {
+                ...events,
+                didAppear: (sender) => {
                     if (this._sideBarShown) {
                         this._secondaryController.appear();
                     }
                     else {
                         this._primaryController.appear();
                     }
-                    (_a = events === null || events === void 0 ? void 0 : events.didAppear) === null || _a === void 0 ? void 0 : _a.call(events, this);
-                }, didDisappear: () => {
-                    var _a;
+                    events?.didAppear?.(this);
+                },
+                didDisappear: () => {
                     this._primaryController.disappear();
                     this._secondaryController.disappear();
-                    (_a = events === null || events === void 0 ? void 0 : events.didDisappear) === null || _a === void 0 ? void 0 : _a.call(events, this);
-                } }),
+                    events?.didDisappear?.(this);
+                },
+            },
         });
         this._sideBarShown = false;
         this._canShowSidebar = true;

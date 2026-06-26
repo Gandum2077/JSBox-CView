@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listDialog = void 0;
+exports.listDialog = listDialog;
 const dialog_sheet_1 = require("./dialog-sheet");
 const single_views_1 = require("../single-views");
 function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
@@ -76,4 +76,3 @@ function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
         sheet.present();
     });
 }
-exports.listDialog = listDialog;

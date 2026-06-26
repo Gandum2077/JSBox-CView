@@ -86,7 +86,13 @@ const navBarLayouts = [
 class CustomNavigationBar extends base_1.Base {
     constructor({ props = {}, events = {}, } = {}) {
         super();
-        this._props = Object.assign({ leftBarButtonItems: [], rightBarButtonItems: [], style: navBarStyles.normal, tintColor: $color("primaryText") }, props);
+        this._props = {
+            leftBarButtonItems: [],
+            rightBarButtonItems: [],
+            style: navBarStyles.normal,
+            tintColor: $color("primaryText"),
+            ...props,
+        };
         this._events = events;
         this.cviews = {};
         this._defineView = () => {

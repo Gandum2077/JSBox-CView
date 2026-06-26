@@ -42,6 +42,7 @@ class OCWebView extends base_1.Base {
         config.invoke("setWebsiteDataStore:", $objc("WKWebsiteDataStore").invoke("defaultDataStore"));
         const webView = $objc("WKWebView").invoke("alloc.initWithFrame:configuration:", $rect(0, 0, 0, 0), config);
         this.webView = webView;
+        this._originUrl = props.url;
         this._defineView = () => {
             return {
                 type: "runtime",
@@ -85,6 +86,11 @@ class OCWebView extends base_1.Base {
         const nsurl = this.webView.invoke("URL");
         return nsurl ? nsurl.invoke("absoluteString").rawValue() : "";
     }
+    set url(urlStr) {
+        const url = $objc("NSURL").invoke("URLWithString:", urlStr);
+        const req = $objc("NSURLRequest").invoke("requestWithURL:", url);
+        this.webView.invoke("loadRequest:", req);
+    }
     get title() {
         const title = this.webView.invoke("title");
         return title ? title.rawValue() : "";
@@ -109,7 +115,10 @@ class OCWebView extends base_1.Base {
     reload() {
         this.webView.invoke("reload");
     }
-    evaluateJavaScript(script) {
+    reloadFromOrigin() {
+        this.url = this._originUrl;
+    }
+    exec(script) {
         return new Promise((resolve, reject) => {
             this.webView.invoke("evaluateJavaScript:completionHandler:", script, $block("void, id, NSError *", (result, error) => {
                 const jsError = error ? error.jsValue() : null;
@@ -125,13 +134,12 @@ class OCWebView extends base_1.Base {
                     resolve(result.jsValue());
                     return;
                 }
-                if (typeof result.rawValue === "function") {
-                    resolve(result.rawValue());
-                    return;
-                }
                 resolve(result);
             }));
         });
+    }
+    eval({ script, handler }) {
+        this.exec(script).then((result) => handler(result), (error) => handler(undefined, error));
     }
 }
 exports.OCWebView = OCWebView;

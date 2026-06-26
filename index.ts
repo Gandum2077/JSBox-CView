@@ -2,6 +2,7 @@ export * from "./components/base";
 export * from "./components/custom-navigation-bar";
 export * from "./components/dynamic-contextmenu-view";
 export * from "./components/dynamic-itemsize-matrix";
+export * from "./components/dynamic-itemsize-section-matrix";
 export * from "./components/dynamic-preference-listview";
 export * from "./components/dynamic-rowheight-list";
 export * from "./components/enhanced-imageview";

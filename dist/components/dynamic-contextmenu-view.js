@@ -26,7 +26,11 @@ class DynamicContextMenuView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: "runtime",
-                props: Object.assign(Object.assign({}, props), { id: this.id, view: runtimeView }),
+                props: {
+                    ...props,
+                    id: this.id,
+                    view: runtimeView,
+                },
                 layout,
                 events,
                 views,

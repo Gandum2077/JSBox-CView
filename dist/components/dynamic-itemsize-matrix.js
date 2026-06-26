@@ -1,15 +1,4 @@
 "use strict";
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DynamicItemSizeMatrix = void 0;
 const base_1 = require("./base");
@@ -78,16 +67,29 @@ class DynamicItemSizeMatrix extends base_1.Base {
         super();
         this._totalWidth = 0;
         this._columns = 1;
-        this._props = Object.assign({ fixedItemHeight: 40, minItemWidth: 96, maxColumns: 5, spacing: 6, dynamicHeightEnabled: false }, props);
+        this._props = {
+            fixedItemHeight: 40,
+            minItemWidth: 96,
+            maxColumns: 5,
+            spacing: 6,
+            dynamicHeightEnabled: false,
+            ...props,
+        };
         this._events = events;
-        const _a = this._events, { itemHeight, heightChanged } = _a, rest = __rest(_a, ["itemHeight", "heightChanged"]);
+        const { itemHeight, heightChanged, ...rest } = this._events;
         const _matrixEvents = rest;
         this._itemSizeWidth = 0;
         this._itemSizeHeight = 0;
         this.matrix = new single_views_1.Matrix({
-            props: Object.assign(Object.assign({}, this._props), { scrollEnabled: !this._props.dynamicHeightEnabled }),
+            props: {
+                ...this._props,
+                scrollEnabled: !this._props.dynamicHeightEnabled,
+            },
             layout: $layout.fill,
-            events: Object.assign(Object.assign({}, _matrixEvents), { itemSize: (sender) => $size(this._itemSizeWidth, this._itemSizeHeight) }),
+            events: {
+                ..._matrixEvents,
+                itemSize: (sender) => $size(this._itemSizeWidth, this._itemSizeHeight),
+            },
         });
         this._defineView = () => {
             return {

@@ -59,11 +59,11 @@ const webView = new oc_webview_1.OCWebView({
             syncAddress(sender);
             logState("didFinish", sender);
             try {
-                const localStorage = await webView.evaluateJavaScript(localStorageScript);
+                const localStorage = await webView.exec(localStorageScript);
                 console.log(`[localStorage] ${localStorage || "{}"}`);
             }
             catch (error) {
-                console.log(`[localStorage] error=${(error === null || error === void 0 ? void 0 : error.localizedDescription) || error}`);
+                console.log(`[localStorage] error=${error?.localizedDescription || error}`);
             }
         },
         didFail: (sender, error) => {

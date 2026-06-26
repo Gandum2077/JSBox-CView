@@ -25,7 +25,12 @@ class RotatingView extends base_1.Base {
      */
     constructor({ props, layout, events = {}, }) {
         super();
-        this._props = Object.assign({ contentMode: 1, rps: 0.5, clockwise: true }, props);
+        this._props = {
+            contentMode: 1,
+            rps: 0.5,
+            clockwise: true,
+            ...props,
+        };
         this._rotatingFlag = false;
         if (this._props.cview) {
             this._innerView = this._props.cview;
@@ -45,7 +50,10 @@ class RotatingView extends base_1.Base {
         this._defineView = () => {
             return {
                 type: "view",
-                props: Object.assign(Object.assign({}, this._props), { id: this.id }),
+                props: {
+                    ...this._props,
+                    id: this.id,
+                },
                 layout,
                 events: {
                     ready: (sender) => {

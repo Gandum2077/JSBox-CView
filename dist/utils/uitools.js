@@ -1,7 +1,12 @@
 "use strict";
 // 用于UI相关的工具函数
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setLayer = exports.layerCommonOptions = exports.absoluteFrame = exports.getTextHeight = exports.getTextWidth = exports.getWindowSize = void 0;
+exports.layerCommonOptions = void 0;
+exports.getWindowSize = getWindowSize;
+exports.getTextWidth = getTextWidth;
+exports.getTextHeight = getTextHeight;
+exports.absoluteFrame = absoluteFrame;
+exports.setLayer = setLayer;
 /**
  * 立即获得window size
  */
@@ -9,7 +14,6 @@ function getWindowSize() {
     const window = $objc("UIWindow").$keyWindow().jsValue();
     return window.size;
 }
-exports.getWindowSize = getWindowSize;
 /**
  * 获取单行字符串应有的宽度
  * 默认额外添加3 inset
@@ -22,7 +26,6 @@ function getTextWidth(text, { font = $font(17), inset = 3 } = {}) {
         lineSpacing: 0,
     }).width) + inset);
 }
-exports.getTextWidth = getTextWidth;
 /**
  * 获取字符串指定宽度后应有的高度
  * 默认额外添加3 inset
@@ -35,7 +38,6 @@ function getTextHeight(text, { width = 300, font = $font(17), inset = 3, lineSpa
         lineSpacing,
     }).height) + inset);
 }
-exports.getTextHeight = getTextHeight;
 /**
  * 计算某个view在某个上级view（若不指定则为UIWindow）上的绝对frame
  * 此方法不考虑旋转变形等特殊情况
@@ -52,7 +54,6 @@ function absoluteFrame(view, endView) {
     }
     return frame;
 }
-exports.absoluteFrame = absoluteFrame;
 exports.layerCommonOptions = {
     none: {
         cornerRadius: 0,
@@ -102,4 +103,3 @@ function setLayer(view, { cornerRadius = 0, shadowRadius = 0, shadowOpacity = 0,
     layer.invoke("setShadowOffset", shadowOffset);
     layer.invoke("setShadowColor", shadowColor.ocValue().invoke("CGColor"));
 }
-exports.setLayer = setLayer;
