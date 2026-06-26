@@ -1,6 +1,6 @@
 {
   "name": "jsbox-cview",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "为 JSBox 设计的微型框架",
   "repository": {
     "type": "git",
@@ -10,7 +10,6 @@
   "bugs": "https://github.com/Gandum2077/JSBox-CView/issues",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tsc && node ./dist/test.js",
     "build:debug": "tsc && npx browserify ${npm_config_entry:-./dist/index.js} > test.js",
     "build": "tsc",
     "format": "prettier --write ."
