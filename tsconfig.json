@@ -114,7 +114,7 @@
     "components/*.ts",
     "components/*/*.ts",
     "controller/*.ts",
-    "test/*.ts"
+    "examples/*.ts"
   ],
   "files": [
     "index.ts"

@@ -1,0 +1,20 @@
+import { BaseController, PageViewerController } from "../index";
+
+const items = [
+  {
+    controller: new BaseController({ props: { bgcolor: $color("red") } }),
+    title: "Page 1",
+  },
+  {
+    controller: new BaseController({ props: { bgcolor: $color("yellow") } }),
+    title: "Page 2",
+  },
+];
+
+const pageViewerController = new PageViewerController({
+  props: {
+    items,
+  },
+});
+
+pageViewerController.uirender({});

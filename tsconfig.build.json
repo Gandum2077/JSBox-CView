@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "include": [
+    "node_modules/jsbox-types/index.d.ts",
+    "index.ts",
+    "utils/**/*.ts",
+    "components/**/*.ts",
+    "controller/**/*.ts"
+  ],
+  "exclude": ["examples/**/*.ts"]
+}

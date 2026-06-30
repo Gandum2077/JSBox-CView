@@ -9,10 +9,19 @@
   "homepage": "https://github.com/Gandum2077/JSBox-CView",
   "bugs": "https://github.com/Gandum2077/JSBox-CView/issues",
   "main": "dist/index.js",
+  "files": [
+    "dist/index.js",
+    "dist/components",
+    "dist/controller",
+    "dist/utils",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build:debug": "tsc && npx browserify ${npm_config_entry:-./dist/index.js} > test.js",
-    "build": "tsc",
-    "format": "prettier --write ."
+    "build:debug": "tsc --outDir ./dist-debug && npx browserify ${npm_config_entry:-./dist-debug/index.js} > test.js",
+    "build": "tsc -p tsconfig.build.json",
+    "format": "prettier --write .",
+    "prepack": "npm run build"
   },
   "keywords": [],
   "author": "Gandum2077",
@@ -21,6 +30,7 @@
     "@types/node": "^20.11.17",
     "browserify": "^17.0.1",
     "jsbox-types": "^2.0.3",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "typescript": "^6.0.3"
   }
 }
