@@ -4,7 +4,7 @@ exports.listDialog = listDialog;
 const dialog_sheet_1 = require("./dialog-sheet");
 const single_views_1 = require("../single-views");
 function listDialog({ items, multiSelectEnabled, value, values = [], title, }) {
-    if (value)
+    if (value !== undefined)
         values = [value];
     const listView = new single_views_1.List({
         props: {

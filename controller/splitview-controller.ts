@@ -1,4 +1,4 @@
-import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
+import { BaseController, BaseControllerProps, BaseControllerEvents, controllerStatus } from "./base-controller";
 import { Base } from "../components/base";
 import { ContentView } from "../components/single-views";
 import { cvid } from "../utils/cvid";
@@ -268,11 +268,13 @@ export class SplitViewController extends BaseController {
   }
 
   load() {
+    if (this.status !== controllerStatus.created) return;
     super.load();
     this._renewScreenEdgePanGesture();
   }
 
   remove() {
+    if (this.status === controllerStatus.removed) return;
     $objc_release(this._screenEdgePanGestureObject);
     this.cviews.maskView.releaseGestureObject();
     super.remove();

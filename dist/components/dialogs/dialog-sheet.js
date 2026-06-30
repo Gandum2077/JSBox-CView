@@ -53,7 +53,9 @@ class DialogSheet extends sheet_1.Sheet {
                                         return;
                                     }
                                 }
-                                this.done();
+                                else {
+                                    this.done();
+                                }
                             },
                         },
                     ],

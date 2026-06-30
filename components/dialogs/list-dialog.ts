@@ -49,7 +49,7 @@ export function listDialog({
   values?: number[];
   title: string;
 }): Promise<number | number[]> {
-  if (value) values = [value];
+  if (value !== undefined) values = [value];
   const listView = new List({
     props: {
       style: 2,

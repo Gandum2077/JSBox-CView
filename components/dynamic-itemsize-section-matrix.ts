@@ -281,7 +281,7 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
           },
           layout: $layout.fill,
           views: [
-            { 
+            {
               // 在这里放一个透明且无效果的button，从而取消item自己的highlight效果
               type: "button",
               props: {

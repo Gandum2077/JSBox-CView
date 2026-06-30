@@ -104,6 +104,7 @@ class DynamicItemSizeMatrix extends base_1.Base {
                         sender.relayout();
                         if (sender.frame.width === this._totalWidth)
                             return;
+                        this._totalWidth = sender.frame.width;
                         const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(sender.frame.width, this._props.minItemWidth, this._props.maxColumns, this._props.spacing);
                         this._columns = columns;
                         this._itemSizeWidth = itemSizeWidth;

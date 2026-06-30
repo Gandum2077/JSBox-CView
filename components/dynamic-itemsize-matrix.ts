@@ -149,6 +149,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
           layoutSubviews: (sender) => {
             sender.relayout();
             if (sender.frame.width === this._totalWidth) return;
+            this._totalWidth = sender.frame.width;
             const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(
               sender.frame.width,
               this._props.minItemWidth,

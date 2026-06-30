@@ -12,7 +12,7 @@ import { router } from "./controller-router";
  *   - removed = 4 根视图被移除
  * 其中只有 2 和 3 可以相互转化，其他不可以
  */
-const controllerStatus = {
+export const controllerStatus = {
   created: 0,
   loaded: 1,
   appeared: 2,

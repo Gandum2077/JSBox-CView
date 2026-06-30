@@ -207,10 +207,14 @@ class SplitViewController extends base_controller_1.BaseController {
         this.rootView.views = [this.cviews.secondaryView, this.cviews.primaryView];
     }
     load() {
+        if (this.status !== base_controller_1.controllerStatus.created)
+            return;
         super.load();
         this._renewScreenEdgePanGesture();
     }
     remove() {
+        if (this.status === base_controller_1.controllerStatus.removed)
+            return;
         $objc_release(this._screenEdgePanGestureObject);
         this.cviews.maskView.releaseGestureObject();
         super.remove();

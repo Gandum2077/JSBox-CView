@@ -76,8 +76,9 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
                     } else {
                       return;
                     }
+                  } else {
+                    this.done();
                   }
-                  this.done();
                 },
               },
             ],

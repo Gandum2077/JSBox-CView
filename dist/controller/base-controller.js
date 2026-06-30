@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseController = exports.ControllerRootView = void 0;
+exports.BaseController = exports.ControllerRootView = exports.controllerStatus = void 0;
 const base_1 = require("../components/base");
 const single_views_1 = require("../components/single-views");
 const cvid_1 = require("../utils/cvid");
@@ -14,7 +14,7 @@ const controller_router_1 = require("./controller-router");
  *   - removed = 4 根视图被移除
  * 其中只有 2 和 3 可以相互转化，其他不可以
  */
-const controllerStatus = {
+exports.controllerStatus = {
     created: 0,
     loaded: 1,
     appeared: 2,
@@ -102,7 +102,7 @@ class BaseController {
         this._props = props || {};
         this._events = events;
         this.id = this._props.id || cvid_1.cvid.newId;
-        this._status = controllerStatus.created; // status使用额外的get来使其只读
+        this._status = exports.controllerStatus.created; // status使用额外的get来使其只读
         this.rootView = new ControllerRootView({
             props: {
                 bgcolor: this._props.bgcolor || $color("primarySurface"),
@@ -116,38 +116,38 @@ class BaseController {
     }
     load() {
         // 只有status为created才可以运行
-        if (this._status !== controllerStatus.created)
+        if (this._status !== exports.controllerStatus.created)
             return;
-        this._status = controllerStatus.loaded;
+        this._status = exports.controllerStatus.loaded;
         if (this._events.didLoad)
             this._events.didLoad(this);
         controller_router_1.router.add(this);
     }
     appear() {
         // 只有status为loaded或者disappeared，才可以运行
-        if (this._status !== controllerStatus.loaded && this._status !== controllerStatus.disappeared)
+        if (this._status !== exports.controllerStatus.loaded && this._status !== exports.controllerStatus.disappeared)
             return;
         if (this._events.didAppear)
             this._events.didAppear(this);
-        this._status = controllerStatus.appeared;
+        this._status = exports.controllerStatus.appeared;
     }
     disappear() {
         // 只有status为loaded或者appeared，才可以运行
-        if (this._status !== controllerStatus.loaded && this._status !== controllerStatus.appeared)
+        if (this._status !== exports.controllerStatus.loaded && this._status !== exports.controllerStatus.appeared)
             return;
         if (this._events.didDisappear)
             this._events.didDisappear(this);
-        this._status = controllerStatus.disappeared;
+        this._status = exports.controllerStatus.disappeared;
     }
     // 此方法不能用于移除rootView，其作用是将控制器从Router中移除，并触发didRemove事件
     remove() {
         // 如果已经移除，不可以再次运行
-        if (this._status === controllerStatus.removed)
+        if (this._status === exports.controllerStatus.removed)
             return;
         if (this._events.didRemove)
             this._events.didRemove(this);
         controller_router_1.router.delete(this);
-        this._status = controllerStatus.removed;
+        this._status = exports.controllerStatus.removed;
     }
     uirender(props) {
         controller_router_1.router.root = this;

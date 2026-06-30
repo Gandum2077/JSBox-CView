@@ -84,8 +84,6 @@ export class TabBarController extends BaseController {
       events: {
         changed: (cview, index) => {
           this.index = index;
-          this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
-          this._props.items[index].controller.appear();
           events.changed?.(this, index);
         },
         doubleTapped: (cview, index) => {
