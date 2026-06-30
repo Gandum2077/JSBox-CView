@@ -1,6 +1,6 @@
 {
   "name": "jsbox-cview",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "description": "为 JSBox 设计的微型框架",
   "repository": {
     "type": "git",
@@ -9,8 +9,10 @@
   "homepage": "https://github.com/Gandum2077/JSBox-CView",
   "bugs": "https://github.com/Gandum2077/JSBox-CView/issues",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/index.js",
+    "dist/index.d.ts",
     "dist/components",
     "dist/controller",
     "dist/utils",
@@ -26,10 +28,12 @@
   "keywords": [],
   "author": "Gandum2077",
   "license": "MIT",
+  "dependencies": {
+    "jsbox-types": "^2.0.3"
+  },
   "devDependencies": {
     "@types/node": "^20.11.17",
     "browserify": "^17.0.1",
-    "jsbox-types": "^2.0.3",
     "prettier": "^3.8.1",
     "typescript": "^6.0.3"
   }

@@ -1,3 +1,5 @@
+/// <reference types="jsbox-types" preserve="true" />
+
 export * from "./components/base";
 export * from "./components/custom-navigation-bar";
 export * from "./components/dynamic-contextmenu-view";
