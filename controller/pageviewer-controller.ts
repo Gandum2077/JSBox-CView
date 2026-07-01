@@ -2,6 +2,7 @@ import { BaseController, BaseControllerProps, BaseControllerEvents } from "./bas
 import { PageViewer } from "../components/pageviewer";
 import { PageViewerTitleBar } from "../components/pageviewer-titlebar";
 import { CustomNavigationBar, NavigationBarProps } from "../components/custom-navigation-bar";
+import { controllerStatus } from "./controller-status";
 
 interface PageViewerControllerProps extends BaseControllerProps {
   items: { controller: BaseController; title: string }[];
@@ -41,7 +42,20 @@ export class PageViewerController extends BaseController {
         bgcolor: props.bgcolor,
       },
       layout,
-      events,
+      events: {
+        didLoad: events.didLoad,
+        didAppear: (controller) => {
+          props.items[this.index].controller.appear();
+          events.didAppear?.(controller);
+        },
+        didDisappear: (controller) => {
+          props.items.forEach((item) => item.controller.disappear());
+          events.didDisappear?.(controller);
+        },
+        didRemove: (controller) => {
+          events.didRemove?.(controller);
+        },
+      },
     });
     this._props = props;
     this.cviews = {} as {
@@ -59,13 +73,26 @@ export class PageViewerController extends BaseController {
         make.top.equalTo(view.prev.bottom);
       },
       events: {
-        floatPageChanged: (cview, floatPage) => (this.cviews.titlebar.floatedIndex = floatPage),
+        floatPageChanged: (cview, floatPage) => {
+          this.cviews.titlebar.floatedIndex = floatPage;
+        },
+        changed: (cview, page) => {
+          this._props.index = page;
+          if (this.status !== controllerStatus.appeared) return;
+          this._props.items.forEach((item, i) => {
+            if (i === page) {
+              item.controller.appear();
+            } else {
+              item.controller.disappear();
+            }
+          });
+        },
       },
     });
     this.cviews.titlebar = new PageViewerTitleBar({
       props: {
         items: this._props.items.map((n) => n.title),
-        index: this._props.index || 0,
+        index: this._props.index ?? 0,
       },
       layout: $layout.fill,
       events: {

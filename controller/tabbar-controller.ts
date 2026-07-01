@@ -1,6 +1,7 @@
 import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { ContentView } from "../components/single-views";
 import { TabBar } from "../components/tabbar";
+import { controllerStatus } from "./controller-status";
 
 interface TabBarControllerProps extends BaseControllerProps {
   items: {
@@ -119,7 +120,7 @@ export class TabBarController extends BaseController {
       n.view.hidden = i !== num;
     });
     this._props.index = num;
-    this._props.items.find((item) => item.controller.status === 2)?.controller.disappear();
+    this._props.items.find((item) => item.controller.status === controllerStatus.appeared)?.controller.disappear();
     this._props.items[num].controller.appear();
   }
 

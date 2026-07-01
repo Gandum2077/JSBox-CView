@@ -22,6 +22,7 @@ export * from "./components/single-views";
 export * from "./components/static-preference-listview";
 export * from "./components/symbol-button";
 export * from "./components/tabbar";
+export * from "./controller/controller-status";
 export * from "./controller/base-controller";
 export * from "./controller/controller-router";
 export * from "./controller/pageviewer-controller";

@@ -1,4 +1,5 @@
 import { BaseController } from "./base-controller";
+import { controllerStatus } from "./controller-status";
 
 /**
  * 控制器的路由器，用于管理控制器的集合和操作。
@@ -56,7 +57,7 @@ class Router {
   get appeared() {
     const appearedControllers = [];
     for (const c of this._set) {
-      if (c.status === 2) appearedControllers.push(c);
+      if (c.status === controllerStatus.appeared) appearedControllers.push(c);
     }
     return appearedControllers;
   }

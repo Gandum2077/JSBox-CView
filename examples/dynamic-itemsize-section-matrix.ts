@@ -1,7 +1,4 @@
-import {
-  DynamicItemSizeSectionMatrix,
-  DynamicItemSizeSectionMatrixSection,
-} from "../index";
+import { DynamicItemSizeSectionMatrix, DynamicItemSizeSectionMatrixSection } from "../index";
 
 const makeItem = (sectionName: string, index: number) => {
   return {

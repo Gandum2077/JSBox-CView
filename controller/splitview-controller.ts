@@ -1,7 +1,8 @@
-import { BaseController, BaseControllerProps, BaseControllerEvents, controllerStatus } from "./base-controller";
+import { BaseController, BaseControllerProps, BaseControllerEvents } from "./base-controller";
 import { Base } from "../components/base";
 import { ContentView } from "../components/single-views";
 import { cvid } from "../utils/cvid";
+import { controllerStatus } from "./controller-status";
 
 class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
   _props: UiTypes.ViewProps;

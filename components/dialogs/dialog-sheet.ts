@@ -44,7 +44,7 @@ export class DialogSheet extends Sheet<ContentView, UIView, UiTypes.ViewOptions>
     doneButtonTitle?: string;
   }) {
     super({
-      presentMode: props.presentMode || ($device.isIpad ? 2 : 1),
+      presentMode: props.presentMode ?? ($device.isIpad ? 2 : 1),
       bgcolor: props.bgcolor,
     });
     this._props = props;

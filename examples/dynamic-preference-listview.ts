@@ -1,4 +1,4 @@
-import { DynamicPreferenceListView,PreferenceSection } from "../index";
+import { DynamicPreferenceListView, PreferenceSection } from "../index";
 
 const sections: PreferenceSection[] = [
   {

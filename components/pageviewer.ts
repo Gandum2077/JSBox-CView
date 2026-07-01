@@ -113,13 +113,20 @@ export class PageViewer extends Base<UIView, UiTypes.ViewOptions> {
   }
 
   set page(page) {
-    this._props.page = page;
-    if (this.scroll.view.contentOffset.x !== page * this._pageWidth)
+    if (this.scroll.view.contentOffset.x !== page * this._pageWidth) {
       this.scroll.view.contentOffset = $point(page * this._pageWidth, 0);
+    }
+    if (this._props.page !== page) {
+      this._props.page = page;
+      if (this._events.changed) this._events.changed(this, page);
+    }
   }
 
   scrollToPage(page: number) {
     this.scroll.view.scrollToOffset($point(page * this._pageWidth, 0));
-    this._props.page = page;
+    if (this._props.page !== page) {
+      this._props.page = page;
+      if (this._events.changed) this._events.changed(this, page);
+    }
   }
 }
