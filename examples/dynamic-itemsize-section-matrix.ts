@@ -20,7 +20,7 @@ const sections: DynamicItemSizeSectionMatrixSection[] = [
   },
   {
     title: "",
-    items: [makeItem("Untitled", 1), makeItem("Untitled", 2)],
+    items: [makeItem("Untitled", 1)],
   },
 ];
 

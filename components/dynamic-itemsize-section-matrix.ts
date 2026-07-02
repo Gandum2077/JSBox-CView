@@ -64,14 +64,19 @@ function _getTextHeight(text: string, width: number) {
  *
  * 此组件是为了在 Dynamic ItemSize Matrix 的基础上添加 SectionTitle
  *
- * - 使用此组件必须在每个section中添加title，如果title为空字符串，依然添加高度35的空格(包含spacing)
- * - sectionTitle的字体为font(13)，左右边距为16（不含spacing），即总宽度为 totalWidth - 2 * spacing - 32
- * - 由于它必然和底下的item会有spacing，所以不建议spacing设的太大，那样会很违和
- * - sectionTitle会使得section之间的间隔增加自身的高度
- * - matrix事件会自动调整indexPath，包括didSelect、didLongPress、forEachItem
- * - matrix的方法都在该组件中重新实现，自动调整indexPath
- * - 不支持matrix原有的重新排序、自动大小功能，为防止sectionTitle暴露，也不支持menu
- * - 不支持Dynamic ItemSize Matrix的dynamicHeightEnabled、heightToWidth
+ * 注意事项：
+ * 1. 使用此组件必须在每个section中添加title，如果title为空字符串，依然添加高度35的空格(该高度包含spacing)
+ * 2. sectionTitle的字体为font(13)，左右边距为16（不含spacing），即总宽度为 totalWidth - 2 * spacing - 32
+ * 3. sectionTitle会使得section之间的间隔增加自身的高度
+ * 4. 由于sectionTitle必然和底下的item会有spacing，所以不建议spacing设的太大，那样会很违和
+ * 5. 每个section会使用不可见item补齐最后一行，避免原生Flow Layout将未满行居中排列
+ * 6. matrix事件会自动过滤sectionTitle和不可见item，并调整indexPath，包括didSelect、didLongPress、forEachItem
+ * 7. matrix的方法都在该组件中重新实现，自动调整indexPath
+ *
+ * 不支持：
+ * 1. 不支持matrix原有的重新排序、自动大小功能
+ * 2. 为防止sectionTitle暴露，也不支持menu
+ * 3. 不支持Dynamic ItemSize Matrix的dynamicHeightEnabled、heightToWidth
  *
  * ## 动态调整 itemSize
  *
@@ -180,37 +185,28 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
         },
         didSelect: didSelect
           ? (sender, indexPath) => {
-              if (indexPath.item === 0) {
-                return;
-              } else {
-                didSelect(
-                  sender,
-                  $indexPath(indexPath.section, indexPath.item - 1),
-                  this._data[indexPath.section].items[indexPath.item - 1],
-                );
-              }
+              if (!this._isOriginalItem(indexPath)) return;
+              didSelect(
+                sender,
+                $indexPath(indexPath.section, indexPath.item - 1),
+                this._data[indexPath.section].items[indexPath.item - 1],
+              );
             }
           : undefined,
         didLongPress: didLongPress
           ? (sender, indexPath) => {
-              if (indexPath.item === 0) {
-                return;
-              } else {
-                didLongPress(
-                  sender,
-                  $indexPath(indexPath.section, indexPath.item - 1),
-                  this._data[indexPath.section].items[indexPath.item - 1],
-                );
-              }
+              if (!this._isOriginalItem(indexPath)) return;
+              didLongPress(
+                sender,
+                $indexPath(indexPath.section, indexPath.item - 1),
+                this._data[indexPath.section].items[indexPath.item - 1],
+              );
             }
           : undefined,
         forEachItem: forEachItem
           ? (sender, indexPath) => {
-              if (indexPath.item === 0) {
-                return;
-              } else {
-                forEachItem(sender, $indexPath(indexPath.section, indexPath.item - 1));
-              }
+              if (!this._isOriginalItem(indexPath)) return;
+              forEachItem(sender, $indexPath(indexPath.section, indexPath.item - 1));
             }
           : undefined,
       },
@@ -235,11 +231,15 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
               this._maxColumns,
               this._spacing,
             );
+            const columnsChanged = columns !== this._columns;
             this._columns = columns;
             this._itemSizeWidth = itemSizeWidth;
             this._itemSizeHeight = this._events.itemHeight
               ? this._events.itemHeight(this._itemSizeWidth)
               : this._fixedItemHeight;
+            if (columnsChanged) {
+              this.matrix.view.data = this._mapData(this._data);
+            }
             this.matrix.view.reload();
           },
         },
@@ -247,24 +247,37 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
     };
   }
 
+  private _isOriginalItem(indexPath: NSIndexPath) {
+    const itemCount = this._data[indexPath.section]?.items.length ?? 0;
+    return indexPath.item > 0 && indexPath.item <= itemCount;
+  }
+
   private _mapData(data: DynamicItemSizeSectionMatrixSection[]) {
     return data.map((n) => {
       const mappedItems = n.items.map((n) => {
         return {
           __section_title__: { hidden: true },
+          __section_title_label__: { hidden: true },
           __original_template__: { hidden: false },
           ...n,
         };
       });
+      const placeholderCount = (this._columns - (n.items.length % this._columns)) % this._columns;
+      const placeholders = Array.from({ length: placeholderCount }, () => ({
+        __section_title__: { hidden: false },
+        __section_title_label__: { hidden: true, text: "" },
+        __original_template__: { hidden: true },
+      }));
       return {
         title: "",
         items: [
           {
             __section_title__: { hidden: false },
-            __section_title_label__: { text: n.title },
+            __section_title_label__: { hidden: false, text: n.title },
             __original_template__: { hidden: true },
           },
           ...mappedItems,
+          ...placeholders,
         ],
       };
     });
@@ -299,7 +312,7 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
                 lines: 0,
               },
               layout: (make, view) => {
-                make.left.right.inset(16);
+                make.left.right.inset(10);
                 make.bottom.inset(0);
               },
             },
