@@ -18,6 +18,7 @@ npm run build:debug --entry=./dist-debug/examples/dynamic-itemsize-matrix.js
 - [`custom-navigation-bar.ts`](./custom-navigation-bar.ts)：自定义导航栏及左右按钮。
 - [`dynamic-contextmenu-view.ts`](./dynamic-contextmenu-view.ts)：运行时动态生成和切换上下文菜单。
 - [`dynamic-itemsize-matrix.ts`](./dynamic-itemsize-matrix.ts)：根据容器宽度动态计算矩阵列数与项目尺寸。
+- [`dynamic-itemsize-custom-section-title-matrix.ts`](./dynamic-itemsize-custom-section-title-matrix.ts)：使用自定义模板、数据和高度绘制分组标题。
 - [`dynamic-itemsize-section-matrix.ts`](./dynamic-itemsize-section-matrix.ts)：带分组标题的动态尺寸矩阵。
 - [`flowlayout.ts`](./flowlayout.ts)：按内容宽度排列的流式布局。
 - [`oc-webview.ts`](./oc-webview.ts)：基于 `WKWebView` 的网页加载、导航和脚本执行。

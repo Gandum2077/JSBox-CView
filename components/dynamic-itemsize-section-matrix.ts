@@ -7,16 +7,42 @@ export interface DynamicItemSizeSectionMatrixSection {
   items: Record<string, unknown>[];
 }
 
-export interface DynamicItemSizeSectionMatrixProps extends Omit<
+export interface DynamicItemSizeSectionMatrixCustomSection {
+  title: Record<string, unknown>;
+  titleHeight: number;
+  items: Record<string, unknown>[];
+}
+
+export type DynamicItemSizeSectionMatrixAnySection =
+  | DynamicItemSizeSectionMatrixSection
+  | DynamicItemSizeSectionMatrixCustomSection;
+
+export type DynamicItemSizeSectionMatrixTitleTemplate = NonNullable<UiTypes.MatrixProps["template"]>;
+
+interface BaseProps extends Omit<
   UiTypes.MatrixProps,
   "data" | "itemSize" | "autoItemSize" | "estimatedItemSize" | "columns" | "square" | "waterfall" | "reorder" | "menu"
 > {
-  data?: DynamicItemSizeSectionMatrixSection[];
   fixedItemHeight?: number;
   minItemWidth?: number;
   maxColumns?: number;
   spacing?: number;
 }
+
+type TitleProps<T extends DynamicItemSizeSectionMatrixAnySection> = [T] extends [
+  DynamicItemSizeSectionMatrixCustomSection,
+]
+  ? { sectionTitleTemplate: DynamicItemSizeSectionMatrixTitleTemplate }
+  : [T] extends [DynamicItemSizeSectionMatrixSection]
+    ? { sectionTitleTemplate?: never }
+    : never;
+
+export type DynamicItemSizeSectionMatrixProps<
+  T extends DynamicItemSizeSectionMatrixAnySection = DynamicItemSizeSectionMatrixSection,
+> = BaseProps &
+  TitleProps<T> & {
+    data?: T[];
+  };
 
 export interface DynamicItemSizeSectionMatrixEvents extends Omit<
   UiTypes.MatrixEvents,
@@ -59,19 +85,23 @@ function _getTextHeight(text: string, width: number) {
   });
 }
 
+const _defaultSectionTitleHorizontalInset = 10;
+
 /**
  * # CView Dynamic ItemSize Section Matrix
  *
- * 此组件是为了在 Dynamic ItemSize Matrix 的基础上添加 SectionTitle
+ * 此组件是为了在 Dynamic ItemSize Matrix 的基础上添加 SectionTitle。
+ * SectionTitle 实际上是一个位于每个 section 首位的全宽 header cell，为兼容现有API继续使用title命名。
  *
  * 注意事项：
- * 1. 使用此组件必须在每个section中添加title，如果title为空字符串，依然添加高度35的空格(该高度包含spacing)
- * 2. sectionTitle的字体为font(13)，左右边距为16（不含spacing），即总宽度为 totalWidth - 2 * spacing - 32
- * 3. sectionTitle会使得section之间的间隔增加自身的高度
- * 4. 由于sectionTitle必然和底下的item会有spacing，所以不建议spacing设的太大，那样会很违和
- * 5. 每个section会使用不可见item补齐最后一行，避免原生Flow Layout将未满行居中排列
- * 6. matrix事件会自动过滤sectionTitle和不可见item，并调整indexPath，包括didSelect、didLongPress、forEachItem
- * 7. matrix的方法都在该组件中重新实现，自动调整indexPath
+ * 1. 默认模式中每个section的title为字符串；空字符串依然添加高度35的空格(该高度包含spacing)
+ * 2. 默认title的字体为font(13)，左右边距为10，即文本宽度为 totalWidth - 2 * spacing - 20
+ * 3. 提供sectionTitleTemplate后进入自定义模式，title为模板数据，titleHeight为标题cell的实际高度（不包含spacing）
+ * 4. sectionTitle会使得section之间的间隔增加自身的高度
+ * 5. 由于sectionTitle必然和底下的item会有spacing，所以不建议spacing设的太大，那样会很违和
+ * 6. 每个section会使用不可见item补齐最后一行，避免原生Flow Layout将未满行居中排列
+ * 7. matrix事件会自动过滤sectionTitle和不可见item，并调整indexPath，包括didSelect、didLongPress、forEachItem
+ * 8. matrix的方法都在该组件中重新实现，自动调整indexPath
  *
  * 不支持：
  * 1. 不支持matrix原有的重新排序、自动大小功能
@@ -98,11 +128,15 @@ function _getTextHeight(text: string, width: number) {
  *
  * 可以使用 matrix 的全部属性。
  *
- * 但data的类型调整为：
+ * 默认模式的data类型为：
  * { title: string; items: Record<string, unknown>[] }
+ *
+ * 提供sectionTitleTemplate后，自定义模式的data类型为：
+ * { title: Record<string, unknown>; titleHeight: number; items: Record<string, unknown>[] }
  *
  * 特殊属性:
  *
+ * - sectionTitleTemplate 自定义section title模板；是否提供该属性即为模式开关
  * - fixedItemHeight 固定 itemSize 高度
  * - minItemWidth 最小的 itemSize 宽度
  * - maxColumns 最大列数
@@ -110,7 +144,7 @@ function _getTextHeight(text: string, width: number) {
  *
  * events:
  *
- * 可以使用 matrix 除 itemSize 以外的全部事件
+ * 可以使用 matrix 事件，但不包括 itemSize 以及与重新排序相关的事件
  *
  * 其他特殊事件:
  *
@@ -127,11 +161,14 @@ function _getTextHeight(text: string, width: number) {
  * - cell(indexPath: NSIndexPath): AllUIView;
  * - scrollTo(args: { indexPath: NSIndexPath; animated?: boolean }): void;
  */
-export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptions> {
+export class DynamicItemSizeSectionMatrix<
+  TSection extends DynamicItemSizeSectionMatrixAnySection = DynamicItemSizeSectionMatrixSection,
+> extends Base<UIView, UiTypes.ViewOptions> {
   _defineView: () => UiTypes.ViewOptions;
-  private _props: DynamicItemSizeSectionMatrixProps;
-  private _data: DynamicItemSizeSectionMatrixSection[];
+  private _props: DynamicItemSizeSectionMatrixProps<TSection>;
+  private _data: TSection[];
   private _events: DynamicItemSizeSectionMatrixEvents;
+  private _sectionTitleTemplate?: DynamicItemSizeSectionMatrixTitleTemplate;
   private _itemSizeWidth: number;
   private _itemSizeHeight: number;
   private _totalWidth: number = 0;
@@ -146,7 +183,7 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
     layout,
     events,
   }: {
-    props: DynamicItemSizeSectionMatrixProps;
+    props: DynamicItemSizeSectionMatrixProps<TSection>;
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events: DynamicItemSizeSectionMatrixEvents;
   }) {
@@ -154,6 +191,7 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
     this._props = props;
     this._data = this._props.data ?? [];
     this._events = events;
+    this._sectionTitleTemplate = props.sectionTitleTemplate;
     this._itemSizeWidth = 0;
     this._itemSizeHeight = 0;
     this._fixedItemHeight = this._props.fixedItemHeight ?? 96;
@@ -161,9 +199,11 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
     this._maxColumns = this._props.maxColumns ?? 5;
     this._spacing = this._props.spacing ?? 6;
     const { itemHeight, didSelect, didLongPress, forEachItem, ...otherEvents } = this._events;
+    const { sectionTitleTemplate, ...matrixProps } = props;
     this.matrix = new Matrix({
       props: {
-        ...props,
+        ...matrixProps,
+        spacing: this._spacing,
         data: this._mapData(this._data),
         template: this._mapTemplate(props.template),
       },
@@ -176,8 +216,7 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
           }
           if (indexPath.item === 0) {
             const width = Math.max(this._totalWidth - 2 * this._spacing, 32);
-            const textHeight = _getTextHeight(this._data[indexPath.section].title, width - 32);
-            const height = textHeight + 35 - this._spacing * (indexPath.section === 0 ? 1 : 2);
+            const height = this._getSectionTitleHeight(indexPath.section, width);
             return $size(width, height);
           } else {
             return $size(this._itemSizeWidth, this._itemSizeHeight);
@@ -252,33 +291,53 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
     return indexPath.item > 0 && indexPath.item <= itemCount;
   }
 
-  private _mapData(data: DynamicItemSizeSectionMatrixSection[]) {
+  private _getSectionTitleHeight(section: number, width: number) {
+    const sectionData = this._data[section];
+    if (this._sectionTitleTemplate) {
+      return Math.max((sectionData as DynamicItemSizeSectionMatrixCustomSection).titleHeight, 1);
+    }
+    const textHeight = _getTextHeight(
+      (sectionData as DynamicItemSizeSectionMatrixSection).title,
+      width - _defaultSectionTitleHorizontalInset * 2,
+    );
+    return textHeight + 35 - this._spacing * (section === 0 ? 1 : 2);
+  }
+
+  private _mapData(data: TSection[]) {
     return data.map((n) => {
       const mappedItems = n.items.map((n) => {
         return {
           __section_title__: { hidden: true },
-          __section_title_label__: { hidden: true },
+          __placeholder__: { hidden: true },
           __original_template__: { hidden: false },
           ...n,
         };
       });
       const placeholderCount = (this._columns - (n.items.length % this._columns)) % this._columns;
       const placeholders = Array.from({ length: placeholderCount }, () => ({
-        __section_title__: { hidden: false },
-        __section_title_label__: { hidden: true, text: "" },
+        __section_title__: { hidden: true },
+        __placeholder__: { hidden: false },
         __original_template__: { hidden: true },
       }));
+      const titleData = this._sectionTitleTemplate
+        ? {
+            ...(n as DynamicItemSizeSectionMatrixCustomSection).title,
+            __section_title__: { hidden: false },
+            __placeholder__: { hidden: true },
+            __original_template__: { hidden: true },
+          }
+        : {
+            __section_title__: { hidden: false },
+            __placeholder__: { hidden: true },
+            __section_title_label__: {
+              hidden: false,
+              text: (n as DynamicItemSizeSectionMatrixSection).title,
+            },
+            __original_template__: { hidden: true },
+          };
       return {
         title: "",
-        items: [
-          {
-            __section_title__: { hidden: false },
-            __section_title_label__: { hidden: false, text: n.title },
-            __original_template__: { hidden: true },
-          },
-          ...mappedItems,
-          ...placeholders,
-        ],
+        items: [titleData, ...mappedItems, ...placeholders],
       };
     });
   }
@@ -293,6 +352,46 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
             id: "__section_title__",
           },
           layout: $layout.fill,
+          views: this._sectionTitleTemplate
+            ? [
+                {
+                  type: "view",
+                  props: this._sectionTitleTemplate.props ?? {},
+                  layout: $layout.fill,
+                  views: this._sectionTitleTemplate.views,
+                },
+              ]
+            : [
+                {
+                  type: "label",
+                  props: {
+                    id: "__section_title_label__",
+                    bgcolor: $color("clear"),
+                    font: $font(13),
+                    textColor: $color("secondaryText"),
+                    lines: 0,
+                  },
+                  layout: (make, view) => {
+                    make.left.right.inset(_defaultSectionTitleHorizontalInset);
+                    make.bottom.inset(0);
+                  },
+                },
+                {
+                  // 在这里放一个透明且无效果的button，从而取消item自己的highlight效果
+                  type: "button",
+                  props: {
+                    bgcolor: $color("clear"),
+                  },
+                  layout: $layout.fill,
+                },
+              ],
+        },
+        {
+          type: "view",
+          props: {
+            id: "__placeholder__",
+          },
+          layout: $layout.fill,
           views: [
             {
               // 在这里放一个透明且无效果的button，从而取消item自己的highlight效果
@@ -301,20 +400,6 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
                 bgcolor: $color("clear"),
               },
               layout: $layout.fill,
-            },
-            {
-              type: "label",
-              props: {
-                id: "__section_title_label__",
-                bgcolor: $color("clear"),
-                font: $font(13),
-                textColor: $color("secondaryText"),
-                lines: 0,
-              },
-              layout: (make, view) => {
-                make.left.right.inset(10);
-                make.bottom.inset(0);
-              },
             },
           ],
         },
