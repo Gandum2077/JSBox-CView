@@ -2,20 +2,7 @@ import { Base } from "./base";
 import {
   PreferenceSection,
   PrefsRow,
-  PrefsRowString,
-  PrefsRowNumber,
-  PrefsRowInteger,
-  PrefsRowStepper,
-  PrefsRowBoolean,
   PrefsRowSlider,
-  PrefsRowList,
-  PrefsRowTab,
-  PrefsRowDate,
-  PrefsRowInfo,
-  PrefsRowInteractiveInfo,
-  PrefsRowLink,
-  PrefsRowSymbolAction,
-  PrefsRowAction,
   selectableTypes,
   excludedTypes,
   dateToString,
@@ -38,9 +25,9 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
 }
 
 /**
- * # cview PreferenceListView_dynamic
+ * # cview DynamicPreferenceListView
  *
- * 便捷的设置列表实现. 样式以及功能均以 PreferenceListView_static 为准.
+ * 便捷的设置列表实现. 样式以及功能均以 PreferenceListView 为准.
  *
  * 优势在于:
  *
@@ -53,7 +40,7 @@ interface RequiredCunstomProps extends UiTypes.ListProps {
  *
  * 为了缓解上面的问题, 让修改布局无需调整源代码, 增加下列 props:
  *
- * - stringLeftInset?: number = 120 将同时作用于 string, number, integer, list, date
+ * - stringLeftInset?: number = 120 将同时作用于 string, secure, number, integer, list, date
  *   但是由于后四者内容可控, 可视为只作用于 string
  * - infoAndLinkLeftInset?: number = 120 作用于 info, link
  * - sliderWidth?: number = 200 作用于 slider
@@ -349,6 +336,19 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                 });
                 break;
               }
+              case "secure": {
+                $input.text({
+                  text: "", // 密码框不填充之前的value
+                  type: $kbType.default,
+                  placeholder: row.placeholder,
+                  handler: (text) => {
+                    row.value = text;
+                    sender.data = this._map(this._sections);
+                    if (events.changed) events.changed(this.values);
+                  },
+                });
+                break;
+              }
               case "number": {
                 $input.text({
                   text: row.value?.toString(),
@@ -499,7 +499,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
           textColor: options.titleColor || $color("primaryText"),
         }, // 标题, 同时用于action
         label_and_chevron: { hidden: true },
-        // 用于string, number, integer, list, date
+        // 用于string, secure, number, integer, list, date
         number_and_stepper: { hidden: true }, // 用于stepper
         slider_and_number: { hidden: true }, // 用于slider
         switch: { hidden: true }, // 用于boolean
@@ -518,6 +518,14 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
             data.label_before_chevron = {
               textColor: n.textColor || $color("primaryText"),
               text: n.value === undefined ? "" : n.value,
+            };
+            break;
+          }
+          case "secure": {
+            data.label_and_chevron.hidden = false;
+            data.label_before_chevron = {
+              textColor: n.textColor || $color("secondaryText"),
+              text: n.value ? "******" : "",
             };
             break;
           }

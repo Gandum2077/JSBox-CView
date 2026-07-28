@@ -3,6 +3,7 @@ import { getTextWidth } from "../utils/uitools";
 
 type PreferenceCellTypes =
   | "string"
+  | "secure"
   | "number"
   | "integer"
   | "stepper"
@@ -24,6 +25,7 @@ export interface PreferenceSection {
 
 export type PrefsRow =
   | PrefsRowString
+  | PrefsRowSecure
   | PrefsRowNumber
   | PrefsRowInteger
   | PrefsRowStepper
@@ -48,6 +50,13 @@ interface PrefsRowBase {
 
 export interface PrefsRowString extends PrefsRowBase {
   type: "string";
+  value?: string;
+  placeholder?: string;
+  textColor?: UIColor;
+}
+
+export interface PrefsRowSecure extends PrefsRowBase {
+  type: "secure";
   value?: string;
   placeholder?: string;
   textColor?: UIColor;
@@ -150,6 +159,7 @@ export interface PrefsRowAction extends PrefsRowBase {
 
 export const selectableTypes = [
   "string",
+  "secure",
   "number",
   "integer",
   "stepper",
@@ -167,6 +177,7 @@ type PreferenceValues = { [key: string]: any };
 
 type AllCells =
   | StringCell
+  | SecureCell
   | NumberCell
   | IntegerCell
   | StepperCell
@@ -270,7 +281,7 @@ abstract class BaseStringCell extends Cell {
   abstract _type: string;
   _placeholder?: string;
   _textColor?: UIColor;
-  constructor(props: PrefsRowString | PrefsRowNumber | PrefsRowInteger, values: PreferenceValues) {
+  constructor(props: PrefsRowString | PrefsRowSecure | PrefsRowNumber | PrefsRowInteger, values: PreferenceValues) {
     super(props, values);
     const { placeholder, textColor } = props;
     this._placeholder = placeholder;
@@ -339,6 +350,24 @@ class StringCell extends BaseStringCell {
   }
 
   _handleText(text: string) {
+    return text;
+  }
+}
+
+class SecureCell extends BaseStringCell {
+  readonly _type = "secure";
+  constructor(props: PrefsRowSecure, values: PreferenceValues) {
+    super({ textColor: $color("secondaryText"), ...props }, values);
+  }
+
+  _handleText(text: string) {
+    if (text) return "******";
+    else return "";
+  }
+
+  _handleValue(text: string): string | undefined {
+    const label = this.view.get("label") as UILabelView;
+    label.text = this._handleText(text);
     return text;
   }
 }
@@ -949,7 +978,7 @@ class ActionCell extends Cell {
 }
 
 /**
- * # cview PreferenceListView_static
+ * # cview PreferenceListView
  *
  * 便捷的设置列表实现. 其所有 cell 均为静态 cell,
  * 可以同时使用 list 控件的 props(除了 template, data)和 events(除了 didSelect),
@@ -964,7 +993,7 @@ class ActionCell extends Cell {
  *
  * - 通用:
  *
- *     - type: string 类型. 包括'string', 'number', 'integer', 'stepper',
+ *     - type: string 类型. 包括'string', 'secure', 'number', 'integer', 'stepper',
  *       'boolean', 'slider', 'list', 'tab', 'interactive-info', 'info',
  *       'link', 'action'
  *     - key?: string 键. 如没有则不会返回其值.
@@ -977,6 +1006,12 @@ class ActionCell extends Cell {
  *     - value?: string
  *     - placeholder?: string
  *     - textColor?: $color = $color("primaryText")
+ *
+ * -  secure:
+ *
+ *     - value?: string
+ *     - placeholder?: string
+ *     - textColor?: $color = $color("secondaryText")
  *
  * -  number, integer:
  *
@@ -1137,6 +1172,18 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
                 });
                 break;
               }
+              case "secure": {
+                $input.text({
+                  text: "", // 密码框不填充之前的value
+                  type: $kbType.default,
+                  placeholder: cell._placeholder,
+                  handler: (text) => {
+                    cell.value = text;
+                    if (cell._changedEvent) cell._changedEvent();
+                  },
+                });
+                break;
+              }
               case "number": {
                 $input.text({
                   text: cell.value,
@@ -1237,6 +1284,8 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
     switch (props.type) {
       case "string":
         return new StringCell(props, this._values);
+      case "secure":
+        return new SecureCell(props, this._values);
       case "number":
         return new NumberCell(props, this._values);
       case "integer":

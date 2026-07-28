@@ -11,6 +11,14 @@ const sections: PreferenceSection[] = [
         value: "测试一号测试二号测试三号测试四号测试五号测试六号",
       },
       {
+        type: "secure",
+        title: "secure",
+        key: "secure",
+        placeholder: "secure",
+        textColor: $color("blue"),
+        value: "abc",
+      },
+      {
         type: "number",
         title: "number",
         key: "number",
