@@ -30,6 +30,14 @@ const sections: DynamicItemSizeSectionMatrixCustomSection[] = [
       makeItem("Epsilon", "Updated this year"),
     ],
   },
+  {
+    title: undefined,
+    titleHeight: 52,
+    items: [
+      makeItem("No title cell", "The first item starts at indexPath.item 0."),
+      makeItem("Another item", "This section has no custom section title."),
+    ],
+  },
 ];
 
 const matrix = new DynamicItemSizeSectionMatrix({

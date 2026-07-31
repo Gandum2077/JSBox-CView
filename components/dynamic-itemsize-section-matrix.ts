@@ -3,12 +3,12 @@ import { Base } from "./base";
 import { Matrix } from "./single-views";
 
 export interface DynamicItemSizeSectionMatrixSection {
-  title: string;
+  title: string | undefined;
   items: Record<string, unknown>[];
 }
 
 export interface DynamicItemSizeSectionMatrixCustomSection {
-  title: Record<string, unknown>;
+  title: Record<string, unknown> | undefined;
   titleHeight: number;
   items: Record<string, unknown>[];
 }
@@ -94,7 +94,8 @@ const _defaultSectionTitleHorizontalInset = 10;
  * SectionTitle 实际上是一个位于每个 section 首位的全宽 header cell，为兼容现有API继续使用title命名。
  *
  * 注意事项：
- * 1. 默认模式中每个section的title为字符串；空字符串依然添加高度35的空格(该高度包含spacing)
+ * 1. 默认模式中每个section的title为字符串；空字符串依然添加高度35的空格(该高度包含spacing)，
+ *    undefined则不添加sectionTitle
  * 2. 默认title的字体为font(13)，左右边距为10，即文本宽度为 totalWidth - 2 * spacing - 20
  * 3. 提供sectionTitleTemplate后进入自定义模式，title为模板数据，titleHeight为标题cell的实际高度（不包含spacing）
  * 4. sectionTitle会使得section之间的间隔增加自身的高度
@@ -129,10 +130,10 @@ const _defaultSectionTitleHorizontalInset = 10;
  * 可以使用 matrix 的全部属性。
  *
  * 默认模式的data类型为：
- * { title: string; items: Record<string, unknown>[] }
+ * { title: string | undefined; items: Record<string, unknown>[] }
  *
  * 提供sectionTitleTemplate后，自定义模式的data类型为：
- * { title: Record<string, unknown>; titleHeight: number; items: Record<string, unknown>[] }
+ * { title: Record<string, unknown> | undefined; titleHeight: number; items: Record<string, unknown>[] }
  *
  * 特殊属性:
  *
@@ -214,7 +215,7 @@ export class DynamicItemSizeSectionMatrix<
           if (this._totalWidth === 0) {
             return $size(0, 0);
           }
-          if (indexPath.item === 0) {
+          if (this._hasSectionTitle(indexPath.section) && indexPath.item === 0) {
             const width = Math.max(this._totalWidth - 2 * this._spacing, 32);
             const height = this._getSectionTitleHeight(indexPath.section, width);
             return $size(width, height);
@@ -227,8 +228,8 @@ export class DynamicItemSizeSectionMatrix<
               if (!this._isOriginalItem(indexPath)) return;
               didSelect(
                 sender,
-                $indexPath(indexPath.section, indexPath.item - 1),
-                this._data[indexPath.section].items[indexPath.item - 1],
+                $indexPath(indexPath.section, this._originalItemIndex(indexPath)),
+                this._data[indexPath.section].items[this._originalItemIndex(indexPath)],
               );
             }
           : undefined,
@@ -237,15 +238,15 @@ export class DynamicItemSizeSectionMatrix<
               if (!this._isOriginalItem(indexPath)) return;
               didLongPress(
                 sender,
-                $indexPath(indexPath.section, indexPath.item - 1),
-                this._data[indexPath.section].items[indexPath.item - 1],
+                $indexPath(indexPath.section, this._originalItemIndex(indexPath)),
+                this._data[indexPath.section].items[this._originalItemIndex(indexPath)],
               );
             }
           : undefined,
         forEachItem: forEachItem
           ? (sender, indexPath) => {
               if (!this._isOriginalItem(indexPath)) return;
-              forEachItem(sender, $indexPath(indexPath.section, indexPath.item - 1));
+              forEachItem(sender, $indexPath(indexPath.section, this._originalItemIndex(indexPath)));
             }
           : undefined,
       },
@@ -288,7 +289,20 @@ export class DynamicItemSizeSectionMatrix<
 
   private _isOriginalItem(indexPath: NSIndexPath) {
     const itemCount = this._data[indexPath.section]?.items.length ?? 0;
-    return indexPath.item > 0 && indexPath.item <= itemCount;
+    const originalItemIndex = this._originalItemIndex(indexPath);
+    return originalItemIndex >= 0 && originalItemIndex < itemCount;
+  }
+
+  private _hasSectionTitle(section: number) {
+    return this._data[section]?.title !== undefined;
+  }
+
+  private _sectionTitleOffset(section: number) {
+    return this._hasSectionTitle(section) ? 1 : 0;
+  }
+
+  private _originalItemIndex(indexPath: NSIndexPath) {
+    return indexPath.item - this._sectionTitleOffset(indexPath.section);
   }
 
   private _getSectionTitleHeight(section: number, width: number) {
@@ -297,7 +311,7 @@ export class DynamicItemSizeSectionMatrix<
       return Math.max((sectionData as DynamicItemSizeSectionMatrixCustomSection).titleHeight, 1);
     }
     const textHeight = _getTextHeight(
-      (sectionData as DynamicItemSizeSectionMatrixSection).title,
+      (sectionData as DynamicItemSizeSectionMatrixSection).title!,
       width - _defaultSectionTitleHorizontalInset * 2,
     );
     return textHeight + 35 - this._spacing * (section === 0 ? 1 : 2);
@@ -321,7 +335,7 @@ export class DynamicItemSizeSectionMatrix<
       }));
       const titleData = this._sectionTitleTemplate
         ? {
-            ...(n as DynamicItemSizeSectionMatrixCustomSection).title,
+            ...(n as DynamicItemSizeSectionMatrixCustomSection).title!,
             __section_title__: { hidden: false },
             __placeholder__: { hidden: true },
             __original_template__: { hidden: true },
@@ -337,7 +351,7 @@ export class DynamicItemSizeSectionMatrix<
           };
       return {
         title: "",
-        items: [titleData, ...mappedItems, ...placeholders],
+        items: [...(n.title === undefined ? [] : [titleData]), ...mappedItems, ...placeholders],
       };
     });
   }
@@ -449,12 +463,14 @@ export class DynamicItemSizeSectionMatrix<
   }
 
   cell(indexPath: NSIndexPath): AllUIView {
-    return this.matrix.view.cell($indexPath(indexPath.section, indexPath.item + 1));
+    return this.matrix.view.cell(
+      $indexPath(indexPath.section, indexPath.item + this._sectionTitleOffset(indexPath.section)),
+    );
   }
 
   scrollTo({ indexPath, animated }: { indexPath: NSIndexPath; animated?: boolean }): void {
     this.matrix.view.scrollTo({
-      indexPath: $indexPath(indexPath.section, indexPath.item + 1),
+      indexPath: $indexPath(indexPath.section, indexPath.item + this._sectionTitleOffset(indexPath.section)),
       animated,
     });
   }

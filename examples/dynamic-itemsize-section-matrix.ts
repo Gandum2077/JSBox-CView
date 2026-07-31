@@ -22,6 +22,10 @@ const sections: DynamicItemSizeSectionMatrixSection[] = [
     title: "",
     items: [makeItem("Untitled", 1)],
   },
+  {
+    title: undefined,
+    items: [makeItem("No Title Cell", 1), makeItem("No Title Cell", 2), makeItem("No Title Cell", 3)],
+  },
 ];
 
 const matrix = new DynamicItemSizeSectionMatrix({
