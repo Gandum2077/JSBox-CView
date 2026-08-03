@@ -1,26 +1,24 @@
 import { Base } from "./base";
 import { Matrix } from "./single-views";
 
-interface DynamicItemSizeMatrixProps extends UiTypes.MatrixProps {
-  fixedItemHeight: number;
+export interface ItemLayoutOptions {
   minItemWidth: number;
   maxColumns: number;
   spacing: number;
-  dynamicHeightEnabled?: boolean;
+  itemHeight: number | ((width: number) => number);
 }
 
-interface DynamicItemSizeMatrixEvents extends UiTypes.MatrixEvents {
-  itemHeight?: (width: number) => number;
-  heightChanged?: (sender: DynamicItemSizeMatrix, height: number) => void;
+export interface DynamicItemSizeMatrixProps extends Omit<
+  UiTypes.MatrixProps,
+  "itemSize" | "autoItemSize" | "estimatedItemSize" | "columns" | "square" | "waterfall" | "reorder"
+> {
+  itemLayoutOptions: ItemLayoutOptions;
 }
 
-interface DynamicItemSizeMatrixPropsPartial extends UiTypes.MatrixProps {
-  fixedItemHeight?: number;
-  minItemWidth?: number;
-  maxColumns?: number;
-  spacing?: number;
-  dynamicHeightEnabled?: boolean;
-}
+export type DynamicItemSizeMatrixEvents = Omit<
+  UiTypes.MatrixEvents,
+  "itemSize" | "reorderBegan" | "reorderMoved" | "canMoveItem" | "reorderFinished"
+>;
 
 function _getColumnsAndItemSizeWidth(
   containerWidth: number,
@@ -57,50 +55,59 @@ function _getColumnsAndItemSizeWidth(
  * 思路为在 matrix 上层套一个 superView，在旋转的时候 superView 会调用 matrix.relayout()
  * 和 matrix.reload()，从而触发 itemSize 事件
  *
- * 此视图的高度可以自动调整，需要 dynamicHeightEnabled 设为 true，且 layout 中要有关于 height 的约束
- *
  * 其排布逻辑是这样的:
  *
  * 1. 由 minItemWidth，spacing，maxColumns 这三个参数决定 cloumns，
  *    并结合 totalWidth 确定 itemSize.width
  * 2. 确定 itemHeight 有两种方法:
- *    - fixedItemHeight 固定高度，优先级第二
- *    - event: itemHeight(width) => height 通过 width 动态计算，优先级最高
+ *    - number：固定高度
+ *    - (height: width) => number 通过 width 动态计算
  * 3. 如果 minItemWidth 比 totalWidth - 2 * spacing 还要小，那么 itemSize.width
  *    会被设定为 totalWidth - 2 * spacing，以保证item不会超出边框
  *
  * props:
  *
- * 可以使用 matrix 的全部属性
+ * 可以使用 matrix 的属性，但不包括关于布局和重新排序相关的属性:
  *
- * 特殊属性:
+ * ```
+ * "itemSize" | "autoItemSize" | "estimatedItemSize" | "columns" | "square" | "waterfall" | "reorder"
+ * ```
  *
- * - fixedItemHeight 固定 itemSize 高度
+ * 特殊属性 itemLayoutOptions:
+ *
  * - minItemWidth 最小的 itemSize 宽度
  * - maxColumns 最大列数
  * - spacing
- * - dynamicHeightEnabled 此项为 true，那么 scrollEnabled 自动设为 false，且高度可以自动调整
+ * - itemHeight: number | ((width: number) => number)
  *
  * events:
  *
- * 可以使用 matrix 除 itemSize 以外的全部事件
+ * 可以使用 matrix 的事件，但不包括布局和重新排序相关的事件:
  *
- * 其他特殊事件:
- *
- * - itemHeight: width => height 通过 itemWidth 动态计算 itemHeight
- *
+ * ```
+ * "itemSize" | "reorderBegan" | "reorderMoved" | "canMoveItem" | "reorderFinished"
+ * ```
  *
  * 方法:
- * - heightToWidth(width) 计算特定width时的应有的高度
+ * - heightToWidth(width: number): number 计算特定width时的应有的高度
+ * - get data
+ * - set data
+ * - get itemSize: JBSize
+ * - get totalWidth: number
+ * - get itemSizeWidth: number
+ * - get itemSizeHeight: number
+ * - get columns: number
+ * - resetItemLayoutOptions(options: Omit<ItemLayoutOptions, "spacing">): void 重新设定ItemLayoutOptions，会触发一次重新布局
+ *   但是不能更改spacing
  */
 export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
-  private _props: DynamicItemSizeMatrixProps;
-  private _events: DynamicItemSizeMatrixEvents;
-  private _itemSizeWidth: number;
-  private _itemSizeHeight: number;
+  private _itemLayoutOptions: ItemLayoutOptions;
+  private _data: UiTypes.MatrixProps["data"];
+  private _itemSizeWidth: number = 0;
+  private _itemSizeHeight: number = 0;
   private _totalWidth: number = 0;
   private _columns: number = 1;
-  matrix: Matrix;
+  protected matrix: Matrix;
   _defineView: () => UiTypes.ViewOptions;
 
   constructor({
@@ -108,32 +115,21 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
     layout,
     events = {},
   }: {
-    props: DynamicItemSizeMatrixPropsPartial;
+    props: DynamicItemSizeMatrixProps;
     layout: (make: MASConstraintMaker, view: UIView) => void;
     events: DynamicItemSizeMatrixEvents;
   }) {
     super();
-    this._props = {
-      fixedItemHeight: 40,
-      minItemWidth: 96,
-      maxColumns: 5,
-      spacing: 6,
-      dynamicHeightEnabled: false,
-      ...props,
-    };
-    this._events = events;
-    const { itemHeight, heightChanged, ...rest } = this._events;
-    const _matrixEvents = rest;
-    this._itemSizeWidth = 0;
-    this._itemSizeHeight = 0;
+    this._itemLayoutOptions = props.itemLayoutOptions;
+    this._data = props.data;
     this.matrix = new Matrix({
       props: {
-        ...this._props,
-        scrollEnabled: !this._props.dynamicHeightEnabled,
+        ...props,
+        spacing: this._itemLayoutOptions.spacing,
       },
       layout: $layout.fill,
       events: {
-        ..._matrixEvents,
+        ...events,
         itemSize: (sender) => $size(this._itemSizeWidth, this._itemSizeHeight),
       },
     });
@@ -150,23 +146,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
             sender.relayout();
             if (sender.frame.width === this._totalWidth) return;
             this._totalWidth = sender.frame.width;
-            const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(
-              sender.frame.width,
-              this._props.minItemWidth,
-              this._props.maxColumns,
-              this._props.spacing,
-            );
-            this._columns = columns;
-            this._itemSizeWidth = itemSizeWidth;
-            this._itemSizeHeight = this._events.itemHeight
-              ? this._events.itemHeight(this._itemSizeWidth)
-              : this._props.fixedItemHeight;
-            this.matrix.view.reload();
-            if (this._props.dynamicHeightEnabled) {
-              const height = this.heightToWidth(sender.frame.width);
-              sender.updateLayout((make) => make.height.equalTo(height));
-              if (this._events.heightChanged) this._events.heightChanged(this, height);
-            }
+            this._reload();
           },
         },
         views: [this.matrix.definition],
@@ -174,34 +154,68 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
     };
   }
 
+  private _reload() {
+    const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(
+      this._totalWidth,
+      this._itemLayoutOptions.minItemWidth,
+      this._itemLayoutOptions.maxColumns,
+      this._itemLayoutOptions.spacing,
+    );
+    this._columns = columns;
+    this._itemSizeWidth = itemSizeWidth;
+    this._itemSizeHeight =
+      typeof this._itemLayoutOptions.itemHeight === "number"
+        ? this._itemLayoutOptions.itemHeight
+        : this._itemLayoutOptions.itemHeight(this._itemSizeWidth);
+    this.matrix.view.reload();
+  }
+
   heightToWidth(width: number) {
     const { columns, itemSizeWidth } = _getColumnsAndItemSizeWidth(
       width,
-      this._props.minItemWidth,
-      this._props.maxColumns,
-      this._props.spacing,
+      this._itemLayoutOptions.minItemWidth,
+      this._itemLayoutOptions.maxColumns,
+      this._itemLayoutOptions.spacing,
     );
-    const rows = this._props.data ? Math.ceil(this._props.data.length / columns) : 0;
-    const itemSizeHeight = this._events.itemHeight
-      ? this._events.itemHeight(itemSizeWidth)
-      : this._props.fixedItemHeight;
-    return rows * itemSizeHeight + (rows + 1) * this._props.spacing;
+    const rows = this._data ? Math.ceil(this._data.length / columns) : 0;
+    const itemSizeHeight =
+      typeof this._itemLayoutOptions.itemHeight === "number"
+        ? this._itemLayoutOptions.itemHeight
+        : this._itemLayoutOptions.itemHeight(itemSizeWidth);
+    return rows * itemSizeHeight + (rows + 1) * this._itemLayoutOptions.spacing;
   }
 
   get data() {
-    return this.matrix.view.data;
+    return this._data;
   }
 
   set data(data) {
-    this._props.data = data;
+    this._data = data;
     this.matrix.view.data = data;
+  }
+
+  get itemSize() {
+    return $size(this._itemSizeWidth, this._itemSizeHeight);
+  }
+
+  get totalWidth() {
+    return this._totalWidth;
+  }
+
+  get itemSizeWidth() {
+    return this._itemSizeWidth;
+  }
+
+  get itemSizeHeight() {
+    return this._itemSizeHeight;
   }
 
   get columns() {
     return this._columns;
   }
 
-  get itemSize() {
-    return $size(this._itemSizeWidth, this._itemSizeHeight);
+  resetItemLayoutOptions(options: Omit<ItemLayoutOptions, "spacing">) {
+    this._itemLayoutOptions = { ...options, spacing: this._itemLayoutOptions.spacing };
+    this._reload();
   }
 }

@@ -2,9 +2,12 @@ import { DynamicItemSizeMatrix } from "../index";
 
 const matrix = new DynamicItemSizeMatrix({
   props: {
-    spacing: 5,
-    minItemWidth: $device.isIpad ? 140 : 118,
-    maxColumns: 10,
+    itemLayoutOptions: {
+      spacing: 5,
+      minItemWidth: 150,
+      maxColumns: 10,
+      itemHeight: (width) => width * 1.414 + 20,
+    },
     template: {
       views: [
         {
@@ -50,7 +53,6 @@ const matrix = new DynamicItemSizeMatrix({
     make.top.bottom.equalTo(view.super);
   },
   events: {
-    itemHeight: (width) => width * 1.414 + 20,
     didSelect: (sender, indexPath, data) => {},
     didScroll: (sender) => {
       matrix.columns;
@@ -66,7 +68,13 @@ $ui.render({
     navButtons: [
       {
         symbol: "plus",
-        handler: () => (matrix.data = [{ label: { text: "New" } }]),
+        handler: () => {
+          matrix.resetItemLayoutOptions({
+            minItemWidth: 78,
+            maxColumns: 10,
+            itemHeight: (width) => width * 2 + 20,
+          });
+        },
       },
     ],
   },
