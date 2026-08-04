@@ -30,9 +30,12 @@ const sections: DynamicItemSizeSectionMatrixSection[] = [
 
 const matrix = new DynamicItemSizeSectionMatrix({
   props: {
-    spacing: 8,
-    minItemWidth: $device.isIpad ? 180 : 142,
-    maxColumns: $device.isIpad ? 4 : 2,
+    itemLayoutOptions: {
+      spacing: 8,
+      minItemWidth: $device.isIpad ? 180 : 142,
+      maxColumns: $device.isIpad ? 4 : 2,
+      itemHeight: (width) => Math.max(112, width * 0.72),
+    },
     data: sections,
     template: {
       views: [
@@ -104,7 +107,6 @@ const matrix = new DynamicItemSizeSectionMatrix({
   },
   layout: $layout.fill,
   events: {
-    itemHeight: (width) => Math.max(112, width * 0.72),
     didSelect: (sender, indexPath, data) => {
       const section = matrix.data[indexPath.section];
       const title = (data.title as { text: string }).text;

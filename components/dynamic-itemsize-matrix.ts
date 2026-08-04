@@ -107,7 +107,7 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
   private _itemSizeHeight: number = 0;
   private _totalWidth: number = 0;
   private _columns: number = 1;
-  protected matrix: Matrix;
+  matrix: Matrix;
   _defineView: () => UiTypes.ViewOptions;
 
   constructor({
