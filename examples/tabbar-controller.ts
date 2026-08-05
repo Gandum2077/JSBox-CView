@@ -39,7 +39,7 @@ const pageViewerController = new TabBarController({
     changed: (sender, index) => {
       console.log(`Index changed to ${index}`);
     },
-    doubleTapped: (sender, index) => {
+    reselected: (sender, index) => {
       console.log(`Double tapped on index ${index}`);
     },
   },

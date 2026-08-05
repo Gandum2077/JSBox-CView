@@ -129,7 +129,7 @@ const sections: PreferenceSection[] = [
   },
 ];
 const v = new PreferenceListView({
-  props: { data: [] },
+  props: {},
   sections: sections,
   layout: $layout.fill,
   events: {

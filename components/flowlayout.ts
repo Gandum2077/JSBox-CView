@@ -1,72 +1,86 @@
 import { Base } from "./base";
 
+/** 可报告自身理想宽度的 Flow 项目组件。 */
+export interface FlowlayoutItem extends Base<any, any> {
+  /** 返回项目理想宽度。 */
+  itemWidth: () => number;
+}
+
+/** Flowlayout 属性接口。 */
+export interface FlowlayoutProps<T extends FlowlayoutItem> {
+  /** 实现 `itemWidth()` 的项目组件。 */
+  items: T[];
+  /** 项目之间的水平和垂直间距。 */
+  spacing: number;
+  /** 所有项目的固定高度。 */
+  itemHeight: number;
+  /** 最大可见行数。 */
+  fixedRows?: number;
+  /** 是否禁止组件自动更新容器高度。 */
+  fixedHeight?: boolean;
+  /** 应用于每个项目 Wrapper 的上下文菜单。 */
+  menu?: UiTypes.ContextMenuOptions<UIView>;
+  /** 根容器背景色。 */
+  bgcolor?: UIColor;
+}
+
+/** Flowlayout 事件接口。 */
+export interface FlowlayoutEvents<T extends FlowlayoutItem> {
+  /** 点击项目时触发。 */
+  didSelect?: (index: number, item: T) => void;
+  /** 长按项目时触发。 */
+  didLongPress?: (index: number, item: T) => void;
+}
+
 /**
- * 流式布局：间距固定，项目高度固定但宽度不定，左对齐，自动换行，不能滚动。
+ * 流式布局：将不同宽度的 CView 项目按固定高度和间距左对齐、自动换行的非滚动布局。
  *
- * 注意事项:
- * 1. 此控件默认是可变高度的，但前提是布局中必须有关于高度的约束。
- *    如果不需要可变高度，可以设置fixedHeight为true
- * 1. 此控件的边缘是不留白的，这和Matrix不同
- * 2. itemWidth 如果超过总宽度，会被设定为总宽度
- * 3. maxRows 可以控制最大行数，如果超过则会被截断
+ * 每个项目必须实现同步的 `itemWidth()`，组件使用直接设置 Wrapper `frame` 的方式排列项目。首个项目从左上角开始，
+ * 边缘不额外留白；项目理想宽度超过容器时会限制为容器宽度。`fixedRows` 可限制最大可见行数，超出的 Wrapper
+ * 会被隐藏。
  *
- * ## 属性
- * 属性的写法尽可能和Matrix的风格保持一致
- * - items: FlowlayoutItem[] 关键参数，必须实现一个方法itemWidth(): number, 用于告知自身理想的宽度
- * - spacing: number
- * - itemHeight: number
- * - maxRows?: number
- * - fixedHeight?: boolean
- * - menu?: UiTypes.ContextMenuOptions
- * - bgcolor?: UIColor
- *
- * ## 事件
- * - didSelect: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
- * - didLongPress: (sender: Flowlayout, index: number, item: FlowlayoutItem) => void
- *
- * ## 方法
- * - heightToWidth(width: number): height: number  根据宽度计算其应有的高度
- * - cell(index: number): FlowlayoutItem  获取对应位置的 cview
- * - set items(items: FlowlayoutItem[])  设置子视图
- * - get items(): FlowlayoutItem[]  获取子视图
+ * 默认情况下，容器宽度变化或 `items` 被替换后会通过 `updateLayout` 更新自身高度，因此传入的 `layout` 必须
+ * 预先包含高度约束。若外部固定高度，设置 `fixedHeight: true`，组件将只重排项目而不更新容器高度。
+ * `heightToWidth` 可在视图加载前按目标宽度计算所需高度，也可用于 `DynamicRowHeightList` 的行组件。
+ * @template T - 实现 `itemWidth()` 的 CView 项目类型。
+ * @example
+ * ```ts
+ * const tags = new Flowlayout({
+ *   props: { items: tagViews, spacing: 8, itemHeight: 32 },
+ *   layout: (make, view) => {
+ *     make.left.right.inset(16);
+ *     make.height.equalTo(32);
+ *   },
+ *   events: {
+ *     didSelect: (_flow, index) => selectTag(index),
+ *   },
+ * });
+ * ```
  */
 export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
-  private _width: number; // 缓存宽度，用于判断是否需要重新布局
-  private _props: {
-    items: T[];
-    spacing: number;
-    itemHeight: number;
-    fixedRows?: number;
-    fixedHeight?: boolean;
-    menu?: UiTypes.ContextMenuOptions<UIView>;
-    bgcolor?: UIColor;
-  };
+  /** 最近一次完成项目排列的容器宽度。 */
+  private _width: number;
+  /** Flow 项目、尺寸、行数限制和外观配置。 */
+  private _props: FlowlayoutProps<T>;
+  /** 当前项目对应的可交互 Wrapper。 */
   private _wrappers: WrapperView<T>[];
-  private _events?: {
-    didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
-    didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
-  };
+  /** 项目点击和长按事件。 */
+  private _events?: FlowlayoutEvents<T>;
+  /** 创建包含所有项目 Wrapper 的根视图定义。 */
   _defineView: () => UiTypes.ViewOptions;
 
+  /** 创建左对齐、自动换行的 Flow 布局。 */
   constructor({
     props,
     layout,
     events,
   }: {
-    props: {
-      items: T[];
-      spacing: number;
-      itemHeight: number;
-      fixedRows?: number;
-      fixedHeight?: boolean;
-      menu?: UiTypes.ContextMenuOptions<UIView>;
-      bgcolor?: UIColor;
-    };
+    /** Flow 项目、尺寸、行数限制和外观配置。 */
+    props: FlowlayoutProps<T>;
+    /** 根容器布局；自动高度模式下必须预先包含高度约束。 */
     layout: (make: MASConstraintMaker, view: UIView) => void;
-    events?: {
-      didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
-      didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
-    };
+    /** 项目点击和长按事件。 */
+    events?: FlowlayoutEvents<T>;
   }) {
     super();
     this._width = 0;
@@ -75,12 +89,12 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     this._wrappers = props.items.map(
       (item, index) =>
         new WrapperView({
-          item,
-          menu: props.menu,
-          didSelect: events?.didSelect,
-          didLongPress: events?.didLongPress,
-          flowlayout: this,
-          index,
+          props: {
+            item,
+            menu: props.menu,
+            index,
+          },
+          events,
         }),
     );
     this._defineView = () => ({
@@ -103,25 +117,38 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     });
   }
 
+  /**
+   * 获取指定索引的原始项目组件。
+   * @param index - 项目索引。
+   * @returns 对应的 CView 项目。
+   */
   cell(index: number): T {
     return this._props.items[index];
   }
 
+  /**
+   * 获取当前项目组件。
+   * @returns 当前项目数组。
+   */
   get items(): T[] {
     return this._props.items;
   }
 
+  /**
+   * 替换项目、重建 Wrapper 并重新计算布局。
+   * @param items - 新的项目组件。
+   */
   set items(items: T[]) {
     this._props.items = items;
     this._wrappers = items.map(
       (item, index) =>
         new WrapperView({
-          item,
-          menu: this._props.menu,
-          didSelect: this._events?.didSelect,
-          didLongPress: this._events?.didLongPress,
-          flowlayout: this,
-          index,
+          props: {
+            item,
+            menu: this._props.menu,
+            index,
+          },
+          events: this._events,
         }),
     );
     this.view.views.forEach((v) => v.remove());
@@ -130,6 +157,10 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     if (!this._props.fixedHeight) this.view.updateLayout((make) => make.height.equalTo(height));
   }
 
+  /**
+   * 按当前容器宽度设置所有 Wrapper 的 frame 和可见状态。
+   * @returns 应用于容器的布局高度。
+   */
   _layoutWrappers(): number {
     const totalWidth = this._width;
     const itemHeight = this._props.itemHeight;
@@ -159,6 +190,11 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     return y + itemHeight;
   }
 
+  /**
+   * 计算给定宽度下 Flow 布局所需的高度。
+   * @param width - 可用容器宽度。
+   * @returns 考虑固定行数限制后的布局高度。
+   */
   heightToWidth(width: number): number {
     const totalWidth = width;
     const itemHeight = this._props.itemHeight;
@@ -183,65 +219,72 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
   }
 }
 
-interface FlowlayoutItem extends Base<any, any> {
-  itemWidth: () => number;
+/** WrapperView 属性接口 */
+interface WrapperViewProps<T extends FlowlayoutItem> {
+  /** 原始项目组件。 */
+  item: T;
+  /** Wrapper 上下文菜单。 */
+  menu?: UiTypes.ContextMenuOptions<UIView>;
+  /** 项目索引。 */
+  index: number;
 }
 
+/** 为 Flow 项目提供 frame、显隐和交互事件的内部容器。 */
 class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOptions> {
+  /** 创建包含原始项目的 Wrapper 定义。 */
   _defineView: () => UiTypes.ViewOptions;
+  /** Wrapper 内的原始项目。 */
   item: T;
-  constructor({
-    item,
-    menu,
-    didSelect,
-    didLongPress,
-    flowlayout,
-    index,
-  }: {
-    item: T;
-    menu?: UiTypes.ContextMenuOptions<UIView>;
-    didSelect?: (sender: Flowlayout<T>, index: number, item: T) => void;
-    didLongPress?: (sender: Flowlayout<T>, index: number, item: T) => void;
-    flowlayout: Flowlayout<T>;
-    index: number;
-  }) {
+
+  /** 创建单个可交互的 Flow 项目 Wrapper。 */
+  constructor({ props, events }: { props: WrapperViewProps<T>; events?: FlowlayoutEvents<T> }) {
     super();
-    this.item = item;
-    const props: UiTypes.ViewProps = {
+    this.item = props.item;
+    const viewProps: UiTypes.ViewProps = {
       id: this.id,
       frame: $rect(0, 0, 0, 0),
       userInteractionEnabled: true,
     };
-    if (menu) {
-      props.menu = menu;
+    if (props.menu) {
+      viewProps.menu = props.menu;
     }
     this._defineView = () => ({
       type: "view",
-      props,
-      views: [item.definition],
+      props: viewProps,
+      views: [props.item.definition],
       events: {
-        tapped: (sender) => {
-          if (didSelect) didSelect(flowlayout, index, item);
+        tapped: () => {
+          if (events?.didSelect) events.didSelect(props.index, props.item);
         },
-        longPressed: (sender) => {
-          if (didLongPress) didLongPress(flowlayout, index, item);
+        longPressed: () => {
+          if (events?.didLongPress) events.didLongPress(props.index, props.item);
         },
       },
     });
   }
 
+  /** 设置 Wrapper frame。 */
   set frame(frame: JBRect) {
     this.view.frame = frame;
   }
 
+  /**
+   * 获取 Wrapper frame。
+   * @returns 当前 frame。
+   */
   get frame(): JBRect {
     return this.view.frame;
   }
 
+  /** 设置 Wrapper 是否隐藏。 */
   set hidden(hidden: boolean) {
     this.view.hidden = hidden;
   }
 
+  /**
+   * 获取 Wrapper 是否隐藏。
+   * @returns 当前隐藏状态。
+   */
   get hidden(): boolean {
     return this.view.hidden;
   }

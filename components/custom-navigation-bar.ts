@@ -29,123 +29,149 @@ const navBarLayouts = [
   },
 ];
 
+/** 自定义导航栏的显示、内容与外观选项。 */
 export interface NavigationBarProps {
+  /** 显示样式：`0` 隐藏、`1` 最小化、`2` 普通、`3` 扩展。 */
   style: number;
+  /** 文本标题；使用该字段创建后，可通过 `title` 属性动态更新。 */
   title?: string;
+  /** 自定义标题组件；未设置 `title` 时使用。 */
   titleView?: Base<any, any>;
+  /** 是否显示自动返回按钮；启用时忽略 `leftBarButtonItems`。 */
   popButtonEnabled?: boolean;
+  /** 返回按钮右侧的可选标题。 */
   popButtonTitle?: string;
+  /** 是否允许长按返回按钮返回导航栈根页面。 */
   popToRootEnabled?: boolean;
+  /** 左侧按钮项；建议最多设置两个。 */
   leftBarButtonItems: BarButtonItem[];
+  /** 右侧按钮项；建议最多设置两个。 */
   rightBarButtonItems: BarButtonItem[];
+  /** 扩展样式下显示在标题区域下方的工具组件。 */
   toolView?: Base<any, any>;
+  /** 文本标题、返回按钮和自动创建按钮的默认前景色。 */
   tintColor: UIColor;
+  /** 导航栏背景色；未设置时使用样式为 `10` 的模糊背景。 */
   bgcolor?: UIColor;
 }
 
+/** 导航栏左右两侧的按钮项。 */
 interface BarButtonItem {
+  /** 自定义 CView 组件；其根布局会被导航栏覆盖。 */
   cview?: Base<any, any>;
+  /** 自定义组件所占宽度，默认为 `50`。 */
   width?: number;
+  /** 文本按钮标题。 */
   title?: string;
+  /** SF Symbol 名称。 */
   symbol?: string;
+  /** 按钮图片；未设置 `symbol` 时使用。 */
   image?: UIImage;
+  /** 当前按钮项的前景色；默认继承导航栏的 `tintColor`。 */
   tintColor?: UIColor;
+  /** 点击按钮时执行的处理函数。 */
   handler?: (sender: UIButtonView) => void;
 }
 
-interface NavigationBarEvents {
+/** 导航栏状态和交互事件。 */
+export interface NavigationBarEvents {
+  /** 导航栏完成隐藏后触发。 */
   hidden?: (cview: CustomNavigationBar) => void;
+  /** 导航栏完成最小化后触发。 */
   minimized?: (cview: CustomNavigationBar) => void;
+  /** 导航栏恢复普通样式后触发。 */
   restored?: (cview: CustomNavigationBar) => void;
+  /** 导航栏完成扩展后触发。 */
   expanded?: (cview: CustomNavigationBar) => void;
+  /** 点击返回按钮时触发。 */
   popHandler?: (cview: CustomNavigationBar) => void;
+  /** 长按返回按钮返回根页面时触发。 */
   popToRootHandler?: (cview: CustomNavigationBar) => void;
+  /** 点击文本标题时触发。 */
   titleTapped?: (cview: CustomNavigationBar) => void;
 }
 
+/** 导航栏组装过程中创建的内部 CView 组件。 */
 interface NavigationBarCViews {
+  /** 左侧按钮或返回按钮容器。 */
   leftItemView?: ContentView | Button;
+  /** 右侧按钮容器。 */
   rightItemView?: ContentView;
+  /** 文本标题或自定义标题的容器。 */
   titleViewWrapper?: ContentView | Label;
+  /** 标题和左右按钮所在的主内容区域。 */
   contentView?: ContentView;
+  /** 扩展样式的工具区域。 */
   toolViewWrapper?: ContentView;
+  /** 纯色或模糊背景。 */
   bgview?: ContentView | Blur;
+  /** 导航栏底部分隔线。 */
   separator?: ContentView;
 }
 
 /**
- * # CView Custom NavigationBar
+ * 适配安全区域的 CView 自定义导航栏。
  *
- * 仿制 navBar
+ * 导航栏从屏幕顶部延伸到安全区域下方，并提供四种显示样式：
  *
- * ## features:
+ * - `0`（隐藏）：根视图高度为 `0`，不显示任何内容。
+ * - `1`（最小化）：安全区域下方高度为 `25`，只显示标题，文本标题使用 `14` 号粗体。
+ * - `2`（普通）：安全区域下方高度为 `50`，显示标题、左侧或返回按钮以及右侧按钮。
+ * - `3`（扩展）：安全区域下方高度为 `100`，在普通样式内容之外显示 `toolView`。
  *
- * - 拥有隐藏、最小化、普通、扩展四种布局方式
- *   - 隐藏: 什么都不显示
- *   - 最小化: safeAreaHeight 为 25, 只显示 titleView, 若用 title, font 为\$font(14)
- *   - 普通: safeAreaHeight 为 50, 显示 titleView, leftBarButtonItems 或 popButton,
- *     rightBarButtonItems, 若用 title, font 为\$font("bold", 17)
- *   - 扩展: safeAreaHeight 为 100, 除上面的之外, 再显示一个 toolView
- * - 自动适应全面屏和非全面屏
+ * 配置时需要注意以下组合规则：
  *
- * ## Arguments
- *
- * props:
- *
- * - 读写 style: number 0, 1, 2, 3，指定布局
- * - 读写 title: string 但必须使用此种方案才可以在生成后写入，自动创建 Label 作为 titleView
- * - titleView: cview 自定义的 titleView
- * - popButtonEnabled: boolean 返回上一级的按钮，若为 true，则 leftBarButtonItems 忽略
- * - popButtonTitle: string 返回上一级的按钮标题
- * - popToRootEnabled: boolean popButton 是否可以长按返回到顶级
- * - leftBarButtonItems: cview[]
- *   | {symbol: string, handler: () => void, tintColor?: UIColor}[]
- *   | {title: string, handler: () => void, tintColor?: UIColor}[]
- *   | {image: UIImage, handler: () => void, tintColor?: UIColor}[]
- *   如果用的是 cview，其布局将被重新指定，即不需要（也不能）指定布局。
- *   可以通过 cview.width 来指定应有的宽度，如果没有此属性，则宽度为 50
- *   建议最多放两个
- * - rightBarButtonItems 定义同上，建议最多放两个
- * - toolView: cview 在 expanded 模式下才会显现的
- * - tintColor: UIColor 这将作用于 title, popButton, 自动创建的 barButton
- * - bgcolor: UIColor 如不设置，则自动使用 blur(style 10)，如果设置则没有 blur 效果
- *
- * events:
- *
- * - hidden: cview => void  hide()时执行
- * - minimized: cview => void  minimize()时执行
- * - restored: cview => void  restore()时执行
- * - expanded: cview => void  expand()时执行
- * - popHandler: cview => void  返回上一级时执行，需要popButtonEnabled
- * - popToRootHandler: cview => void  返回顶级时执行，需要popButtonEnabled和popToRootEnabled
- * - titleTapped: cview => void 点击标题时执行，需要使用title
- *
- * methods:
- *
- * - hide() 隐藏布局
- * - minimize() 最小化布局
- * - restore() 普通布局
- * - expand() 扩展布局
+ * - `title` 用于可动态修改的文本标题，`titleView` 用于自定义 CView；两者同时存在时优先使用 `title`。
+ * - 启用 `popButtonEnabled` 后，左侧区域改为返回按钮，`leftBarButtonItems` 不再显示；
+ *   `popToRootEnabled` 可进一步启用长按返回根页面。
+ * - 左右按钮项支持自定义 `cview`、文本 `title`、SF Symbol 或 `image`，建议每侧最多放置两个。
+ *   自定义组件的根布局会被导航栏覆盖，可通过按钮项的 `width` 指定宽度，默认宽度为 `50`。
+ * - `toolView` 只在扩展样式下显示，适合放置搜索、筛选或其他辅助控件。
+ * - 未设置 `bgcolor` 时使用样式为 `10` 的模糊背景；`tintColor` 作为自动创建内容的默认前景色。
+ * @example
+ * ```ts
+ * const navigationBar = new CustomNavigationBar({
+ *   props: {
+ *     title: "详情",
+ *     popButtonEnabled: true,
+ *     popToRootEnabled: true,
+ *     rightBarButtonItems: [
+ *       {
+ *         symbol: "ellipsis",
+ *         handler: () => $ui.toast("更多"),
+ *       },
+ *     ],
+ *   },
+ * });
+ * ```
  */
 export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
+  /** 合并默认值后的导航栏配置。 */
   _props: NavigationBarProps;
+  /** 导航栏状态和交互事件。 */
   _events: NavigationBarEvents;
+  /** 已创建的内部 CView 组件。 */
   cviews: Required<NavigationBarCViews>;
+  /** 创建导航栏根视图定义。 */
   _defineView: () => UiTypes.ViewOptions | UiTypes.BlurOptions;
+
+  /** 创建自定义导航栏。 */
   constructor({
     props = {},
     events = {},
   }: {
+    /** 导航栏显示、内容与外观配置。 */
     props?: Partial<NavigationBarProps>;
+    /** 导航栏状态和交互事件。 */
     events?: NavigationBarEvents;
   } = {}) {
     super();
     this._props = {
-      leftBarButtonItems: [],
-      rightBarButtonItems: [],
-      style: navBarStyles.normal,
-      tintColor: $color("primaryText"),
       ...props,
+      leftBarButtonItems: props.leftBarButtonItems ?? [],
+      rightBarButtonItems: props.rightBarButtonItems ?? [],
+      style: props.style ?? navBarStyles.normal,
+      tintColor: props.tintColor ?? $color("primaryText"),
     };
     this._events = events;
     this.cviews = {} as Required<NavigationBarCViews>;
@@ -362,6 +388,11 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     };
   }
 
+  /**
+   * 计算一组按钮项占用的总宽度。
+   * @param items - 待测量的按钮项。
+   * @returns 所有按钮项的宽度总和。
+   */
   private _calculateItemViewWidth(items: BarButtonItem[]) {
     if (!items || items.length === 0) return 0;
     let width = 0;
@@ -373,6 +404,13 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     return width;
   }
 
+  /**
+   * 将按钮项转换为顺序排列的 CView 组件。
+   *
+   * 自定义组件的根布局会被替换，以便导航栏统一控制其位置和宽度。
+   * @param items - 待创建的按钮项。
+   * @returns 可加入左右按钮容器的 CView 组件。
+   */
   private _createCviewsOnItemView(items: BarButtonItem[]) {
     return items.map((n) => {
       if (n.cview) {
@@ -423,16 +461,30 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     });
   }
 
+  /**
+   * 获取文本标题。
+   * @returns 当前文本标题；未设置时返回空字符串。
+   */
   get title() {
     return this._props.title || "";
   }
 
+  /**
+   * 更新文本标题。
+   *
+   * 仅当组件创建时使用了 `props.title` 才会生效；自定义 `titleView` 不会被替换。
+   * @param title - 新标题。
+   */
   set title(title: string) {
     if (this._props.title === undefined) return;
     this._props.title = title;
     if ("text" in this.cviews.titleViewWrapper.view) this.cviews.titleViewWrapper.view.text = title;
   }
 
+  /**
+   * 隐藏导航栏并将根视图高度收缩为零。
+   * @param animated - 是否播放布局过渡动画。
+   */
   hide(animated = true) {
     this.view.hidden = false;
     this.cviews.leftItemView.view.hidden = true;
@@ -459,6 +511,10 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     }
   }
 
+  /**
+   * 切换到仅显示标题的最小化样式。
+   * @param animated - 是否播放布局过渡动画。
+   */
   minimize(animated = true) {
     this.view.hidden = false;
     this.cviews.leftItemView.view.hidden = true;
@@ -487,6 +543,10 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     }
   }
 
+  /**
+   * 恢复显示标题和左右按钮的普通样式。
+   * @param animated - 是否播放布局过渡动画。
+   */
   restore(animated = true) {
     this.view.hidden = false;
     this.cviews.titleViewWrapper.view.hidden = false;
@@ -517,6 +577,10 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     }
   }
 
+  /**
+   * 切换到显示附加工具区域的扩展样式。
+   * @param animated - 是否播放布局过渡动画。
+   */
   expand(animated = true) {
     this.view.hidden = false;
     this.cviews.toolViewWrapper.view.hidden = false;
@@ -549,10 +613,18 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
     }
   }
 
+  /**
+   * 获取当前显示样式。
+   * @returns 当前样式编号：`0` 隐藏、`1` 最小化、`2` 普通、`3` 扩展。
+   */
   get style() {
     return this._props.style;
   }
 
+  /**
+   * 设置显示样式并执行对应的布局切换。
+   * @param num - 样式编号：`0` 隐藏、`1` 最小化、`2` 普通、`3` 扩展。
+   */
   set style(num) {
     this._props.style = num;
     switch (num) {

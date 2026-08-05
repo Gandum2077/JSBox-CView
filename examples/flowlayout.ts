@@ -40,7 +40,7 @@ const flowlayout = new Flowlayout({
     make.height.equalTo(70);
   },
   events: {
-    didSelect: (sender, index, item) => {
+    didSelect: (index, item) => {
       $ui.alert(item.view.text);
     },
   },

@@ -1,9 +1,10 @@
-// 用于处理矩形的工具函数
-
 /**
- * When called without arguments, return the center of the rectangle.
- * When a Point is passed as an argument, the rectangle’s x and y values
- * are adjusted, so that the new center of the rectangle is p.
+ * 获取矩形中心点，或将矩形中心移动到指定位置。
+ *
+ * 提供 `point` 时会直接修改 `rect.x` 和 `rect.y`，并返回该点。
+ * @param rect - 待读取或移动的矩形。
+ * @param point - 新的中心点；省略时不修改矩形。
+ * @returns 矩形当前或新的中心点。
  */
 export function center(rect: JBRect, point?: JBPoint): JBPoint {
   const { x = 0, y = 0, width: w, height: h } = rect;
@@ -15,8 +16,10 @@ export function center(rect: JBRect, point?: JBPoint): JBPoint {
 }
 
 /**
- * Return true if the given point lies within the bounds of the rectangle,
- * false otherwise.
+ * 判断点是否位于矩形内部或边界上。
+ * @param rect - 目标矩形。
+ * @param point - 待检查的点。
+ * @returns 点位于矩形内部或边界上时返回 `true`。
  */
 export function containsPoint(rect: JBRect, point: JBPoint): boolean {
   const { x, y, width: w, height: h } = rect;
@@ -25,8 +28,10 @@ export function containsPoint(rect: JBRect, point: JBPoint): boolean {
 }
 
 /**
- * Return true if the given rectangle lies entirely within the bounds of
- * this rectangle, false otherwise.
+ * 判断一个矩形是否完全位于另一个矩形内。
+ * @param rect - 外层矩形。
+ * @param otherRect - 待检查的内层矩形。
+ * @returns `otherRect` 完全位于 `rect` 内部或边界上时返回 `true`。
  */
 export function containsRect(rect: JBRect, otherRect: JBRect): boolean {
   const { x, y, width: w, height: h } = rect;
@@ -35,8 +40,12 @@ export function containsRect(rect: JBRect, otherRect: JBRect): boolean {
 }
 
 /**
- * Return true if this rectangle intersects with the other rectangle,
- * false otherwise.
+ * 判断两个矩形是否存在面积大于零的重叠区域。
+ *
+ * 仅边界接触不视为相交。
+ * @param rect - 第一个矩形。
+ * @param otherRect - 第二个矩形。
+ * @returns 存在重叠区域时返回 `true`。
  */
 export function intersects(rect: JBRect, otherRect: JBRect): boolean {
   const { x, y, width: w, height: h } = rect;
@@ -45,8 +54,12 @@ export function intersects(rect: JBRect, otherRect: JBRect): boolean {
 }
 
 /**
- * Return a $rect that corresponds to the intersection of this rectangle with
- * the other one.
+ * 计算两个矩形的交集。
+ *
+ * 不相交时，返回值的宽度或高度可能为负数；可先使用 `intersects` 判断。
+ * @param rect - 第一个矩形。
+ * @param otherRect - 第二个矩形。
+ * @returns 表示交集的 JSBox 矩形。
  */
 export function intersection(rect: JBRect, otherRect: JBRect): JBRect {
   const { x, y, width: w, height: h } = rect;
@@ -59,7 +72,10 @@ export function intersection(rect: JBRect, otherRect: JBRect): JBRect {
 }
 
 /**
- * Return the smallest $rect that encloses both rectangles.
+ * 计算能同时包含两个矩形的最小矩形。
+ * @param rect - 第一个矩形。
+ * @param otherRect - 第二个矩形。
+ * @returns 包含两个输入矩形的最小矩形。
  */
 export function union(rect: JBRect, otherRect: JBRect): JBRect {
   const { x, y, width: w, height: h } = rect;
@@ -72,7 +88,10 @@ export function union(rect: JBRect, otherRect: JBRect): JBRect {
 }
 
 /**
- * Equivalent to $rect(r.x + x, r.y + y, r.w, r.h)
+ * 按指定偏移量平移矩形。
+ * @param rect - 待平移的矩形。
+ * @param point - `x` 和 `y` 方向的偏移量。
+ * @returns 平移后的新矩形。
  */
 export function translate(rect: JBRect, point: JBPoint): JBRect {
   const { x, y, width, height } = rect;
@@ -81,7 +100,12 @@ export function translate(rect: JBRect, point: JBPoint): JBRect {
 }
 
 /**
- * Return a $rect that is adjusted by the given edge insets.
+ * 使用四边缩进调整矩形。
+ *
+ * 缩进量超过原尺寸时，返回值的宽度或高度可能为负数。
+ * @param rect - 待调整的矩形。
+ * @param insets - 上、左、下、右四边缩进量。
+ * @returns 应用缩进后的新矩形。
  */
 export function inset(rect: JBRect, insets: JBInsets): JBRect {
   const { x, y, width, height } = rect;

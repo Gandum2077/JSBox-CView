@@ -1,9 +1,15 @@
-/**
- * 实现单个视图的定义
- */
-
 import { Base } from "./base";
 
+/**
+ * 将一个 JSBox 原生视图定义封装为 CView 组件。
+ *
+ * 封装器保留原生 `props`、`layout`、`events` 和 `views`，并强制使用 CView 分配的 `id`。
+ * @template T - JSBox 视图类型名。
+ * @template V - 加载后的视图实例类型。
+ * @template P - 视图属性类型。
+ * @template E - 视图事件类型。
+ * @template O - 完整视图定义类型。
+ */
 export class SingleView<
   T extends UiTypes.AllViewTypes,
   V extends UIBaseView,
@@ -11,12 +17,20 @@ export class SingleView<
   E extends UiTypes.BaseViewEvents<V>,
   O extends UiTypes.AllViewOptions,
 > extends Base<V, O> {
+  /** JSBox 视图类型名。 */
   _type: T;
+  /** 原生视图属性。 */
   _props?: P;
+  /** 根视图布局函数。 */
   _layout?: (make: MASConstraintMaker, view: V) => void;
+  /** 原生视图事件。 */
   _events?: E;
+  /** 子视图定义。 */
   _views?: UiTypes.AllViewOptions[];
+  /** 创建包含 CView `id` 的完整视图定义。 */
   _defineView: () => O;
+
+  /** 创建单个 JSBox 视图的 CView 包装器。 */
   constructor({
     type,
     props,
@@ -24,10 +38,15 @@ export class SingleView<
     events,
     views,
   }: {
+    /** JSBox 视图类型名。 */
     type: T;
+    /** 原生视图属性。 */
     props?: P;
+    /** 根视图布局函数。 */
     layout?: (make: MASConstraintMaker, view: V) => void;
+    /** 原生视图事件。 */
     events?: E;
+    /** 子视图定义。 */
     views?: UiTypes.AllViewOptions[];
   }) {
     super();
@@ -51,6 +70,7 @@ export class SingleView<
   }
 }
 
+/** 透明容器视图，默认填满父视图。 */
 export class ClearView extends SingleView<
   "view",
   UIView,
@@ -58,6 +78,7 @@ export class ClearView extends SingleView<
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
+  /** 创建透明容器视图。 */
   constructor({
     props,
     layout = $layout.fill,
@@ -79,6 +100,7 @@ export class ClearView extends SingleView<
   }
 }
 
+/** 使用语义背景色的内容容器，默认填满安全区域。 */
 export class ContentView extends SingleView<
   "view",
   UIView,
@@ -86,6 +108,7 @@ export class ContentView extends SingleView<
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
+  /** 创建内容容器视图。 */
   constructor({
     props,
     layout = $layout.fillSafeArea,
@@ -108,10 +131,9 @@ export class ContentView extends SingleView<
 }
 
 /**
- * 遮挡视图，使得下面的view无法操作并且整体变暗。
- * 设计上此视图不单独使用，而是作为一个子视图
- * events:
- *   - tapped 点击事件，通常用于dismiss
+ * 拦截底层交互并使内容变暗的遮罩视图。
+ *
+ * 通常作为覆盖层子视图使用，并通过 `tapped` 事件关闭弹层。
  */
 export class MaskView extends SingleView<
   "view",
@@ -120,6 +142,7 @@ export class MaskView extends SingleView<
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.ViewOptions
 > {
+  /** 创建默认为 20% 黑色且填满父视图的遮罩。 */
   constructor({
     props,
     layout = $layout.fill,
@@ -145,6 +168,7 @@ export class MaskView extends SingleView<
   }
 }
 
+/** JSBox `label` 文本标签的 CView 包装器。 */
 export class Label extends SingleView<
   "label",
   UILabelView,
@@ -152,6 +176,7 @@ export class Label extends SingleView<
   UiTypes.BaseViewEvents<UILabelView>,
   UiTypes.LabelOptions
 > {
+  /** 创建文本标签。 */
   constructor({
     props,
     layout,
@@ -173,6 +198,7 @@ export class Label extends SingleView<
   }
 }
 
+/** JSBox `button` 按钮的 CView 包装器。 */
 export class Button extends SingleView<
   "button",
   UIButtonView,
@@ -180,6 +206,7 @@ export class Button extends SingleView<
   UiTypes.BaseViewEvents<UIButtonView>,
   UiTypes.ButtonOptions
 > {
+  /** 创建按钮视图。 */
   constructor({
     props,
     layout,
@@ -201,6 +228,7 @@ export class Button extends SingleView<
   }
 }
 
+/** JSBox `input` 单行文本输入框的 CView 包装器。 */
 export class Input extends SingleView<
   "input",
   UIInputView,
@@ -208,6 +236,7 @@ export class Input extends SingleView<
   UiTypes.InputEvents,
   UiTypes.InputOptions
 > {
+  /** 创建单行文本输入框。 */
   constructor({
     props,
     layout,
@@ -229,6 +258,7 @@ export class Input extends SingleView<
   }
 }
 
+/** JSBox `slider` 滑杆的 CView 包装器。 */
 export class Slider extends SingleView<
   "slider",
   UISliderView,
@@ -236,6 +266,7 @@ export class Slider extends SingleView<
   UiTypes.SliderEvents,
   UiTypes.SliderOptions
 > {
+  /** 创建滑杆视图。 */
   constructor({
     props,
     layout,
@@ -257,6 +288,7 @@ export class Slider extends SingleView<
   }
 }
 
+/** JSBox `switch` 开关的 CView 包装器。 */
 export class Switch extends SingleView<
   "switch",
   UISwitchView,
@@ -264,6 +296,7 @@ export class Switch extends SingleView<
   UiTypes.SwitchEvents,
   UiTypes.SwitchOptions
 > {
+  /** 创建开关视图。 */
   constructor({
     props,
     layout,
@@ -285,6 +318,7 @@ export class Switch extends SingleView<
   }
 }
 
+/** JSBox `spinner` 原生加载指示器的 CView 包装器。 */
 export class Spinner extends SingleView<
   "spinner",
   UISpinnerView,
@@ -292,6 +326,7 @@ export class Spinner extends SingleView<
   UiTypes.BaseViewEvents<UISpinnerView>,
   UiTypes.SpinnerOptions
 > {
+  /** 创建原生加载指示器。 */
   constructor({
     props,
     layout,
@@ -313,6 +348,7 @@ export class Spinner extends SingleView<
   }
 }
 
+/** JSBox `progress` 进度条的 CView 包装器。 */
 export class Progress extends SingleView<
   "progress",
   UIProgressView,
@@ -320,6 +356,7 @@ export class Progress extends SingleView<
   UiTypes.BaseViewEvents<UIProgressView>,
   UiTypes.ProgressOptions
 > {
+  /** 创建进度条视图。 */
   constructor({
     props,
     layout,
@@ -341,6 +378,11 @@ export class Progress extends SingleView<
   }
 }
 
+/**
+ * JSBox `gallery` 图片画廊的 CView 包装器。
+ *
+ * 适合简单固定内容；需要动态刷新或加载大量图片时优先使用 `ImagePager`。
+ */
 export class Gallery extends SingleView<
   "gallery",
   UIGalleryView,
@@ -348,6 +390,7 @@ export class Gallery extends SingleView<
   UiTypes.GalleryEvents,
   UiTypes.GalleryOptions
 > {
+  /** 创建原生图片画廊。 */
   constructor({
     props,
     layout,
@@ -369,6 +412,7 @@ export class Gallery extends SingleView<
   }
 }
 
+/** JSBox `stepper` 步进器的 CView 包装器。 */
 export class Stepper extends SingleView<
   "stepper",
   UIStepperView,
@@ -376,6 +420,7 @@ export class Stepper extends SingleView<
   UiTypes.StepperEvents,
   UiTypes.StepperOptions
 > {
+  /** 创建步进器视图。 */
   constructor({
     props,
     layout,
@@ -397,7 +442,9 @@ export class Stepper extends SingleView<
   }
 }
 
+/** JSBox `text` 多行文本视图的 CView 包装器。 */
 export class Text extends SingleView<"text", UITextView, UiTypes.TextProps, UiTypes.TextEvents, UiTypes.TextOptions> {
+  /** 创建多行文本视图。 */
   constructor({
     props,
     layout,
@@ -419,6 +466,7 @@ export class Text extends SingleView<"text", UITextView, UiTypes.TextProps, UiTy
   }
 }
 
+/** JSBox `image` 图像视图的 CView 包装器。 */
 export class Image extends SingleView<
   "image",
   UIImageView,
@@ -426,6 +474,7 @@ export class Image extends SingleView<
   UiTypes.BaseViewEvents<UIImageView>,
   UiTypes.ImageOptions
 > {
+  /** 创建图像视图。 */
   constructor({
     props,
     layout,
@@ -447,6 +496,7 @@ export class Image extends SingleView<
   }
 }
 
+/** JSBox `video` 视频视图的 CView 包装器。 */
 export class Video extends SingleView<
   "video",
   UIVideoView,
@@ -454,6 +504,7 @@ export class Video extends SingleView<
   UiTypes.BaseViewEvents<UIVideoView>,
   UiTypes.VideoOptions
 > {
+  /** 创建视频视图。 */
   constructor({
     props,
     layout,
@@ -475,6 +526,7 @@ export class Video extends SingleView<
   }
 }
 
+/** JSBox `scroll` 滚动容器的 CView 包装器。 */
 export class Scroll extends SingleView<
   "scroll",
   UIScrollView,
@@ -482,6 +534,7 @@ export class Scroll extends SingleView<
   UiTypes.ScrollEvents,
   UiTypes.ScrollOptions
 > {
+  /** 创建滚动容器。 */
   constructor({
     props,
     layout,
@@ -503,6 +556,7 @@ export class Scroll extends SingleView<
   }
 }
 
+/** JSBox `stack` 堆栈布局视图的 CView 包装器。 */
 export class Stack extends SingleView<
   "stack",
   UIStackView,
@@ -510,6 +564,7 @@ export class Stack extends SingleView<
   UiTypes.BaseViewEvents<UIStackView>,
   UiTypes.StackOptions
 > {
+  /** 创建堆栈布局视图。 */
   constructor({
     props,
     layout,
@@ -531,7 +586,9 @@ export class Stack extends SingleView<
   }
 }
 
+/** JSBox `tab` 分段选择器的 CView 包装器。 */
 export class Tab extends SingleView<"tab", UITabView, UiTypes.TabProps, UiTypes.TabEvents, UiTypes.TabOptions> {
+  /** 创建分段选择器。 */
   constructor({
     props,
     layout,
@@ -553,7 +610,9 @@ export class Tab extends SingleView<"tab", UITabView, UiTypes.TabProps, UiTypes.
   }
 }
 
+/** JSBox `menu` 菜单视图的 CView 包装器。 */
 export class Menu extends SingleView<"menu", UIMenuView, UiTypes.MenuProps, UiTypes.MenuEvents, UiTypes.MenuOptions> {
+  /** 创建菜单视图。 */
   constructor({
     props,
     layout,
@@ -575,6 +634,7 @@ export class Menu extends SingleView<"menu", UIMenuView, UiTypes.MenuProps, UiTy
   }
 }
 
+/** JSBox `map` 地图视图的 CView 包装器。 */
 export class Map extends SingleView<
   "map",
   UIMapView,
@@ -582,6 +642,7 @@ export class Map extends SingleView<
   UiTypes.BaseViewEvents<UIMapView>,
   UiTypes.MapOptions
 > {
+  /** 创建地图视图。 */
   constructor({
     props,
     layout,
@@ -603,7 +664,13 @@ export class Map extends SingleView<
   }
 }
 
+/**
+ * JSBox `web` 网页视图的 CView 包装器。
+ *
+ * 需要原生 WKWebView 能力、登录或 Cloudflare 流程时应使用 `OCWebView`。
+ */
 export class Web extends SingleView<"web", UIWebView, UiTypes.WebProps, UiTypes.WebEvents, UiTypes.WebOptions> {
+  /** 创建 JSBox 内置网页视图。 */
   constructor({
     props,
     layout,
@@ -625,7 +692,13 @@ export class Web extends SingleView<"web", UIWebView, UiTypes.WebProps, UiTypes.
   }
 }
 
+/**
+ * JSBox `list` 列表视图的 CView 包装器。
+ *
+ * 适合原生固定列表；行高取决于组件宽度时优先使用 `DynamicRowHeightList`。
+ */
 export class List extends SingleView<"list", UIListView, UiTypes.ListProps, UiTypes.ListEvents, UiTypes.ListOptions> {
+  /** 创建原生列表视图。 */
   constructor({
     props,
     layout,
@@ -647,6 +720,11 @@ export class List extends SingleView<"list", UIListView, UiTypes.ListProps, UiTy
   }
 }
 
+/**
+ * JSBox `matrix` 网格视图的 CView 包装器。
+ *
+ * 需要响应式列数和单元格尺寸时优先使用 `DynamicItemSizeMatrix`。
+ */
 export class Matrix extends SingleView<
   "matrix",
   UIMatrixView,
@@ -654,6 +732,7 @@ export class Matrix extends SingleView<
   UiTypes.MatrixEvents,
   UiTypes.MatrixOptions
 > {
+  /** 创建原生网格视图。 */
   constructor({
     props,
     layout,
@@ -675,6 +754,7 @@ export class Matrix extends SingleView<
   }
 }
 
+/** JSBox `blur` 模糊视图的 CView 包装器。 */
 export class Blur extends SingleView<
   "blur",
   UIBlurView,
@@ -682,6 +762,7 @@ export class Blur extends SingleView<
   UiTypes.BaseViewEvents<UIBlurView>,
   UiTypes.BlurOptions
 > {
+  /** 创建模糊背景视图。 */
   constructor({
     props,
     layout,
@@ -703,6 +784,7 @@ export class Blur extends SingleView<
   }
 }
 
+/** JSBox `gradient` 渐变视图的 CView 包装器。 */
 export class Gradient extends SingleView<
   "gradient",
   UIGradientView,
@@ -710,6 +792,7 @@ export class Gradient extends SingleView<
   UiTypes.BaseViewEvents<UIGradientView>,
   UiTypes.GradientOptions
 > {
+  /** 创建渐变视图。 */
   constructor({
     props,
     layout,
@@ -731,6 +814,7 @@ export class Gradient extends SingleView<
   }
 }
 
+/** JSBox `date-picker` 日期选择器的 CView 包装器。 */
 export class DatePicker extends SingleView<
   "date-picker",
   UIDatePickerView,
@@ -738,6 +822,7 @@ export class DatePicker extends SingleView<
   UiTypes.DatePickerEvents,
   UiTypes.DatePickerOptions
 > {
+  /** 创建日期选择器。 */
   constructor({
     props,
     layout,
@@ -759,6 +844,7 @@ export class DatePicker extends SingleView<
   }
 }
 
+/** JSBox `picker` 多列选择器的 CView 包装器。 */
 export class Picker extends SingleView<
   "picker",
   UIPickerView,
@@ -766,6 +852,7 @@ export class Picker extends SingleView<
   UiTypes.PickerEvents,
   UiTypes.PickerOptions
 > {
+  /** 创建多列选择器。 */
   constructor({
     props,
     layout,
@@ -787,6 +874,7 @@ export class Picker extends SingleView<
   }
 }
 
+/** JSBox `canvas` 绘图画布的 CView 包装器。 */
 export class Canvas extends SingleView<
   "canvas",
   UICanvasView,
@@ -794,6 +882,7 @@ export class Canvas extends SingleView<
   UiTypes.CanvasEvents,
   UiTypes.CanvasOptions
 > {
+  /** 创建绘图画布。 */
   constructor({
     props,
     layout,
@@ -815,6 +904,7 @@ export class Canvas extends SingleView<
   }
 }
 
+/** JSBox `markdown` Markdown 内容视图的 CView 包装器。 */
 export class Markdown extends SingleView<
   "markdown",
   UIMarkdownView,
@@ -822,6 +912,7 @@ export class Markdown extends SingleView<
   UiTypes.BaseViewEvents<UIMarkdownView>,
   UiTypes.MarkdownOptions
 > {
+  /** 创建 Markdown 内容视图。 */
   constructor({
     props,
     layout,
@@ -843,6 +934,7 @@ export class Markdown extends SingleView<
   }
 }
 
+/** JSBox `lottie` Lottie 动画视图的 CView 包装器。 */
 export class Lottie extends SingleView<
   "lottie",
   UILottieView,
@@ -850,6 +942,7 @@ export class Lottie extends SingleView<
   UiTypes.BaseViewEvents<UILottieView>,
   UiTypes.LottieOptions
 > {
+  /** 创建 Lottie 动画视图。 */
   constructor({
     props,
     layout,
@@ -871,6 +964,7 @@ export class Lottie extends SingleView<
   }
 }
 
+/** JSBox `chart` 图表视图的 CView 包装器。 */
 export class Chart extends SingleView<
   "chart",
   UIChartView,
@@ -878,6 +972,7 @@ export class Chart extends SingleView<
   UiTypes.ChartEvents,
   UiTypes.ChartOptions
 > {
+  /** 创建图表视图。 */
   constructor({
     props,
     layout,
@@ -899,6 +994,7 @@ export class Chart extends SingleView<
   }
 }
 
+/** JSBox `code` 代码编辑视图的 CView 包装器。 */
 export class Code extends SingleView<
   "code",
   UICodeView,
@@ -906,6 +1002,7 @@ export class Code extends SingleView<
   UiTypes.BaseViewEvents<UICodeView>,
   UiTypes.CodeOptions
 > {
+  /** 创建代码编辑视图。 */
   constructor({
     props,
     layout,
@@ -927,6 +1024,7 @@ export class Code extends SingleView<
   }
 }
 
+/** JSBox `runtime` 原生 Objective-C 视图的 CView 包装器。 */
 export class Runtime extends SingleView<
   "runtime",
   UIView,
@@ -934,6 +1032,7 @@ export class Runtime extends SingleView<
   UiTypes.BaseViewEvents<UIView>,
   UiTypes.RuntimeOptions
 > {
+  /** 创建原生 Objective-C 运行时视图。 */
   constructor({
     props,
     layout,

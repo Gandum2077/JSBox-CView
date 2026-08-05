@@ -1,6 +1,7 @@
 import { Base } from "./base";
 import { getTextWidth } from "../utils/uitools";
 
+/** 偏好列表支持的行类型标识。 */
 type PreferenceCellTypes =
   | "string"
   | "secure"
@@ -18,11 +19,15 @@ type PreferenceCellTypes =
   | "symbol-action"
   | "action";
 
+/** 偏好列表中的一个分区。 */
 export interface PreferenceSection {
+  /** 分区标题。 */
   title: string;
+  /** 分区内的偏好设置行。 */
   rows: PrefsRow[];
 }
 
+/** 所有受支持偏好设置行的联合类型。 */
 export type PrefsRow =
   | PrefsRowString
   | PrefsRowSecure
@@ -40,123 +45,209 @@ export type PrefsRow =
   | PrefsRowSymbolAction
   | PrefsRowAction;
 
+/** 所有偏好设置行共享的属性。 */
 interface PrefsRowBase {
+  /** 决定行外观和交互方式的类型标识。 */
   type: PreferenceCellTypes;
+  /** 值收集键；未设置时该行不会出现在 `values` 中。 */
   key?: string;
+  /** 行标题。 */
   title?: string;
+  /** 行标题颜色，默认为系统主文本色。 */
   titleColor?: UIColor;
+  /** 当前行的值通过控件发生变化后执行的回调。 */
   changedEvent?: () => void;
 }
 
+/** 可编辑的普通文本行。 */
 export interface PrefsRowString extends PrefsRowBase {
+  /** 普通文本行标识。 */
   type: "string";
+  /** 当前文本值。 */
   value?: string;
+  /** 输入提示文本。 */
   placeholder?: string;
+  /** 右侧文本颜色，默认为系统主文本色。 */
   textColor?: UIColor;
 }
 
+/** 以掩码显示当前值的文本行。 */
 export interface PrefsRowSecure extends PrefsRowBase {
+  /** 密码文本行标识。 */
   type: "secure";
+  /** 当前文本值；列表中仅显示掩码。 */
   value?: string;
+  /** 输入提示文本。 */
   placeholder?: string;
+  /** 右侧掩码文本颜色，默认为系统次要文本色。 */
   textColor?: UIColor;
 }
 
+/** 可编辑的浮点数行。 */
 export interface PrefsRowNumber extends PrefsRowBase {
+  /** 浮点数行标识。 */
   type: "number";
+  /** 当前数值。 */
   value?: number;
+  /** 输入提示文本。 */
   placeholder?: string;
+  /** 右侧数值文本颜色，默认为系统主文本色。 */
   textColor?: UIColor;
+  /** 允许的最小值。 */
   min?: number;
+  /** 允许的最大值。 */
   max?: number;
 }
 
+/** 可编辑的整数行。 */
 export interface PrefsRowInteger extends PrefsRowBase {
+  /** 整数行标识。 */
   type: "integer";
+  /** 当前整数值。 */
   value?: number;
+  /** 输入提示文本。 */
   placeholder?: string;
+  /** 右侧数值文本颜色，默认为系统主文本色。 */
   textColor?: UIColor;
+  /** 允许的最小值。 */
   min?: number;
+  /** 允许的最大值。 */
   max?: number;
 }
 
+/** 使用步进器调整数字的行。 */
 export interface PrefsRowStepper extends PrefsRowBase {
+  /** 步进器行标识。 */
   type: "stepper";
+  /** 当前数值。 */
   value?: number;
+  /** 允许的最小值，默认为 `0`。 */
   min?: number;
+  /** 允许的最大值。 */
   max?: number;
 }
 
+/** 使用开关编辑布尔值的行。 */
 export interface PrefsRowBoolean extends PrefsRowBase {
+  /** 布尔开关行标识。 */
   type: "boolean";
+  /** 当前开关状态。 */
   value?: boolean;
+  /** 开启状态颜色，默认为 `#34C85A`。 */
   onColor?: UIColor;
+  /** 开关滑块颜色。 */
   thumbColor?: UIColor;
 }
 
+/** 使用滑块调整数字的行。 */
 export interface PrefsRowSlider extends PrefsRowBase {
+  /** 滑块行标识。 */
   type: "slider";
+  /** 当前滑块值。 */
   value?: number;
+  /** 滑块最小值，默认为 `0`。 */
   min?: number;
+  /** 滑块最大值，默认为 `1`。 */
   max?: number;
+  /** 显示和保存时保留的小数位数，默认为 `1`。 */
   decimal?: number;
+  /** 滑块已填充部分的颜色，默认为系统链接色。 */
   minColor?: UIColor;
+  /** 滑块未填充部分的颜色。 */
   maxColor?: UIColor;
+  /** 滑块按钮颜色。 */
   thumbColor?: UIColor;
 }
 
+/** 点击后从菜单中选择一个选项的行。 */
 export interface PrefsRowList extends PrefsRowBase {
+  /** 菜单选择行标识。 */
   type: "list";
+  /** 当前选中项索引。 */
   value?: number;
+  /** 可选文本列表。 */
   items: string[];
 }
 
+/** 使用分段选择器切换选项的行。 */
 export interface PrefsRowTab extends PrefsRowBase {
+  /** 分段选择行标识。 */
   type: "tab";
+  /** 当前选中项索引；可使用 `-1` 表示不选中。 */
   value?: number;
+  /** 分段选择器项目。 */
   items: string[];
 }
 
+/** 点击后通过日期选择器编辑日期的行。 */
 export interface PrefsRowDate extends PrefsRowBase {
+  /** 日期选择行标识。 */
   type: "date";
+  /** 当前日期。 */
   value?: Date;
+  /** 可选择的最早日期。 */
   min?: Date;
+  /** 可选择的最晚日期。 */
   max?: Date;
+  /** JSBox 日期选择模式，默认为 `2`。 */
   mode?: number;
+  /** 日期选择器的分钟间隔。 */
   interval?: number;
 }
 
+/** 只读信息展示行。 */
 export interface PrefsRowInfo extends PrefsRowBase {
+  /** 只读信息行标识。 */
   type: "info";
+  /** 右侧显示的信息文本。 */
   value?: string;
 }
 
+/** 点击后用弹窗展示信息的只读行。 */
 export interface PrefsRowInteractiveInfo extends PrefsRowBase {
+  /** 可交互信息行标识。 */
   type: "interactive-info";
+  /** 右侧显示并在弹窗中展开的信息文本。 */
   value?: string;
+  /** 弹窗是否提供复制操作，默认为 `false`。 */
   copyable?: boolean;
 }
 
+/** 点击后在 Safari 中打开 URL 的行。 */
 export interface PrefsRowLink extends PrefsRowBase {
+  /** 链接行标识。 */
   type: "link";
+  /** 显示并打开的 URL。 */
   value?: string;
 }
 
+/** 在右侧显示 SF Symbol 并执行操作的行。 */
 export interface PrefsRowSymbolAction extends PrefsRowBase {
+  /** 图标操作行标识。 */
   type: "symbol-action";
+  /** SF Symbol 名称。 */
   symbol?: string;
+  /** 图标颜色，默认为系统主文本色。 */
   tintColor?: UIColor;
+  /** 图标内容模式，默认为 `1`。 */
   contentMode?: number;
+  /** 图标尺寸，默认为 `$size(24, 24)`。 */
   symbolSize?: JBSize;
+  /** 点击该行时执行的操作。 */
   value?: () => void;
 }
 
+/** 以居中文本显示并执行操作的行。 */
 export interface PrefsRowAction extends PrefsRowBase {
+  /** 文本操作行标识。 */
   type: "action";
+  /** 点击该行时执行的操作。 */
   value?: () => void;
+  /** 是否使用红色危险操作样式，默认为 `false`。 */
   destructive?: boolean;
 }
 
+/** 点击行本身会触发交互的行类型。 */
 export const selectableTypes = [
   "string",
   "secure",
@@ -171,10 +262,13 @@ export const selectableTypes = [
   "action",
 ];
 
+/** 不参与 `values` 收集的展示与操作行类型。 */
 export const excludedTypes = ["info", "interactive-info", "link", "symbol-action", "action"];
 
+/** 以偏好设置行键名索引的值集合。 */
 type PreferenceValues = { [key: string]: any };
 
+/** 静态偏好列表支持的所有内部 Cell 实例。 */
 type AllCells =
   | StringCell
   | SecureCell
@@ -192,6 +286,7 @@ type AllCells =
   | SymbolActionCell
   | ActionCell;
 
+/** 静态偏好设置行的基础 CView Cell。 */
 abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
   abstract _type: string;
   _key?: string;
@@ -277,6 +372,7 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
   }
 }
 
+/** 文本、密码和数字输入行共享的基础 Cell。 */
 abstract class BaseStringCell extends Cell {
   abstract _type: string;
   _placeholder?: string;
@@ -343,6 +439,7 @@ abstract class BaseStringCell extends Cell {
   abstract _handleText(text: string): string | number | undefined;
 }
 
+/** 普通文本输入 Cell。 */
 class StringCell extends BaseStringCell {
   readonly _type = "string";
   constructor(props: PrefsRowString, values: PreferenceValues) {
@@ -354,10 +451,11 @@ class StringCell extends BaseStringCell {
   }
 }
 
+/** 使用掩码展示值的文本输入 Cell。 */
 class SecureCell extends BaseStringCell {
   readonly _type = "secure";
   constructor(props: PrefsRowSecure, values: PreferenceValues) {
-    super({ textColor: $color("secondaryText"), ...props }, values);
+    super({ ...props, textColor: props.textColor ?? $color("secondaryText") }, values);
   }
 
   _handleText(text: string) {
@@ -372,6 +470,7 @@ class SecureCell extends BaseStringCell {
   }
 }
 
+/** 浮点数输入 Cell。 */
 class NumberCell extends BaseStringCell {
   readonly _type = "number";
   _min?: number;
@@ -393,6 +492,7 @@ class NumberCell extends BaseStringCell {
   }
 }
 
+/** 整数输入 Cell。 */
 class IntegerCell extends BaseStringCell {
   readonly _type = "integer";
   _min: number;
@@ -414,6 +514,7 @@ class IntegerCell extends BaseStringCell {
   }
 }
 
+/** 步进器 Cell。 */
 class StepperCell extends Cell {
   readonly _type = "stepper";
   _max?: number;
@@ -483,6 +584,7 @@ class StepperCell extends Cell {
   }
 }
 
+/** 布尔开关 Cell。 */
 class BooleanCell extends Cell {
   readonly _type = "boolean";
   _onColor: UIColor;
@@ -524,6 +626,7 @@ class BooleanCell extends Cell {
   }
 }
 
+/** 数值滑块 Cell。 */
 class SliderCell extends Cell {
   readonly _type = "slider";
   _decimal: number;
@@ -616,6 +719,7 @@ class SliderCell extends Cell {
   }
 }
 
+/** 菜单选择 Cell。 */
 class ListCell extends Cell {
   readonly _type = "list";
   _items: string[];
@@ -673,6 +777,7 @@ class ListCell extends Cell {
   }
 }
 
+/** 分段选择器 Cell。 */
 class TabCell extends Cell {
   readonly _type = "tab";
   _items: string[];
@@ -714,6 +819,12 @@ class TabCell extends Cell {
   }
 }
 
+/**
+ * 按 JSBox 日期选择模式格式化日期。
+ * @param mode - 日期选择模式；`0` 和 `3` 输出时间，`1` 输出日期，其他值输出日期和时间。
+ * @param date - 待格式化日期。
+ * @returns 格式化结果；未提供日期时返回空字符串。
+ */
 export function dateToString(mode: number, date?: Date) {
   if (!date) return "";
   const year = date.getFullYear();
@@ -730,6 +841,7 @@ export function dateToString(mode: number, date?: Date) {
   }
 }
 
+/** 日期选择 Cell。 */
 class DateCell extends Cell {
   readonly _type = "date";
   _mode: number;
@@ -793,6 +905,7 @@ class DateCell extends Cell {
   }
 }
 
+/** 只读信息 Cell。 */
 class InfoCell extends Cell {
   readonly _type = "info";
   constructor(props: PrefsRowInfo, values: PreferenceValues) {
@@ -823,6 +936,7 @@ class InfoCell extends Cell {
   }
 }
 
+/** 点击后用弹窗展开内容的只读信息 Cell。 */
 class InteractiveInfoCell extends Cell {
   readonly _type = "interactive-info";
   _copyable: boolean;
@@ -856,6 +970,7 @@ class InteractiveInfoCell extends Cell {
   }
 }
 
+/** 使用 Safari 打开 URL 的链接 Cell。 */
 class LinkCell extends Cell {
   readonly _type = "link";
   constructor(props: PrefsRowLink, values: PreferenceValues) {
@@ -903,6 +1018,7 @@ class LinkCell extends Cell {
   }
 }
 
+/** 在右侧显示 SF Symbol 的操作 Cell。 */
 class SymbolActionCell extends Cell {
   readonly _type = "symbol-action";
   _symbol: string;
@@ -939,6 +1055,7 @@ class SymbolActionCell extends Cell {
   }
 }
 
+/** 可操作的 Cell。 */
 class ActionCell extends Cell {
   readonly _type = "action";
   _destructive: boolean;
@@ -977,149 +1094,86 @@ class ActionCell extends Cell {
   }
 }
 
+/** PreferenceListView 属性接口。 */
+export type PreferenceListViewProps = Omit<UiTypes.ListProps, "data" | "template">;
+
+/** PreferenceListView 事件接口。 */
+export type PreferenceListViewEvents = {
+  /** 用户修改任意可收集行后接收完整值对象。 */
+  changed?: (values: { [key: string]: any }) => void;
+};
+
 /**
- * # cview PreferenceListView
+ * 使用独立 CView Cell 构建的静态偏好设置列表。
  *
- * 便捷的设置列表实现. 其所有 cell 均为静态 cell,
- * 可以同时使用 list 控件的 props(除了 template, data)和 events(除了 didSelect),
- * 同时具有独特方法 set(key, value), 以及独特方法 changed
+ * 每一行都拥有独立视图和布局约束，标题宽度会按文本测量，右侧内容从标题之后开始布局；
+ * 这比共享模板的 `DynamicPreferenceListView` 更适合标题或内容宽度差异较大的固定设置页。
+ * 分区和 Cell 在构造时创建，组件不提供整体替换 `sections` 的能力；需要动态增删分区或行时应使用动态版本。
  *
- * sections 为 Array, 里面的 section 定义:
+ * 支持的行类型分为：
  *
- * - title?: string 标题.
- * - rows: {type: string}[] 内容
+ * - 输入：`string`、`secure`、`number`、`integer`。
+ * - 直接控件：`stepper`、`boolean`、`slider`、`tab`。
+ * - 选择器：`list`、`date`。
+ * - 展示与操作：`info`、`interactive-info`、`link`、`symbol-action`、`action`。
  *
- * row定义:
- *
- * - 通用:
- *
- *     - type: string 类型. 包括'string', 'secure', 'number', 'integer', 'stepper',
- *       'boolean', 'slider', 'list', 'tab', 'interactive-info', 'info',
- *       'link', 'action'
- *     - key?: string 键. 如没有则不会返回其值.
- *     - title?: string 标题
- *     - value?: any 在下面专项里详解.
- *     - titleColor?: $color = $color("primaryText") 标题颜色
- *
- * -  string:
- *
- *     - value?: string
- *     - placeholder?: string
- *     - textColor?: $color = $color("primaryText")
- *
- * -  secure:
- *
- *     - value?: string
- *     - placeholder?: string
- *     - textColor?: $color = $color("secondaryText")
- *
- * -  number, integer:
- *
- *     - value?: number
- *     - placeholder?: string
- *     - textColor?: $color = $color("primaryText")
- *     - min?: number 最小值
- *     - max?: number 最大值
- *
- * - stepper:
- *
- *     - value?: number
- *     - placeholder?: string
- *     - min?: number 最小值
- *     - max?: number 最大值
- *
- * - boolean:
- *
- *     - value?: boolean
- *     - onColor?: $color = $color("#34C85A")
- *     - thumbColor
- *
- * - slider:
- *
- *     - value?: number 即 slider.value
- *     - decimal?: number = 1 精度
- *     - min?: number
- *     - max?: number
- *     - minColor?: $color = $color("systemLink")
- *     - maxColor?: $color
- *     - thumbColor?: $color
- *
- * - list:
- *
- *     - value?: number 即 index, -1 时为不选
- *     - items?: string[]
- *
- * - tab:
- *
- *     - value?: number 即 index, -1 时为不选
- *     - items?: string[]
- *
- * - date:
- *
- *    - value?: Date
- *    - min?: Date
- *    - max?: Date
- *    - mode?: number = 2
- *    - interval?: number
- *
- * - info:
- *
- *     - value?: string
- *
- * - interactive-info:
- *
- *    - value?: string
- *    - copyable?: boolean = false
- *
- * - link:
- *
- *     - value?: string url
- *
- * - symbol-action:
- *
- *    - symbol?: string;
- *    - tintColor?: UIColor;
- *    - contentMode?: number;
- *    - symbolSize?: JBSize;
- *    - value?: function 点击后会执行的函数
- *
- * - action:
- *
- *     - value?: function 点击后会执行的函数
- *     - destructive?: boolean = false 是否为危险动作，若是则为红色
- *
- * Methods:
- *
- * - set(key, value) 设定 key 对应的 value
- * - cview.values 获取全部的 values
- *
- * Events:
- *
- * - changed: values => {}
+ * 带 `key` 且不是展示或操作类型的行会写入 `values`。用户修改值后，`changed` 事件会收到完整值对象；
+ * `set` 用于程序化更新所有匹配键的 Cell，但不会触发 `changed`。List 的 `data` 和行点击处理由组件生成，
+ * 不应通过 `props` 或其他事件覆盖。
+ * @example
+ * ```ts
+ * const preferences = new PreferenceListView({
+ *   sections: [
+ *     {
+ *       title: "通用",
+ *       rows: [
+ *         { type: "string", key: "name", title: "名称", value: "CView" },
+ *         { type: "boolean", key: "enabled", title: "启用", value: true },
+ *       ],
+ *     },
+ *   ],
+ *   props: {},
+ *   layout: $layout.fill,
+ *   events: {
+ *     changed: (values) => $cache.set("preferences", values),
+ *   },
+ * });
+ * ```
  */
 export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
+  /** 根视图定义。 */
   _defineView: () => UiTypes.ListOptions;
+  /** 构造时传入的固定分区数据。 */
   _sections: PreferenceSection[];
-  _props: Partial<UiTypes.ListProps>;
+  /** 原生 List 属性，`data` 和 `template` 由组件生成。 */
+  _props: PreferenceListViewProps;
+  /** List 布局。 */
   _layout?: (make: MASConstraintMaker, view: UIListView) => void;
+  /** 以行键名索引的当前值集合。 */
   _values: PreferenceValues;
+  /** 按分区组织的内部静态 Cell。 */
   _cells: {
+    /** 分区标题。 */
     title: string;
+    /** 分区内的静态 Cell。 */
     rows: AllCells[];
   }[];
 
+  /** 创建使用独立 CView Cell 的静态偏好设置列表。 */
   constructor({
     sections,
     props = {},
     layout,
     events = {},
   }: {
+    /** 构造时固定的偏好设置分区。 */
     sections: PreferenceSection[];
-    props?: Partial<UiTypes.ListProps>;
+    /** 原生 List 属性，`data` 和 `template` 由组件生成。 */
+    props?: PreferenceListViewProps;
+    /** List 布局。 */
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
-    events?: {
-      changed?: (values: { [key: string]: any }) => void;
-    };
+    /** 值变化事件。 */
+    events?: PreferenceListViewEvents;
   }) {
     super();
     this._sections = sections;
@@ -1280,6 +1334,12 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
     };
   }
 
+  /**
+   * 根据行类型创建对应的静态 Cell。
+   * @param props - 偏好设置行配置。
+   * @returns 与行类型对应的 Cell 实例。
+   * @throws 行类型不受支持时抛出错误。
+   */
   private _createCell(props: PrefsRow) {
     switch (props.type) {
       case "string":
@@ -1317,10 +1377,23 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
     }
   }
 
+  /**
+   * 获取所有带 `key` 的可存储行值。
+   *
+   * `info`、`interactive-info`、`link`、`symbol-action` 和 `action` 不会包含在结果中。
+   * @returns 以行 `key` 为属性名的当前值对象。
+   */
   get values() {
     return this._values;
   }
 
+  /**
+   * 更新所有匹配 `key` 的已加载 Cell。
+   *
+   * 此操作会同步 `values`，但不会触发 `changed` 事件。
+   * @param key - 目标行键名。
+   * @param value - 新值。
+   */
   set(key: string, value: any) {
     this._cells.forEach((section) => {
       section.rows.forEach((row) => {

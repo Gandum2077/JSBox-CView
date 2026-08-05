@@ -1,54 +1,52 @@
 import { DialogSheet } from "./dialog-sheet";
 import { List } from "../single-views";
 
-/**
- * 显示一个列表以供选择
- *
- * @param items 选项
- * @param multiSelectEnabled 是否允许多选
- * @param value 默认选中的选项
- * @param values 默认选中的选项, 配合multiSelectEnabled使用
- * @param title 标题
- */
-export function listDialog({
-  items,
-  multiSelectEnabled,
-  value,
-  values,
-  title,
-}: {
+/** 列表 Dialog 共用的选项。 */
+interface ListDialogBaseOptions {
+  /** 可选文本列表。 */
   items: string[];
+  /** 弹出页标题。 */
+  title: string;
+}
+
+/** 多选列表 Dialog 的选项。 */
+export interface ListDialogMultiSelectOptions extends ListDialogBaseOptions {
+  /** 启用多选模式。 */
   multiSelectEnabled: true;
   value?: never;
+  /** 默认选中的索引列表。 */
   values?: number[];
-  title: string;
-}): Promise<number[]>;
-export function listDialog({
-  items,
-  multiSelectEnabled,
-  value,
-  values,
-  title,
-}: {
-  items: string[];
+}
+
+/** 单选列表 Dialog 的选项。 */
+export interface ListDialogSingleSelectOptions extends ListDialogBaseOptions {
+  /** 禁用多选模式。 */
   multiSelectEnabled?: false | undefined;
+  /** 默认选中的索引。 */
   value?: number;
   values?: never;
-  title: string;
-}): Promise<number>;
+}
+
+/** 列表 Dialog 支持的单选和多选配置。 */
+export type ListDialogOptions = ListDialogSingleSelectOptions | ListDialogMultiSelectOptions;
+
+/**
+ * 显示可单选或多选的列表弹出页。
+ *
+ * `value` 用于单选默认值，`values` 用于多选默认值。
+ * 多选模式返回索引数组，单选模式返回一个索引；取消时 Promise 以 `"cancel"` 拒绝。
+ * @param options - 列表内容、选择模式、默认值和标题配置。
+ * @returns 在用户完成选择时解析为已选索引的 Promise。
+ */
+export function listDialog(options: ListDialogMultiSelectOptions): Promise<number[]>;
+export function listDialog(options: ListDialogSingleSelectOptions): Promise<number>;
 export function listDialog({
   items,
   multiSelectEnabled,
   value,
   values = [],
   title,
-}: {
-  items: string[];
-  multiSelectEnabled?: boolean;
-  value?: number;
-  values?: number[];
-  title: string;
-}): Promise<number | number[]> {
+}: ListDialogOptions): Promise<number | number[]> {
   if (value !== undefined) values = [value];
   const listView = new List({
     props: {

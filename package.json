@@ -23,6 +23,7 @@
     "build:debug": "tsc --outDir ./dist-debug && npx browserify ${npm_config_entry:-./dist-debug/index.js} > test.js",
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write .",
+    "lint": "eslint .",
     "prepack": "npm run build"
   },
   "keywords": [],
@@ -34,7 +35,10 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "browserify": "^17.0.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsdoc": "^63.3.3",
     "prettier": "^3.8.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.66.0"
   }
 }

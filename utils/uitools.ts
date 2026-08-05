@@ -1,7 +1,6 @@
-// 用于UI相关的工具函数
-
 /**
- * 立即获得window size
+ * 获取当前关键窗口的尺寸。
+ * @returns 当前 `UIWindow` 的尺寸，单位为点。
  */
 export function getWindowSize(): JBSize {
   const window = $objc("UIWindow").$keyWindow().jsValue();
@@ -9,8 +8,11 @@ export function getWindowSize(): JBSize {
 }
 
 /**
- * 获取单行字符串应有的宽度
- * 默认额外添加3 inset
+ * 测量文本在单行显示时需要的宽度。
+ *
+ * 宽度会向上取整后加上 `inset`；字体默认为 17 点，`inset` 默认为 3 点。
+ * @param text - 待测量的文本。
+ * @returns 文本宽度，单位为点。
  */
 export function getTextWidth(text: string, { font = $font(17), inset = 3 } = {}): number {
   return (
@@ -26,8 +28,11 @@ export function getTextWidth(text: string, { font = $font(17), inset = 3 } = {})
 }
 
 /**
- * 获取字符串指定宽度后应有的高度
- * 默认额外添加3 inset
+ * 测量文本在指定宽度内显示时需要的高度。
+ *
+ * 高度会向上取整后加上 `inset`；默认宽度为 300 点、字体为 17 点。
+ * @param text - 待测量的文本。
+ * @returns 文本高度，单位为点。
  */
 export function getTextHeight(
   text: string,
@@ -46,8 +51,12 @@ export function getTextHeight(
 }
 
 /**
- * 计算某个view在某个上级view（若不指定则为UIWindow）上的绝对frame
- * 此方法不考虑旋转变形等特殊情况
+ * 沿父视图链累计视图的绝对位置。
+ *
+ * 累计会在包含 `endView` 的层级处停止；省略时持续到顶层窗口。此函数不处理旋转或缩放变换。
+ * @param view - 待计算的已加载视图。
+ * @param endView - 停止累计的可选祖先视图。
+ * @returns 累计后的矩形。
  */
 export function absoluteFrame(view: AllUIView, endView?: AllUIView): JBRect {
   const frame = view.frame;
@@ -61,6 +70,11 @@ export function absoluteFrame(view: AllUIView, endView?: AllUIView): JBRect {
   return frame;
 }
 
+/**
+ * `setLayer` 可直接使用的常用图层样式。
+ *
+ * 包含无效果、圆角阴影、文字阴影、圆形视图阴影和 Toast 阴影预设。
+ */
 export const layerCommonOptions = {
   none: {
     cornerRadius: 0,
@@ -100,8 +114,11 @@ export const layerCommonOptions = {
 };
 
 /**
- * 在layout中使用
- * 所应用的view不可以指定radius和clipTobounds，否则无效
+ * 将圆角和阴影选项应用到已加载视图的 `CALayer`。
+ *
+ * 选项包括 `cornerRadius`、`shadowRadius`、`shadowOpacity`、`shadowOffset` 和 `shadowColor`。
+ * 如果视图同时使用 `clipToBounds`，超出边界的阴影会被裁剪。
+ * @param view - 待设置图层样式的已加载 JSBox 视图。
  */
 export function setLayer(
   view: AllUIView,

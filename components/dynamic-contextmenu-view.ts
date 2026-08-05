@@ -1,57 +1,77 @@
 import { Base } from "./base";
 import { cvid } from "../utils/cvid";
 
+/** 动态上下文菜单中的一个操作项。 */
 type MenuItem = {
+  /** 操作标题。 */
   title: string;
+  /** 可选 SF Symbol 名称。 */
   symbol?: string;
+  /** 选择操作后执行的回调。 */
   handler: () => void;
+  /** 是否使用破坏性操作样式。 */
   destructive?: boolean;
 };
 
+/** 已注册的 Objective-C 上下文菜单视图类名。 */
 const RegisteredOCClassName: Set<string> = new Set();
 
 /**
- * 动态上下文菜单视图，此视图是为了弥补JSBox中无法动态调整上下文菜单的缺陷而设计的。
+ * 在菜单打开时动态生成操作项的原生上下文菜单视图。
  *
- * 此视图除了一般UIView的props, layout, events, views四个参数外，还有必须的特殊参数：
- * 1. classname?: string OC类名，如果不指定则会自动生成一个唯一的类名。
- *    如果有不同的DynamicContextMenuView实例使用相同的OC类，
- *    那么无法确定弹出的contextMenu是绑定了哪个实例。
- *    换言之，实例A弹出的Menu可能是绑定的实例B。
- *    如果这样做，必须使用下面generateContextMenu的sender参数来定位。
- * 2. generateContextMenu: (sender: UIView) => { title: string; items: MenuItem[]; }
- *    生成上下文菜单的回调函数。
- *
+ * 组件通过 Objective-C Runtime 创建实现 `UIContextMenuInteractionDelegate` 的 UIView，并在每次系统请求菜单时
+ * 调用 `generateContextMenu`。这适合菜单内容依赖当前状态、无法使用静态 JSBox `menu` 属性的场景。
+ * @example
+ * ```ts
+ * const menuView = new DynamicContextMenuView({
+ *   props: {},
+ *   layout: $layout.fill,
+ *   generateContextMenu: () => ({
+ *     items: [{ title: "删除", destructive: true, handler: () => removeItem() }],
+ *   }),
+ * });
+ * ```
  */
 export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions> {
-  private generateContextMenu: (sender: UIView) => {
+  /** 每次打开菜单时生成标题和操作项的回调。 */
+  private _generateContextMenu: (sender: UIView) => {
+    /** 可选菜单标题。 */
     title?: string;
+    /** 当前菜单操作项。 */
     items: MenuItem[];
   };
+  /** 当前实例使用的 Objective-C UIView 类名。 */
   private _ocClassName: string;
+  /** 创建承载 Runtime UIView 的 JSBox 视图定义。 */
   _defineView: () => UiTypes.RuntimeOptions;
 
+  /** 创建可动态生成原生上下文菜单的视图。 */
   constructor({
-    classname,
     generateContextMenu,
     props,
     layout,
     events,
     views,
   }: {
-    classname?: string;
+    /** 系统请求菜单时生成最新菜单内容。 */
     generateContextMenu: (sender: UIView) => {
+      /** 可选菜单标题。 */
       title?: string;
+      /** 当前菜单操作项。 */
       items: MenuItem[];
     };
+    /** Runtime 根视图属性。 */
     props: UiTypes.ViewProps;
+    /** Runtime 根视图布局。 */
     layout?: (make: MASConstraintMaker, view: UIView) => void;
+    /** Runtime 根视图事件。 */
     events?: UiTypes.BaseViewEvents;
+    /** Runtime 根视图的 JSBox 子视图。 */
     views?: UiTypes.AllViewOptions[];
   }) {
     super();
-    this._ocClassName = classname || `DynamicContextMenuView_${cvid.newId}`;
-    this.generateContextMenu = generateContextMenu;
+    this._ocClassName = `DynamicContextMenuView_${cvid.newId}`;
+    this._generateContextMenu = generateContextMenu;
     const runtimeView = this.createRuntimeView();
     this._defineView = () => {
       return {
@@ -68,6 +88,7 @@ export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions>
     };
   }
 
+  /** 注册当前实例所需的 Objective-C 上下文菜单视图类。 */
   private defineOCClass() {
     if (RegisteredOCClassName.has(this._ocClassName)) return;
     RegisteredOCClassName.add(this._ocClassName);
@@ -75,14 +96,19 @@ export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions>
       type: this._ocClassName + " : UIView <UIContextMenuInteractionDelegate>",
       events: {
         "contextMenuInteraction:configurationForMenuAtLocation:": (interacton: any, point: JBPoint) => {
-          const view = interacton.$view().jsValue();
-          const menu = this.generateContextMenu(view);
+          const view = interacton.$view().jsValue() as UIView;
+          const menu = this._generateContextMenu(view);
           return this.createContextMenuConfiguration(menu);
         },
       },
     });
   }
 
+  /**
+   * 将菜单数据转换为 UIKit 上下文菜单配置。
+   * @param menu - 菜单标题和操作项。
+   * @returns `UIContextMenuConfiguration` Objective-C 对象。
+   */
   private createContextMenuConfiguration({ title, items }: { title?: string; items: MenuItem[] }) {
     return $objc("UIContextMenuConfiguration").$configurationWithIdentifier_previewProvider_actionProvider(
       null,
@@ -105,6 +131,10 @@ export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions>
     );
   }
 
+  /**
+   * 创建并安装上下文菜单交互的 Runtime UIView。
+   * @returns 已配置 `UIContextMenuInteraction` 的 Objective-C UIView。
+   */
   private createRuntimeView() {
     this.defineOCClass();
     const view = $objc(this._ocClassName).invoke("alloc.init");

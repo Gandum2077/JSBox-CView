@@ -1,16 +1,68 @@
 import { footBarDefaultSegmentColor } from "../utils/colors";
 import { Base } from "./base";
 
+/** TabBar 中的单个项目。 */
+export interface TabBarItem {
+  /** SF Symbol 名称。 */
+  symbol?: string;
+  /** 项目图片；显示时转换为模板渲染模式。 */
+  image?: UIImage;
+  /** 项目标题；存在时同时显示图标和文本。 */
+  title?: string;
+}
+
+/** TabBar 的尺寸、项目、选择状态和外观属性。 */
+export interface TabBarProps {
+  /** 安全区域上方的内容高度，默认为 `50`。 */
+  height?: number;
+  /** 按显示顺序排列的 Tab 项目。 */
+  items: TabBarItem[];
+  /** 初始选中索引，默认为 `0`。 */
+  index?: number;
+  /** 选中项目颜色，默认为系统链接色。 */
+  selectedSegmentTintColor?: UIColor;
+  /** 未选中项目颜色。 */
+  defaultSegmentTintColor?: UIColor;
+  /** 可选纯色背景；省略时使用样式为 `10` 的 Blur。 */
+  bgcolor?: UIColor;
+}
+
+/** TabBar 的选择和重复点击事件。 */
+export interface TabBarEvents {
+  /** 选择不同项目后触发。 */
+  changed?: (cview: TabBar, index: number) => void;
+  /** 再次点击当前项目时触发。 */
+  reselected?: (cview: TabBar, index: number) => void;
+}
+
+/** 图标 Cell 共用的内部属性。 */
+interface TabBarCellProps extends Pick<TabBarItem, "symbol" | "image"> {
+  /** Cell 对应的 Tab 索引。 */
+  index: number;
+  /** 选中状态颜色。 */
+  selectedSegmentTintColor: UIColor;
+  /** 未选中状态颜色。 */
+  defaultSegmentTintColor: UIColor;
+  /** 当前是否选中。 */
+  selected?: boolean;
+}
+
+/** 同时显示图标和标题的内部 Cell 属性。 */
+interface ImageLabelCellProps extends TabBarCellProps {
+  /** 标题文本。 */
+  text: string;
+}
+
+/** 内部 Cell 的点击事件。 */
+interface TabBarCellEvents {
+  /** 点击 Cell 时返回对应的 Tab 索引。 */
+  tapped?: (index: number) => void;
+}
+
+/** 同时显示图标和标题的内部 TabBar 项目。 */
 class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
-  _props: {
-    symbol?: string;
-    image?: UIImage;
-    text: string;
-    index: number;
-    selectedSegmentTintColor: UIColor;
-    defaultSegmentTintColor: UIColor;
-    selected?: boolean;
-  };
+  /** Cell 的图标、标题、索引和颜色属性。 */
+  _props: ImageLabelCellProps;
   layouts: {
     image_tightened: (make: MASConstraintMaker, view: AllUIView) => void;
     label_tightened: (make: MASConstraintMaker, view: AllUIView) => void;
@@ -22,18 +74,10 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
     props,
     events = {},
   }: {
-    props: {
-      symbol?: string;
-      image?: UIImage;
-      text: string;
-      index: number;
-      selectedSegmentTintColor: UIColor;
-      defaultSegmentTintColor: UIColor;
-      selected?: boolean;
-    };
-    events: {
-      tapped?: (index: number) => void;
-    };
+    /** Cell 的图标、标题、索引和颜色属性。 */
+    props: ImageLabelCellProps;
+    /** Cell 点击事件。 */
+    events: TabBarCellEvents;
   }) {
     super();
     this._props = props;
@@ -119,15 +163,10 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
   }
 }
 
+/** 仅显示图标的内部 TabBar 项目。 */
 class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
-  _props: {
-    symbol?: string;
-    image?: UIImage;
-    index: number;
-    selectedSegmentTintColor: UIColor;
-    defaultSegmentTintColor: UIColor;
-    selected?: boolean;
-  };
+  /** Cell 的图标、索引和颜色属性。 */
+  _props: TabBarCellProps;
   layouts: {
     image_tightened: (make: MASConstraintMaker, view: AllUIView) => void;
     image_loosed: (make: MASConstraintMaker, view: AllUIView) => void;
@@ -137,17 +176,10 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
     props,
     events = {},
   }: {
-    props: {
-      symbol?: string;
-      image?: UIImage;
-      index: number;
-      selectedSegmentTintColor: UIColor;
-      defaultSegmentTintColor: UIColor;
-      selected?: boolean;
-    };
-    events: {
-      tapped?: (index: number) => void;
-    };
+    /** Cell 的图标、索引和颜色属性。 */
+    props: TabBarCellProps;
+    /** Cell 点击事件。 */
+    events: TabBarCellEvents;
   }) {
     super();
     this._props = props;
@@ -208,70 +240,63 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
 }
 
 /**
- * 本组件是为了仿制 UITabBar
- * 本组件不能指定布局而是应该指定 height（如果需要的话）
- * 典型的使用方式是添加在布局为$layout.fill的视图中，并指定 items
+ * 固定在父视图底部并适配安全区域的 CView TabBar。
  *
- * props:
+ * 组件自行生成底部约束，不接受外部 `layout`。`height` 表示安全区域上方的内容高度，根视图还会覆盖底部安全区域。
+ * 未设置 `bgcolor` 时使用样式为 `10` 的模糊背景，设置后改用纯色背景；顶部始终包含 `0.5` 点分隔线。
  *
- * - 只写 height: number = 50
- * - 只写 items: {symbol?: string, image?:UIImage, title?: string}[]
- * - 只写 bgcolor?: UIColor 如果不指定则背景使用blur（style 10），若指定则使用纯色视图
- * - 读写 index: number = 0
- * - 只写 selectedSegmentTintColor = $color("tintColor")
- * - 只写 defaultSegmentTintColor = colors.footBarDefaultSegmentColor
+ * 每个项目可提供 SF Symbol 或图片；存在 `title` 时显示图标和文本，否则只显示图标。窄于或等于 `600` 点时，
+ * 图标和标题上下紧凑排列；更宽时改为水平宽松布局。点击不同项目会更新 `index` 并触发 `changed`；
+ * 再次点击当前项目会触发 `reselected`。
  *
- * events:
- *
- * - changed: (cview, index) => void
- * - doubleTapped: (cview, index) => void
- *
- * methods:
- *
- * - hide(animated=true) 隐藏
- * - show(animated=true) 显示
+ * 程序化设置 `index` 只更新选择外观，不触发事件。`hide` 和 `show` 通过重建根视图约束折叠或恢复 TabBar。
+ * 普通应用页面通常应使用负责子控制器生命周期的 `TabBarController`；本组件适合不需要控制器管理的自定义容器。
+ * @example
+ * ```ts
+ * const tabBar = new TabBar({
+ *   props: {
+ *     items: [
+ *       { symbol: "house", title: "首页" },
+ *       { symbol: "gearshape", title: "设置" },
+ *     ],
+ *   },
+ *   events: {
+ *     changed: (_tabBar, index) => showPage(index),
+ *     reselected: (_tabBar, index) => scrollPageToTop(index),
+ *   },
+ * });
+ * ```
  */
 export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTypes.BlurOptions> {
-  _props: {
-    height: number;
-    items: { symbol?: string; image?: UIImage; title?: string }[];
-    index: number;
-    selectedSegmentTintColor: UIColor;
-    defaultSegmentTintColor: UIColor;
-    bgcolor?: UIColor;
-  };
+  /** TabBar 尺寸、项目、选择颜色和背景配置。 */
+  _props: Required<Omit<TabBarProps, "bgcolor">> & Pick<TabBarProps, "bgcolor">;
+  /** 当前选中索引。 */
   _index: number;
+  /** 与项目一一对应的内部 Cell。 */
   _cells: (ImageLabelCell | ImageCell)[];
-  _events: {
-    changed?: (cview: TabBar, index: number) => void;
-    doubleTapped?: (cview: TabBar, index: number) => void;
-  };
+  /** Tab 选择和重复点击事件。 */
+  _events: TabBarEvents;
+  /** 创建纯色或模糊背景的底部 TabBar 定义。 */
   _defineView: () => UiTypes.ViewOptions | UiTypes.BlurOptions;
+
+  /** 创建自动固定在父视图底部的 TabBar。 */
   constructor({
     props,
     events = {},
   }: {
-    props: {
-      height?: number;
-      items: { symbol?: string; image?: UIImage; title?: string }[];
-      index?: number;
-      selectedSegmentTintColor?: UIColor;
-      defaultSegmentTintColor?: UIColor;
-      bgcolor?: UIColor;
-    };
-    events: {
-      changed?: (cview: TabBar, index: number) => void;
-      doubleTapped?: (cview: TabBar, index: number) => void;
-    };
+    /** TabBar 尺寸、项目、初始选择和外观配置。 */
+    props: TabBarProps;
+    /** Tab 选择和重复点击事件。 */
+    events?: TabBarEvents;
   }) {
     super();
     this._props = {
-      height: 50,
-      index: 0,
-      selectedSegmentTintColor: $color("systemLink"),
-      defaultSegmentTintColor: footBarDefaultSegmentColor,
-      //bgcolor: $color("secondarySurface"),
-      ...props,
+      height: props.height ?? 50,
+      items: props.items,
+      index: props.index ?? 0,
+      selectedSegmentTintColor: props.selectedSegmentTintColor ?? $color("systemLink"),
+      defaultSegmentTintColor: props.defaultSegmentTintColor ?? footBarDefaultSegmentColor,
+      bgcolor: props.bgcolor,
     };
     this._index = this._props.index;
     this._events = events;
@@ -355,7 +380,11 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     };
   }
 
-  _defineCells() {
+  /**
+   * 根据项目是否有标题创建对应的内部 Cell。
+   * @returns 与 `items` 顺序一致的 Cell 数组。
+   */
+  private _defineCells() {
     return this._props.items.map((n, i) => {
       if (n.title) {
         return new ImageLabelCell({
@@ -373,7 +402,7 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
               } else {
-                if (this._events.doubleTapped) this._events.doubleTapped(this, index);
+                if (this._events.reselected) this._events.reselected(this, index);
               }
             },
           },
@@ -393,7 +422,7 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
                 this.index = index;
                 if (this._events.changed) this._events.changed(this, index);
               } else {
-                if (this._events.doubleTapped) this._events.doubleTapped(this, index);
+                if (this._events.reselected) this._events.reselected(this, index);
               }
             },
           },
@@ -402,10 +431,20 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     });
   }
 
+  /**
+   * 获取当前选中索引。
+   * @returns 当前选中项目索引。
+   */
   get index() {
     return this._index;
   }
 
+  /**
+   * 更新选中索引和所有项目的颜色状态。
+   *
+   * 此操作不会触发 `changed`；调用方负责保证索引有效。
+   * @param index - 新的选中项目索引。
+   */
   set index(index) {
     this._index = index;
     this._cells.forEach((n, i) => {
@@ -413,6 +452,10 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     });
   }
 
+  /**
+   * 将 TabBar 高度折叠为零。
+   * @param animated - 是否播放 `0.3` 秒布局动画。
+   */
   hide(animated = true) {
     this.view.remakeLayout((make, view) => {
       make.left.right.bottom.inset(0);
@@ -426,6 +469,10 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     }
   }
 
+  /**
+   * 恢复 TabBar 的安全区域和配置高度。
+   * @param animated - 是否播放 `0.3` 秒布局动画。
+   */
   show(animated = true) {
     this.view.remakeLayout((make, view) => {
       make.left.right.bottom.inset(0);
@@ -439,13 +486,15 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
     }
   }
 
-  _useTightenedLayout() {
+  /** 将所有项目切换为窄屏紧凑布局。 */
+  private _useTightenedLayout() {
     this._cells.forEach((n) => {
       n._useTightenedLayout();
     });
   }
 
-  _useLoosedLayout() {
+  /** 将所有项目切换为宽屏宽松布局。 */
+  private _useLoosedLayout() {
     this._cells.forEach((n) => {
       n._useLoosedLayout();
     });

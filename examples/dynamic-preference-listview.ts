@@ -111,8 +111,7 @@ const sections: PreferenceSection[] = [
 ];
 const v = new DynamicPreferenceListView({
   props: {
-    data: [],
-    //symbolSizeForSymbolAction: $size(40, 40)
+    // symbolSizeForSymbolAction: $size(40, 40)
   },
   sections: sections,
   layout: $layout.fill,

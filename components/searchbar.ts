@@ -4,33 +4,84 @@ import { searchBarBgcolor } from "../utils/colors";
 import { l10n } from "../utils/l10n";
 import { getTextWidth } from "../utils/uitools";
 
-interface SearchBarProps {
-  placeholder: string;
-  cancelText: string;
-  tintColor: UIColor;
-  bgcolor: UIColor;
-  style: 0 | 1 | 2;
+/** SearchBar 属性接口 */
+export interface SearchBarProps {
+  /** 输入框为空时显示的提示文本。 */
+  placeholder?: string;
+  /** 取消按钮文本。 */
+  cancelText?: string;
+  /** 取消按钮的文字颜色。 */
+  tintColor?: UIColor;
+  /** 搜索框背景颜色。 */
+  bgcolor?: UIColor;
+  /** 搜索框的布局样式。 */
+  style?: 0 | 1 | 2;
+  /** 作为输入框 `accessoryView` 显示的 CView 组件。 */
   accessoryCview?: Base<any, any>;
 }
 
+/** SearchBar 事件接口 */
+export interface SearchBarEvents {
+  /** 输入框开始编辑时触发。 */
+  didBeginEditing?: (cview: SearchBar) => void;
+  /** 输入框结束编辑时触发。 */
+  didEndEditing?: (cview: SearchBar) => void;
+  /** 用户修改输入文本时触发。 */
+  changed?: (cview: SearchBar) => void;
+  /** 用户按下键盘 Return 并开始失焦时触发。 */
+  returned?: (cview: SearchBar) => void;
+}
 /**
- * 搜索框
+ * 带搜索图标、取消按钮和聚焦动画的搜索框。
  *
- * 有三种样式可供选择，通过 style 属性设置
+ * `style` 决定未聚焦和聚焦状态的布局：
  *
- * @method focus() 聚焦
- * @method blur() 失焦
- * @property text: string 文本
+ * - `0`：取消按钮位于组件内部，聚焦时输入区域向左收缩；
+ * - `1`：取消按钮从输入区域右侧出现，背景随聚焦状态收缩；
+ * - `2`：未聚焦时图标和提示文本居中，聚焦时移到左侧，取消按钮布局与样式 `1` 类似。
+ *
+ * 点击取消按钮或键盘 Return 会调用 {@link blur}，但不会自动清空文本；只有 Return 会额外触发 `returned`。
+ * `accessoryCview` 的视图定义会作为输入框附件视图使用，调用方可通过事件回调与搜索框联动。样式 `2` 若需要恢复为仅显示
+ * 居中 placeholder 的状态，应在失焦前后自行清空 {@link text}。
+ * @example
+ * ```ts
+ * const searchBar = new SearchBar({
+ *   props: {
+ *     style: 2,
+ *     placeholder: "搜索文章",
+ *   },
+ *   layout: (make, view) => {
+ *     make.left.right.inset(16)
+ *     make.top.inset(8)
+ *     make.height.equalTo(36)
+ *   },
+ *   events: {
+ *     changed: sender => filter(sender.text),
+ *     returned: sender => submit(sender.text),
+ *   },
+ * })
+ * ```
  */
 export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
-  _props: SearchBarProps;
+  /** 合并默认值后的搜索框属性。 */
+  _props: Required<Omit<SearchBarProps, "accessoryCview">> & Pick<SearchBarProps, "accessoryCview">;
+
+  /** 返回由背景、输入区域和取消按钮组成的视图定义。 */
   _defineView: () => UiTypes.ViewOptions;
+
+  /** 搜索框内部使用的子组件。 */
   cviews: {
+    /** 实际接收文本和键盘事件的输入框。 */
     input: Input;
+    /** 包含搜索图标和输入框的区域。 */
     iconInput: ContentView;
+    /** 结束编辑的取消按钮。 */
     cancelButton: Label;
+    /** 提供圆角和背景色的交互区域。 */
     bgview: ContentView;
   };
+
+  /** 各子视图在普通和聚焦状态下使用的布局。 */
   _layouts: {
     iconInput: {
       normal: (make: MASConstraintMaker, view: AllUIView) => void;
@@ -44,51 +95,31 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
       focused?: (make: MASConstraintMaker, view: AllUIView) => void;
     };
   };
+
+  /** 搜索框当前是否处于聚焦状态。 */
   _focused: boolean;
 
-  /**
-   *
-   * @param props 属性
-   * - text: string
-   * - style: number 搜索框的样式
-   *   - 0: 取消按钮在输入框内，聚焦时显示取消按钮
-   *   - 1: 取消按钮在输入框右侧，聚焦时会有左右移动的动画
-   *   - 2: 取消按钮布局同 1，但是 placeholder 平时显示在中间，聚焦时才会移动到左边。
-   *        如果使用此样式，建议每次 blur 的时候都清除 text。
-   * - accessoryCview: cview 请通过下面的事件来和 SearchBar 互相操作
-   * - placeholder: string
-   * - cancelText: string
-   * - tintColor: \$color("systemLink")
-   * - bgcolor: colors.searchBarBgcolor
-   * @param layout 布局
-   * @param events 事件
-   * - didBeginEditing: cview => void
-   * - didEndEditing: cview => void
-   * - changed: cview => void
-   * - returned: cview => void
-   */
+  /** 创建搜索框及其聚焦状态布局。 */
   constructor({
     props,
     layout,
     events = {},
   }: {
-    props: Partial<SearchBarProps>;
+    /** 搜索框属性；未提供的字段使用本地化文本和系统颜色。 */
+    props: SearchBarProps;
+    /** 搜索框根视图的布局回调。 */
     layout: (make: MASConstraintMaker, view: UIView) => void;
-    events?: {
-      didBeginEditing?: (cview: SearchBar) => void;
-      didEndEditing?: (cview: SearchBar) => void;
-      changed?: (cview: SearchBar) => void;
-      returned?: (cview: SearchBar) => void;
-    };
+    /** 输入框编辑事件。 */
+    events?: SearchBarEvents;
   }) {
     super();
     this._props = {
-      placeholder: l10n("SEARCH"),
-      cancelText: l10n("CANCEL"),
-      tintColor: $color("systemLink"),
-      bgcolor: searchBarBgcolor,
-      style: 0,
       ...props,
+      placeholder: props.placeholder ?? l10n("SEARCH"),
+      cancelText: props.cancelText ?? l10n("CANCEL"),
+      tintColor: props.tintColor ?? $color("systemLink"),
+      bgcolor: props.bgcolor ?? searchBarBgcolor,
+      style: props.style ?? 0,
     };
     const cancelButtonWidth = getTextWidth(this._props.cancelText, {
       inset: 20,
@@ -205,6 +236,12 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     };
   }
 
+  /**
+   * 根据样式和文本宽度生成普通、聚焦状态的布局集合。
+   * @param cancelButtonWidth - 取消按钮占用的宽度。
+   * @param placeholderWidth - placeholder 文本占用的宽度。
+   * @returns 供内部子视图切换状态时使用的布局集合。
+   */
   _defineLayouts(cancelButtonWidth: number, placeholderWidth: number) {
     switch (this._props.style) {
       case 0: {
@@ -282,6 +319,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     }
   }
 
+  /** 将内部布局切换为聚焦状态并显示取消按钮。 */
   _onFocused() {
     this._focused = true;
     if (this._layouts.iconInput.focused) this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.focused);
@@ -325,6 +363,7 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     }
   }
 
+  /** 将内部布局切换为普通状态并隐藏取消按钮。 */
   _onBlurred() {
     this._focused = false;
     this.cviews.iconInput.view.remakeLayout(this._layouts.iconInput.normal);
@@ -378,20 +417,32 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
     }
   }
 
+  /** 聚焦输入框并切换到聚焦状态布局。 */
   focus() {
     this.cviews.input.view.focus();
     this._onFocused();
   }
 
+  /** 恢复普通状态布局并让输入框失焦。 */
   blur() {
     this._onBlurred();
     this.cviews.input.view.blur();
   }
 
+  /**
+   * 更新输入框文本。
+   *
+   * 程序化赋值不会触发 `changed`。
+   * @param text - 新的输入文本。
+   */
   set text(text) {
     this.cviews.input.view.text = text;
   }
 
+  /**
+   * 获取当前输入文本。
+   * @returns 当前输入文本。
+   */
   get text() {
     return this.cviews.input.view.text;
   }

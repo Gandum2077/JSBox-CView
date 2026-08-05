@@ -2,17 +2,32 @@ import { UIAlertActionStyle, UIAlertControllerStyle, UIAlertAction, UIAlertContr
 
 import { l10n } from "../../utils/l10n";
 
+/** 单输入框 Alert 的显示和输入配置。 */
+export interface InputAlertOptions {
+  /** Alert 标题。 */
+  title?: string;
+  /** Alert 消息。 */
+  message?: string;
+  /** 输入框的初始文本。 */
+  text?: string;
+  /** 输入框占位符。 */
+  placeholder?: string;
+  /** UIKit 键盘类型值。 */
+  type?: number;
+  /** 是否使用安全文本输入。 */
+  secure?: boolean;
+  /** 取消按钮文本，默认为本地化的“取消”。 */
+  cancelText?: string;
+  /** 确认按钮文本，默认为本地化的“好的”。 */
+  confirmText?: string;
+}
+
 /**
- * 显示一个输入框提示
+ * 显示带单个文本输入框的原生 Alert。
  *
- * @param title 标题
- * @param message 内容
- * @param text 输入框默认文字
- * @param placeholder 输入框占位符
- * @param type 输入框类型
- * @param secure 是否安全输入
- * @param cancelText 取消按钮文字
- * @param confirmText 确认按钮文字
+ * 确认时返回当前文本；取消时 Promise 以 `"cancel"` 拒绝。
+ * @param options - Alert 的显示和输入配置。
+ * @returns 在用户确认时解析为输入文本的 Promise。
  */
 export function inputAlert({
   title = "",
@@ -23,16 +38,7 @@ export function inputAlert({
   secure = false,
   cancelText = l10n("CANCEL"),
   confirmText = l10n("OK"),
-}: {
-  title?: string;
-  message?: string;
-  text?: string;
-  placeholder?: string;
-  type?: number;
-  secure?: boolean;
-  cancelText?: string;
-  confirmText?: string;
-}): Promise<string> {
+}: InputAlertOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     const alertVC = new UIAlertController(title, message, UIAlertControllerStyle.Alert);
     alertVC.addTextField({

@@ -8,79 +8,115 @@ import {
   dateToString,
 } from "./static-preference-listview";
 
-interface CunstomProps extends UiTypes.ListProps {
+/** 动态偏好列表的自定义模板布局调整项。 */
+export interface DynamicPreferenceListCustomProps {
+  /** 文本、密码、数字、整数、列表和日期行右侧内容的左边界，默认为 `120`。 */
   stringLeftInset?: number;
+  /** 信息与链接行右侧内容的左边界，默认为 `120`。 */
   infoAndLinkLeftInset?: number;
+  /** 滑块区域宽度，默认为 `200`。 */
   sliderWidth?: number;
+  /** 分段选择器宽度，默认为 `200`。 */
   tabWidth?: number;
+  /** 图标操作行的图标尺寸，默认为 `$size(24, 24)`。 */
   symbolSizeForSymbolAction?: JBSize;
 }
 
-interface RequiredCunstomProps extends UiTypes.ListProps {
-  stringLeftInset: number;
-  infoAndLinkLeftInset: number;
-  sliderWidth: number;
-  tabWidth: number;
-  symbolSizeForSymbolAction: JBSize;
-}
+/** 动态偏好列表支持的原生 List 属性和模板布局调整项。 */
+export type DynamicPreferenceListProps = Omit<UiTypes.ListProps, "data" | "template"> &
+  DynamicPreferenceListCustomProps;
+
+/** 动态偏好列表的事件接口。 */
+export type DynamicPreferenceListViewEvents = {
+  /** 用户修改任意可收集行后接收完整值对象。 */
+  changed?: (values: { [key: string]: any }) => void;
+};
 
 /**
- * # cview DynamicPreferenceListView
+ * 使用共享模板、可动态替换分区数据的偏好设置列表。
  *
- * 便捷的设置列表实现. 样式以及功能均以 PreferenceListView 为准.
+ * 支持与 `PreferenceListView` 相同的 15 种行类型，包括文本与数字输入、开关、步进器、滑块、
+ * 列表或日期选择、信息展示、链接和操作行。带 `key` 且不是信息或操作类型的行会汇总到 `values`；
+ * 用户修改值后，`changed` 事件会收到完整值对象。
  *
- * 优势在于:
+ * 与为每一行创建独立 CView 的 `PreferenceListView` 不同，本组件使用一套 List `template` 映射所有行。
+ * 因此可以通过 `sections` setter 整体替换分区并立即刷新，适合配置项会动态增删的设置页或表单。
+ * 相应的布局取舍是：标题和右侧内容不能按单个单元格独立分配宽度，文本过长时可能重叠；
+ * 不可选状态也由覆盖视图模拟，点击时分隔线仍可能短暂闪动。
  *
- * - 可以实现 sections 重新写入.
+ * 模板布局可通过以下属性统一调整：
  *
- * 劣势在于:
+ * - `stringLeftInset`：文本、密码、数字、整数、列表和日期行的内容左边界，默认为 `120`。
+ * - `infoAndLinkLeftInset`：信息和链接行的内容左边界，默认为 `120`。
+ * - `sliderWidth` 与 `tabWidth`：滑块和分段选择器宽度，均默认为 `200`。
+ * - `symbolSizeForSymbolAction`：图标操作行的图标尺寸，默认为 `$size(24, 24)`。
  *
- * - 由于每个 cell 不能单独布局, 因此标题和内容的长度无法动态调整, 在两者都比较短的情况下没有问题, 长了布局可能会重叠.
- * - 不能真正实现 selectable 为 false, 分割线仍然会闪动
- *
- * 为了缓解上面的问题, 让修改布局无需调整源代码, 增加下列 props:
- *
- * - stringLeftInset?: number = 120 将同时作用于 string, secure, number, integer, list, date
- *   但是由于后四者内容可控, 可视为只作用于 string
- * - infoAndLinkLeftInset?: number = 120 作用于 info, link
- * - sliderWidth?: number = 200 作用于 slider
- * - tabWidth?: number = 200 作用于 tab
- * - symbolSizeForSymbolAction?: size = $size(24, 24) 作用于symbol-action
- *   注意以上的修改是应用于 template, 而不是应用于单个 cell 的
- *
- * 独特方法:
- *
- * - cview.sections = sections 可以写入新的 sections
+ * `data` 和 `template` 由组件生成；程序化设置 `sections` 或调用 `set` 会刷新列表，但不会触发 `changed`。
+ * @example
+ * ```ts
+ * const preferences = new DynamicPreferenceListView({
+ *   sections: [
+ *     {
+ *       title: "通用",
+ *       rows: [
+ *         { type: "string", key: "name", title: "名称", value: "CView" },
+ *         { type: "boolean", key: "enabled", title: "启用", value: true },
+ *       ],
+ *     },
+ *   ],
+ *   props: {},
+ *   layout: $layout.fill,
+ *   events: {
+ *     changed: (values) => $cache.set("preferences", values),
+ *   },
+ * });
+ * ```
  */
 export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
+  /** 根视图定义。 */
   _defineView: () => UiTypes.ListOptions;
+  /** 组件内部持有的浅拷贝分区和行数据。 */
   private _sections: PreferenceSection[];
-  private _props: RequiredCunstomProps;
+  /** 动态偏好列表的自定义模板布局调整项。 */
+  private _customProps: Required<DynamicPreferenceListCustomProps>;
+
+  /** 创建可动态替换分区的偏好设置列表。 */
   constructor({
     sections,
     props,
     layout,
     events = {},
   }: {
+    /** 初始偏好设置分区。 */
     sections: PreferenceSection[];
-    props: CunstomProps;
+    /** 原生 List 属性和共享模板布局调整项。 */
+    props: DynamicPreferenceListProps;
+    /** List 布局，默认使用 Base 中未设置的布局。 */
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
-    events?: {
-      changed?: (values: any) => void;
-    };
+    /** 值变化事件。 */
+    events?: DynamicPreferenceListViewEvents;
   }) {
     super();
     this._sections = sections.map((n) => ({
       title: n.title,
       rows: n.rows.map((r) => ({ ...r })),
     }));
-    this._props = {
-      stringLeftInset: 120,
-      infoAndLinkLeftInset: 120,
-      sliderWidth: 200,
-      tabWidth: 200,
-      symbolSizeForSymbolAction: $size(24, 24),
-      ...props,
+
+    const {
+      stringLeftInset = 120,
+      infoAndLinkLeftInset = 120,
+      sliderWidth = 200,
+      tabWidth = 200,
+      symbolSizeForSymbolAction = $size(24, 24),
+      ...otherProps
+    } = props;
+
+    this._customProps = {
+      stringLeftInset,
+      infoAndLinkLeftInset,
+      sliderWidth,
+      tabWidth,
+      symbolSizeForSymbolAction,
     };
     this._layout = layout;
     this._defineView = () => {
@@ -88,7 +124,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
         type: "list",
         props: {
           style: 2,
-          ...this._props,
+          ...otherProps,
           id: this.id,
           template: {
             views: [
@@ -148,7 +184,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                         },
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
-                          make.left.inset(this._props.stringLeftInset - 15);
+                          make.left.inset(this._customProps.stringLeftInset - 15);
                           make.right.equalTo(view.prev.left).inset(5);
                         },
                       },
@@ -211,7 +247,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                         layout: (make, view) => {
                           make.centerY.equalTo(view.super);
                           make.right.inset(40);
-                          make.width.equalTo(this._props.sliderWidth - 40);
+                          make.width.equalTo(this._customProps.sliderWidth - 40);
                         },
                         events: {
                           changed: (sender) => {
@@ -277,7 +313,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     layout: (make, view) => {
                       make.centerY.equalTo(view.super);
                       make.height.equalTo(32);
-                      make.width.equalTo(this._props.tabWidth);
+                      make.width.equalTo(this._customProps.tabWidth);
                       make.right.inset(0);
                     },
                     events: {
@@ -296,7 +332,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     },
                     layout: (make, view) => {
                       make.top.bottom.inset(0);
-                      make.left.inset(this._props.infoAndLinkLeftInset);
+                      make.left.inset(this._customProps.infoAndLinkLeftInset);
                       make.right.inset(0);
                     },
                   },
@@ -307,7 +343,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
                     },
                     layout: (make, view) => {
                       make.centerY.equalTo(view.super);
-                      make.size.equalTo(this._props.symbolSizeForSymbolAction);
+                      make.size.equalTo(this._customProps.symbolSizeForSymbolAction);
                       make.right.inset(0);
                     },
                   },
@@ -457,7 +493,14 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     };
   }
 
-  _handleText(text: string, type: string) {
+  /**
+   * 将输入文本转换为指定数字类型。
+   * @param text - 用户输入文本。
+   * @param type - `number`、`integer` 或 `stepper`。
+   * @returns 转换后的数字；输入无效时返回 `undefined`。
+   * @throws 传入不支持的类型时抛出错误。
+   */
+  private _handleText(text: string, type: string) {
     switch (type) {
       case "number": {
         const number = parseFloat(text);
@@ -479,7 +522,15 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     }
   }
 
-  _handleSliderValue(num?: number, decimal?: number, min?: number, max?: number): number {
+  /**
+   * 将滑块值限制到有效范围并按精度取整。
+   * @param num - 原始滑块值。
+   * @param decimal - 保留的小数位数，默认为 `1`。
+   * @param min - 可选最小值。
+   * @param max - 可选最大值。
+   * @returns 调整后的滑块值。
+   */
+  private _handleSliderValue(num?: number, decimal?: number, min?: number, max?: number): number {
     if (num === undefined) return min || 0;
     if (decimal === undefined) decimal = 1;
     if (isNaN(num)) num = min || 0;
@@ -489,7 +540,12 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     return adjustedValue;
   }
 
-  _map(sections: PreferenceSection[]) {
+  /**
+   * 将偏好设置分区映射为共享 List 模板使用的数据。
+   * @param sections - 原始偏好设置分区。
+   * @returns 可直接赋给 List `data` 的映射结果。
+   */
+  private _map(sections: PreferenceSection[]) {
     function generateDefaultRow(options: PrefsRow): any {
       return {
         bgview: { hidden: selectableTypes.includes(options.type) },
@@ -657,10 +713,18 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     }));
   }
 
+  /**
+   * 获取组件当前持有的偏好设置分区。
+   * @returns 当前分区和行数据。
+   */
   get sections() {
     return this._sections;
   }
 
+  /**
+   * 浅拷贝新的分区与行数据并刷新列表。
+   * @param sections - 新的偏好设置分区。
+   */
   set sections(sections) {
     this._sections = sections.map((n) => ({
       title: n.title,
@@ -669,6 +733,12 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     this.view.data = this._map(this._sections);
   }
 
+  /**
+   * 收集所有带 `key` 的可存储行值。
+   *
+   * `info`、`interactive-info`、`link`、`symbol-action` 和 `action` 不会包含在结果中。
+   * @returns 以行 `key` 为属性名的值对象。
+   */
   get values() {
     const values: { [key: string]: any } = {};
     this._sections.forEach((section) => {
@@ -681,6 +751,13 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     return values;
   }
 
+  /**
+   * 更新所有匹配 `key` 的行并刷新列表。
+   *
+   * 此操作不会触发 `changed` 事件。
+   * @param key - 目标行键名。
+   * @param value - 新值。
+   */
   set(key: string, value: any) {
     this._sections.forEach((section) => {
       section.rows.forEach((row) => {

@@ -39,7 +39,7 @@ CView 的视图组件是非侵入式的。换言之，你可以全部使用 CVie
 
 [PreferenceListView](./components/static-preference-listview.ts): 提供由独立静态单元格组成、支持多种输入类型的设置列表。
 
-[EnhancedImageView](./components/enhanced-imageview.ts): 提供缩放浏览以及点击图片上下区域翻页的增强图片视图。
+[EnhancedImageView](./components/enhanced-imageview.ts): 提供缩放浏览以及获取点击相对位置的增强图片视图。
 
 [ImagePager](./components/image-pager.ts): 提供适合大量或动态图片数据的可刷新分页浏览器。
 

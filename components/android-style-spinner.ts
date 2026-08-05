@@ -1,44 +1,42 @@
-import { Base } from "../base";
+import { Base } from "./base";
 
 interface AndroidStyleSpinnerProps {
-  id?: string;
-  weight: number;
-  diameter: number;
-  color: UIColor;
-  bgcolor: UIColor;
+  /** 圆环线宽。 */
+  weight?: number;
+  /** 加载指示器直径，如果指定 layout 则失效。 */
+  diameter?: number;
+  /** 圆环颜色。 */
+  color?: UIColor;
+  /** 背景颜色。 */
+  bgcolor?: UIColor;
 }
 
 /**
- * 安卓风格的加载指示器, 基于Lottie实现, 效果是一个圆环一边旋转一边缩放。
+ * 基于 Lottie 的 Android 风格加载指示器。
+ *
+ * 圆环在旋转时动态伸缩。
  * 由于帧数有限，不建议在大视图上使用。
  */
 export class AndroidStyleSpinner extends Base<UILottieView, UiTypes.LottieOptions> {
-  private _props: AndroidStyleSpinnerProps;
+  private _props: Required<AndroidStyleSpinnerProps>;
   _defineView: () => UiTypes.LottieOptions;
 
-  /**
-   * @param props AndroidStyleSpinnerProps
-   *        - id?: string 可以重新指定 id，以供 list 或者 matrix 的 template 使用
-   *        - weight: number
-   *        - diameter: number
-   *        - color: UIColor, 默认 gray
-   *        - bgcolor: UIColor, 默认 clear
-   * @param layout 可选布局，默认居中
-   */
+  /** 创建 Android 风格加载指示器。 */
   constructor({
     props,
     layout,
   }: {
-    props: Partial<AndroidStyleSpinnerProps>;
+    /** 视觉属性；默认线宽为 2、直径为 24、颜色为灰色、背景透明。 */
+    props: AndroidStyleSpinnerProps;
+    /** 可选根视图布局；默认使用 `diameter` 指定的尺寸并在父视图中居中。 */
     layout?: (make: MASConstraintMaker, view: UILottieView) => void;
   }) {
     super();
     this._props = {
-      weight: 2,
-      diameter: 24,
-      color: $color("gray"),
-      bgcolor: $color("clear"),
-      ...props,
+      weight: props.weight ?? 2,
+      diameter: props.diameter ?? 24,
+      color: props.color ?? $color("gray"),
+      bgcolor: props.bgcolor ?? $color("clear"),
     };
     this._defineView = () => {
       const weight = this._props.weight;
@@ -252,10 +250,9 @@ export class AndroidStyleSpinner extends Base<UILottieView, UiTypes.LottieOption
           circular: true,
           json,
           bgcolor: this._props.bgcolor,
-          id: this._props.id || this.id,
         },
         layout:
-          layout ||
+          layout ??
           ((make, view) => {
             make.size.equalTo($size(this._props.diameter, this._props.diameter));
             make.center.equalTo(view.super);
