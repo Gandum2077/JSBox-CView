@@ -78,7 +78,6 @@ export class DynamicContextMenuView extends Base<UIView, UiTypes.RuntimeOptions>
         type: "runtime",
         props: {
           ...props,
-          id: this.id,
           view: runtimeView,
         },
         layout,

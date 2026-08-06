@@ -73,7 +73,6 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
         ? {
             radius: 0,
             bgcolor: $color("clear"),
-            id: this.id,
             menu: this._props.menu,
             enabled: this._props.enabled,
             hidden: this._props.hidden,
@@ -81,7 +80,6 @@ export class SymbolButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
         : {
             radius: 0,
             bgcolor: $color("clear"),
-            id: this.id,
             enabled: this._props.enabled,
             hidden: this._props.hidden,
           };

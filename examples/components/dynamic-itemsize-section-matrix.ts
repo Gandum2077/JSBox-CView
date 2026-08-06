@@ -32,16 +32,12 @@ const sections: DynamicItemSizeSectionMatrixSection[] = [
   },
   {
     title: "Section 3",
-    items: [
-      makeItem("No title cell", "The first item starts at indexPath.item 0."),
-    ],
+    items: [makeItem("No title cell", "The first item starts at indexPath.item 0.")],
   },
   {
     title: "",
     titleHeight: 52,
-    items: [
-      makeItem("Another item", "This section has no custom section title."),
-    ],
+    items: [makeItem("Another item", "This section has no custom section title.")],
   },
 ];
 

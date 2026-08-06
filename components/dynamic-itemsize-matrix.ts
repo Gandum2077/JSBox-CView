@@ -155,7 +155,6 @@ export class DynamicItemSizeMatrix extends Base<UIView, UiTypes.ViewOptions> {
         type: "view",
         props: {
           bgcolor: $color("clear"),
-          id: this.id,
         },
         layout,
         events: {

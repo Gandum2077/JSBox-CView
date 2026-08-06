@@ -125,7 +125,6 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
         props: {
           style: 2,
           ...otherProps,
-          id: this.id,
           template: {
             views: [
               {

@@ -367,9 +367,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
       });
       return {
         type: "view",
-        props: {
-          id: this.id,
-        },
+        props: {},
         layout: navBarLayouts[this._props.style],
         events: {
           ready: () => (this.style = this.style),

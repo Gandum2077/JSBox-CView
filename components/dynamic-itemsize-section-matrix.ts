@@ -241,7 +241,6 @@ export class DynamicItemSizeSectionMatrix extends Base<UIView, UiTypes.ViewOptio
       return {
         type: "view",
         props: {
-          id: this.id,
           bgcolor: $color("clear"),
         },
         layout,

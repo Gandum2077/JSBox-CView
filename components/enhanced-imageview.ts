@@ -107,9 +107,7 @@ export class EnhancedImageView extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       return {
         type: "view",
-        props: {
-          id: this.id,
-        },
+        props: {},
         views: [this._scroll.definition],
         layout,
         events: {

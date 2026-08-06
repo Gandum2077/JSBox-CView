@@ -105,7 +105,6 @@ class ImageLabelCell extends Base<UIView, UiTypes.ViewOptions> {
       return {
         type: "view",
         props: {
-          id: this.id,
           userInteractionEnabled: true,
         },
         views: [
@@ -197,7 +196,6 @@ class ImageCell extends Base<UIView, UiTypes.ViewOptions> {
       return {
         type: "view",
         props: {
-          id: this.id,
           userInteractionEnabled: true,
         },
         views: [
@@ -332,7 +330,6 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
         return {
           type: "view",
           props: {
-            id: this.id,
             bgcolor: this._props.bgcolor,
           },
           layout: (make, view) => {
@@ -356,7 +353,6 @@ export class TabBar extends Base<UIView | UIBlurView, UiTypes.ViewOptions | UiTy
         return {
           type: "blur",
           props: {
-            id: this.id,
             style: 10,
           },
           layout: (make, view) => {

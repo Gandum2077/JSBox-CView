@@ -149,9 +149,7 @@ export class PageViewerTitleBar extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       return {
         type: "view",
-        props: {
-          id: this.id,
-        },
+        props: {},
         layout,
         events: restEvents,
         views: [this.stack.definition, this.placeholderView.definition, this.line.definition],

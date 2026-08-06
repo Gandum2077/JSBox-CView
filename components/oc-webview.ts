@@ -73,7 +73,6 @@ export class OCWebView extends Base<UIView, UiTypes.RuntimeOptions> {
       return {
         type: "runtime",
         props: {
-          id: this.id,
           view: webView,
         },
         layout,

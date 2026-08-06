@@ -57,7 +57,6 @@ export class RefreshButton extends Base<UIButtonView, UiTypes.ButtonOptions> {
       return {
         type: "button",
         props: {
-          id: this.id,
           bgcolor: $color("clear"),
           enabled: props?.enabled ?? true,
           hidden: props?.hidden ?? false,

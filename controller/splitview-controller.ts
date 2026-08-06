@@ -76,7 +76,6 @@ class SecondaryView extends Base<UIView, UiTypes.ViewOptions> {
         type: "view",
         props: {
           ...this._props,
-          id: this.id,
         },
         layout,
         views: [...views, this.line.definition],
@@ -167,7 +166,6 @@ class MaskView extends Base<UIView, UiTypes.ViewOptions> {
         props: {
           ...this._props,
           hidden: true,
-          id: this.id,
         },
         layout,
         events: {

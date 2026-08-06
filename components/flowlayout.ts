@@ -100,7 +100,6 @@ export class Flowlayout<T extends FlowlayoutItem> extends Base<UIView, UiTypes.V
     this._defineView = () => ({
       type: "view",
       props: {
-        id: this.id,
         bgcolor: props.bgcolor,
       },
       layout,
@@ -241,7 +240,6 @@ class WrapperView<T extends FlowlayoutItem> extends Base<UIView, UiTypes.ViewOpt
     super();
     this.item = props.item;
     const viewProps: UiTypes.ViewProps = {
-      id: this.id,
       frame: $rect(0, 0, 0, 0),
       userInteractionEnabled: true,
     };

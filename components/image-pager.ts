@@ -136,9 +136,7 @@ export class ImagePager extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       return {
         type: "view",
-        props: {
-          id: this.id,
-        },
+        props: {},
         layout,
         views: [this._matrix.definition],
         events: {

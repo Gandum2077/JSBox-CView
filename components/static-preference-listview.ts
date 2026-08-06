@@ -324,7 +324,6 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
         type: "view",
         props: {
           selectable: selectableTypes.includes(this._type),
-          id: this.id,
         },
         layout: $layout.fill,
         views: [this._defineTitleView(), this._defineValueView()],
@@ -1203,7 +1202,6 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
         props: {
           style: 2,
           ...this._props,
-          id: this.id,
           data: this._cells.map((section) => ({
             title: section.title,
             rows: section.rows.map((cell) => cell.definition),
