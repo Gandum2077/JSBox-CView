@@ -1,4 +1,4 @@
-import { CustomNavigationBar } from "../index";
+import { CustomNavigationBar } from "../../index";
 
 const navbar = new CustomNavigationBar({
   props: {

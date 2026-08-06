@@ -1,4 +1,4 @@
-import { ContentView, PageViewer } from "../index";
+import { ContentView, PageViewer } from "../../index";
 
 const pageViewer = new PageViewer({
   props: {

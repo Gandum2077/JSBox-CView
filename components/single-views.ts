@@ -58,10 +58,7 @@ export class SingleView<
     this._defineView = () => {
       return {
         type: this._type,
-        props: {
-          ...this._props,
-          id: this.id,
-        },
+        props: this._props ?? {},
         layout: this._layout,
         events: this._events,
         views: this._views,

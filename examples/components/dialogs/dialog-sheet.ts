@@ -1,4 +1,4 @@
-import { ContentView, DialogSheet } from "../index";
+import { ContentView, DialogSheet } from "../../../index";
 
 const cview = new ContentView({
   props: {

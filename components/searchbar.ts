@@ -227,7 +227,6 @@ export class SearchBar extends Base<UIView, UiTypes.ViewOptions> {
       return {
         type: "view",
         props: {
-          id: this.id,
           clipsToBounds: true,
         },
         layout,

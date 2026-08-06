@@ -111,7 +111,7 @@ export class PageViewer extends Base<UIView, UiTypes.ViewOptions> {
     this._defineView = () => {
       return {
         type: "view",
-        props: { id: this.id },
+        props: {},
         layout,
         views: [this.scroll.definition],
         events: {

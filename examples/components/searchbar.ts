@@ -1,4 +1,4 @@
-import { SearchBar } from "../index";
+import { SearchBar } from "../../index";
 
 const s0 = new SearchBar({
   props: {

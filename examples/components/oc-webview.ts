@@ -1,4 +1,4 @@
-import { OCWebView } from "../index";
+import { OCWebView } from "../../index";
 
 const initialURL = "https://www.example.com";
 

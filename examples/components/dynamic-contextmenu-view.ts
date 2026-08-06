@@ -1,4 +1,4 @@
-import { DynamicContextMenuView } from "../index";
+import { DynamicContextMenuView } from "../../index";
 
 let menuIndex = 0;
 const menuList = [

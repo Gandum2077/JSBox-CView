@@ -1,4 +1,4 @@
-import { DynamicItemSizeSectionMatrix, DynamicItemSizeSectionMatrixSection } from "../index";
+import { DynamicItemSizeSectionMatrix, DynamicItemSizeSectionMatrixSection } from "../../index";
 
 const makeItem = (title: string, detail: string) => ({
   itemTitle: { text: title },
@@ -31,10 +31,15 @@ const sections: DynamicItemSizeSectionMatrixSection[] = [
     ],
   },
   {
-    title: undefined,
-    titleHeight: 52,
+    title: "Section 3",
     items: [
       makeItem("No title cell", "The first item starts at indexPath.item 0."),
+    ],
+  },
+  {
+    title: "",
+    titleHeight: 52,
+    items: [
       makeItem("Another item", "This section has no custom section title."),
     ],
   },

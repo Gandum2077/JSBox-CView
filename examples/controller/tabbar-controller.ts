@@ -1,4 +1,4 @@
-import { BaseController, SplitViewController } from "../index";
+import { BaseController, TabBarController } from "../../index";
 
 const items = [
   {
@@ -13,7 +13,7 @@ const items = [
         },
       },
     }),
-    bgcolor: $color("red"),
+    title: "Page 1",
   },
   {
     controller: new BaseController({
@@ -27,15 +27,22 @@ const items = [
         },
       },
     }),
-    bgcolor: $color("green"),
+    title: "Page 2",
   },
 ];
 
-const pageViewerController = new SplitViewController({
+const pageViewerController = new TabBarController({
   props: {
     items,
   },
-  events: {},
+  events: {
+    changed: (sender, index) => {
+      console.log(`Index changed to ${index}`);
+    },
+    reselected: (sender, index) => {
+      console.log(`Double tapped on index ${index}`);
+    },
+  },
 });
 
-pageViewerController.uirender();
+pageViewerController.uirender({});

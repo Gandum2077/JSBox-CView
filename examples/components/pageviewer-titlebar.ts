@@ -1,4 +1,4 @@
-import { PageViewerTitleBar } from "../index";
+import { PageViewerTitleBar } from "../../index";
 
 const pageViewerTitleBar = new PageViewerTitleBar({
   props: {

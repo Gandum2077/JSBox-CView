@@ -1,4 +1,4 @@
-import { BaseController, PageViewerController } from "../index";
+import { BaseController, PageViewerController } from "../../index";
 
 const items = [
   {

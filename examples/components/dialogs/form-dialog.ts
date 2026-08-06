@@ -1,4 +1,4 @@
-import { formDialog } from "../index";
+import { formDialog } from "../../../index";
 
 $ui.render({
   views: [

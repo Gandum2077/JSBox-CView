@@ -1,4 +1,4 @@
-import { DynamicItemSizeMatrix } from "../index";
+import { DynamicItemSizeMatrix } from "../../index";
 
 const matrix = new DynamicItemSizeMatrix({
   props: {

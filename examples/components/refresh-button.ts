@@ -1,4 +1,4 @@
-import { RefreshButton } from "../index";
+import { RefreshButton } from "../../index";
 
 const refreshButton = new RefreshButton({
   props: {

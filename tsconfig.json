@@ -108,13 +108,11 @@
   },
   "include": [
     "node_modules/jsbox-types/index.d.ts",
-    "test.ts",
     "index.ts",
     "utils/*.ts",
-    "components/*.ts",
-    "components/*/*.ts",
+    "components/**/*.ts",
     "controller/*.ts",
-    "examples/*.ts"
+    "examples/**/*.ts"
   ],
   "files": [
     "index.ts"

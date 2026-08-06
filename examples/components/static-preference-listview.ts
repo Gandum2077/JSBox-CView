@@ -1,4 +1,4 @@
-import { DynamicPreferenceListView, PreferenceSection } from "../index";
+import { PreferenceListView, PreferenceSection } from "../../index";
 
 const sections: PreferenceSection[] = [
   {
@@ -56,7 +56,7 @@ const sections: PreferenceSection[] = [
         value: 1,
         decimal: 0,
         min: 0,
-        max: 2,
+        max: 100,
       },
       {
         type: "list",
@@ -76,6 +76,7 @@ const sections: PreferenceSection[] = [
         type: "date",
         title: "date",
         key: "date",
+        //value: new Date()
         mode: 1,
       },
     ],
@@ -108,18 +109,31 @@ const sections: PreferenceSection[] = [
       },
     ],
   },
-];
-const v = new DynamicPreferenceListView({
-  props: {
-    // symbolSizeForSymbolAction: $size(40, 40)
+  {
+    title: "Section 4",
+    rows: [
+      {
+        type: "interactive-info",
+        title: "interactive-info",
+        key: "interactive-info",
+        value: "测试一号测试二号测试三号测试四号测试五号测试六号",
+      },
+      {
+        type: "interactive-info",
+        title: "interactive-info2",
+        key: "interactive-info2",
+        value: "测试一号测试二号测试三号测试四号测试五号测试六号",
+        copyable: true,
+      },
+    ],
   },
+];
+const v = new PreferenceListView({
+  props: {},
   sections: sections,
   layout: $layout.fill,
   events: {
-    changed: (values: any) => {
-      console.info(values);
-      console.info(values.date);
-    },
+    changed: (values: any) => console.info(values),
   },
 });
 
@@ -129,27 +143,7 @@ $ui.render({
     navButtons: [
       {
         symbol: "plus",
-        handler: () => {
-          sections.push({
-            title: "Section " + (sections.length + 1),
-            rows: [
-              {
-                type: "interactive-info",
-                title: "interactive-info",
-                key: "interactive-info",
-                value: "测试一号测试二号测试三号测试四号测试五号测试六号",
-              },
-              {
-                type: "interactive-info",
-                title: "interactive-info2",
-                key: "interactive-info2",
-                value: "测试一号测试二号测试三号测试四号测试五号测试六号",
-                copyable: true,
-              },
-            ],
-          });
-          v.sections = sections;
-        },
+        handler: () => {},
       },
     ],
   },

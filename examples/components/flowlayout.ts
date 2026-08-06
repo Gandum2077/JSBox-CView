@@ -1,4 +1,4 @@
-import { Flowlayout, Label } from "../index";
+import { Flowlayout, Label } from "../../index";
 
 class FlowlayoutItem extends Label {
   private _text: string;

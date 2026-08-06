@@ -91,6 +91,7 @@ out
 .nuxt
 dist/
 dist-debug/
+examples-dist/
 
 # Gatsby files
 .cache/
