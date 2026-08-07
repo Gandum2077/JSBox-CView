@@ -2,7 +2,6 @@ import { ContentView, PageControl, PageViewer } from "../../index";
 
 const colors = [$color("systemRed"), $color("systemGreen"), $color("systemBlue")];
 
-let pageControl: PageControl;
 const viewer = new PageViewer({
   props: {
     cviews: colors.map(
@@ -33,7 +32,7 @@ const viewer = new PageViewer({
   },
 });
 
-pageControl = new PageControl({
+const pageControl = new PageControl({
   props: {
     numberOfPages: colors.length,
     currentPage: 0,

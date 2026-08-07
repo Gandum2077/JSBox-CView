@@ -1,8 +1,6 @@
 import { ContentView, Sheet } from "../../index";
 
 const presentSheet = () => {
-  let sheet: Sheet<ContentView, UIView, UiTypes.ViewOptions>;
-
   const content = new ContentView({
     props: { bgcolor: $color("secondarySurface") },
     layout: $layout.fill,
@@ -32,7 +30,7 @@ const presentSheet = () => {
     ],
   });
 
-  sheet = new Sheet({
+  const sheet: Sheet<ContentView, UIView, UiTypes.ViewOptions> = new Sheet({
     presentMode: 1,
     cview: content,
     dismissalHandler: () => $ui.toast("Sheet 已关闭"),

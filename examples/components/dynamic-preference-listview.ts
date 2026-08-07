@@ -53,10 +53,10 @@ const sections: PreferenceSection[] = [
         type: "slider",
         title: "slider",
         key: "slider",
-        value: 1,
+        value: 5,
         decimal: 0,
-        min: 0,
-        max: 2,
+        min: 5,
+        max: 10,
       },
       {
         type: "list",
@@ -113,7 +113,17 @@ const v = new DynamicPreferenceListView({
   props: {
     // symbolSizeForSymbolAction: $size(40, 40)
   },
-  sections: sections,
+  sections: [
+    ...sections,
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+  ],
   layout: $layout.fill,
   events: {
     changed: (values: any) => {

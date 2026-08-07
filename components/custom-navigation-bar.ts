@@ -3,36 +3,37 @@ import { ContentView, Label, Button, Blur } from "./single-views";
 import { SymbolButton } from "./symbol-button";
 import { getTextWidth } from "../utils/uitools";
 
-const navBarStyles = {
-  hidden: 0,
-  minimized: 1,
-  normal: 2,
-  expanded: 3,
-};
+/** 自定义导航栏的显示状态。 */
+export enum NavBarState {
+  Hidden = 0,
+  Minimized = 1,
+  Normal = 2,
+  Expanded = 3,
+}
 
-const navBarLayouts = [
-  (make: MASConstraintMaker, view: AllUIView) => {
+const navBarLayouts: Record<NavBarState, (make: MASConstraintMaker, view: AllUIView) => void> = {
+  [NavBarState.Hidden]: (make: MASConstraintMaker, view: AllUIView) => {
     make.left.right.top.inset(0);
     make.height.equalTo(0);
   },
-  (make: MASConstraintMaker, view: AllUIView) => {
+  [NavBarState.Minimized]: (make: MASConstraintMaker, view: AllUIView) => {
     make.left.right.top.inset(0);
     make.bottom.equalTo(view.super.safeAreaTop).inset(-25);
   },
-  (make: MASConstraintMaker, view: AllUIView) => {
+  [NavBarState.Normal]: (make: MASConstraintMaker, view: AllUIView) => {
     make.left.right.top.inset(0);
     make.bottom.equalTo(view.super.safeAreaTop).inset(-50);
   },
-  (make: MASConstraintMaker, view: AllUIView) => {
+  [NavBarState.Expanded]: (make: MASConstraintMaker, view: AllUIView) => {
     make.left.right.top.inset(0);
     make.bottom.equalTo(view.super.safeAreaTop).inset(-100);
   },
-];
+};
 
 /** 自定义导航栏的显示、内容与外观选项。 */
 export interface NavigationBarProps {
   /** 显示样式：`0` 隐藏、`1` 最小化、`2` 普通、`3` 扩展。 */
-  style: number;
+  style: NavBarState;
   /** 文本标题；使用该字段创建后，可通过 `title` 属性动态更新。 */
   title?: string;
   /** 自定义标题组件；未设置 `title` 时使用。 */
@@ -170,7 +171,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
       ...props,
       leftBarButtonItems: props.leftBarButtonItems ?? [],
       rightBarButtonItems: props.rightBarButtonItems ?? [],
-      style: props.style ?? navBarStyles.normal,
+      style: props.style ?? NavBarState.Normal,
       tintColor: props.tintColor ?? $color("primaryText"),
     };
     this._events = events;
@@ -233,6 +234,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
           props: {
             bgcolor: $color("clear"),
             cornerRadius: 0,
+            hidden: this._props.style === NavBarState.Minimized || this._props.style === NavBarState.Hidden,
           },
           views,
           layout: (make, view) => {
@@ -257,6 +259,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
         this.cviews.leftItemView = new ContentView({
           props: {
             bgcolor: undefined,
+            hidden: this._props.style === NavBarState.Minimized || this._props.style === NavBarState.Hidden,
           },
           layout: (make, view) => {
             make.width.equalTo(leftInset);
@@ -271,6 +274,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
       this.cviews.rightItemView = new ContentView({
         props: {
           bgcolor: undefined,
+          hidden: this._props.style === NavBarState.Minimized || this._props.style === NavBarState.Hidden,
         },
         layout: (make, view) => {
           make.width.equalTo(rightInset);
@@ -334,6 +338,7 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
       this.cviews.toolViewWrapper = new ContentView({
         props: {
           bgcolor: undefined,
+          hidden: this._props.style !== NavBarState.Expanded,
         },
         layout: (make, view) => {
           make.left.right.bottom.equalTo(view.super);
@@ -370,7 +375,9 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
         props: {},
         layout: navBarLayouts[this._props.style],
         events: {
-          ready: () => (this.style = this.style),
+          ready: () => {
+            this.setStyle(this._props.style);
+          },
         },
         views: [
           this.cviews.bgview.definition,
@@ -483,13 +490,13 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
    * 隐藏导航栏并将根视图高度收缩为零。
    * @param animated - 是否播放布局过渡动画。
    */
-  hide(animated = true) {
+  private _hide(animated = true) {
     this.view.hidden = false;
     this.cviews.leftItemView.view.hidden = true;
     this.cviews.rightItemView.view.hidden = true;
     this.cviews.toolViewWrapper.view.hidden = true;
     this.cviews.titleViewWrapper.view.hidden = true;
-    this.view.remakeLayout(navBarLayouts[navBarStyles.hidden]);
+    this.view.remakeLayout(navBarLayouts[NavBarState.Hidden]);
     this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(0));
     if (animated) {
       $ui.animate({
@@ -513,13 +520,13 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
    * 切换到仅显示标题的最小化样式。
    * @param animated - 是否播放布局过渡动画。
    */
-  minimize(animated = true) {
+  private _minimize(animated = true) {
     this.view.hidden = false;
     this.cviews.leftItemView.view.hidden = true;
     this.cviews.rightItemView.view.hidden = true;
     this.cviews.toolViewWrapper.view.hidden = true;
     this.cviews.titleViewWrapper.view.hidden = false;
-    this.view.remakeLayout(navBarLayouts[navBarStyles.minimized]);
+    this.view.remakeLayout(navBarLayouts[NavBarState.Minimized]);
     this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(25));
     if (animated) {
       $ui.animate({
@@ -545,11 +552,11 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
    * 恢复显示标题和左右按钮的普通样式。
    * @param animated - 是否播放布局过渡动画。
    */
-  restore(animated = true) {
+  private _restore(animated = true) {
     this.view.hidden = false;
     this.cviews.titleViewWrapper.view.hidden = false;
-    //this.cviews.toolViewWrapper.view.hidden = true;
-    this.view.remakeLayout(navBarLayouts[navBarStyles.normal]);
+    this.cviews.toolViewWrapper.view.hidden = true;
+    this.view.remakeLayout(navBarLayouts[NavBarState.Normal]);
     this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
     if (animated) {
       $ui.animate({
@@ -579,11 +586,10 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
    * 切换到显示附加工具区域的扩展样式。
    * @param animated - 是否播放布局过渡动画。
    */
-  expand(animated = true) {
+  private _expand(animated = true) {
     this.view.hidden = false;
-    this.cviews.toolViewWrapper.view.hidden = false;
     this.cviews.titleViewWrapper.view.hidden = false;
-    this.view.remakeLayout(navBarLayouts[navBarStyles.expanded]);
+    this.view.remakeLayout(navBarLayouts[NavBarState.Expanded]);
     this.cviews.contentView.view.updateLayout((make) => make.height.equalTo(50));
     if (animated) {
       $ui.animate({
@@ -597,17 +603,46 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
         completion: () => {
           this.cviews.leftItemView.view.hidden = false;
           this.cviews.rightItemView.view.hidden = false;
-          //this.cviews.toolViewWrapper.view.hidden = false;
+          this.cviews.toolViewWrapper.view.hidden = false;
           if (this._events.expanded) this._events.expanded(this);
         },
       });
     } else {
       this.cviews.leftItemView.view.hidden = false;
       this.cviews.rightItemView.view.hidden = false;
-      //this.cviews.toolViewWrapper.view.hidden = false;
+      this.cviews.toolViewWrapper.view.hidden = false;
       if (this._props.title && "font" in this.cviews.titleViewWrapper.view)
         this.cviews.titleViewWrapper.view.font = $font("bold", 17);
       if (this._events.expanded) this._events.expanded(this);
+    }
+  }
+
+  /**
+   * 设置导航栏的显示状态。
+   * @param style - 要切换到的显示状态。
+   * @param animated - 是否播放布局过渡动画。
+   */
+  setStyle(style: NavBarState, animated = true) {
+    this._props.style = style;
+    switch (style) {
+      case 0: {
+        this._hide(animated);
+        break;
+      }
+      case 1: {
+        this._minimize(animated);
+        break;
+      }
+      case 2: {
+        this._restore(animated);
+        break;
+      }
+      case 3: {
+        this._expand(animated);
+        break;
+      }
+      default:
+        break;
     }
   }
 
@@ -624,26 +659,6 @@ export class CustomNavigationBar extends Base<UIView | UIBlurView, UiTypes.ViewO
    * @param num - 样式编号：`0` 隐藏、`1` 最小化、`2` 普通、`3` 扩展。
    */
   set style(num) {
-    this._props.style = num;
-    switch (num) {
-      case 0: {
-        this.hide();
-        break;
-      }
-      case 1: {
-        this.minimize();
-        break;
-      }
-      case 2: {
-        this.restore();
-        break;
-      }
-      case 3: {
-        this.expand();
-        break;
-      }
-      default:
-        break;
-    }
+    this.setStyle(num);
   }
 }

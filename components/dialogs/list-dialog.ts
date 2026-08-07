@@ -104,6 +104,16 @@ export function listDialog({
     title,
     bgcolor: $color("insetGroupedBackground"),
     cview: listView,
+    doneButtonValidator: () => {
+      if (multiSelectEnabled) return true;
+      const filtered = listView.view.data.map((n, i) => (n.image.hidden ? -1 : i)).filter((n) => n !== -1);
+      if (filtered.length === 0) {
+        $ui.error($l10n("NO_SELECTION"));
+        return false;
+      } else {
+        return true;
+      }
+    },
     doneHandler: () => {
       const filtered = listView.view.data.map((n, i) => (n.image.hidden ? -1 : i)).filter((n) => n !== -1);
       if (multiSelectEnabled) return filtered;

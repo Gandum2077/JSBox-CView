@@ -119,7 +119,7 @@ export interface PrefsRowInteger extends PrefsRowBase {
 export interface PrefsRowStepper extends PrefsRowBase {
   /** 步进器行标识。 */
   type: "stepper";
-  /** 当前数值。 */
+  /** 当前数值；未提供时使用 `min`，没有 `min` 时使用 `0`。 */
   value?: number;
   /** 允许的最小值，默认为 `0`。 */
   min?: number;
@@ -131,7 +131,7 @@ export interface PrefsRowStepper extends PrefsRowBase {
 export interface PrefsRowBoolean extends PrefsRowBase {
   /** 布尔开关行标识。 */
   type: "boolean";
-  /** 当前开关状态。 */
+  /** 当前开关状态，默认为 `false`。 */
   value?: boolean;
   /** 开启状态颜色，默认为 `#34C85A`。 */
   onColor?: UIColor;
@@ -143,7 +143,7 @@ export interface PrefsRowBoolean extends PrefsRowBase {
 export interface PrefsRowSlider extends PrefsRowBase {
   /** 滑块行标识。 */
   type: "slider";
-  /** 当前滑块值。 */
+  /** 当前滑块值；未提供时使用 `min`。 */
   value?: number;
   /** 滑块最小值，默认为 `0`。 */
   min?: number;
@@ -163,7 +163,7 @@ export interface PrefsRowSlider extends PrefsRowBase {
 export interface PrefsRowList extends PrefsRowBase {
   /** 菜单选择行标识。 */
   type: "list";
-  /** 当前选中项索引。 */
+  /** 当前选中项索引；未提供时不显示选中项。 */
   value?: number;
   /** 可选文本列表。 */
   items: string[];
@@ -173,7 +173,7 @@ export interface PrefsRowList extends PrefsRowBase {
 export interface PrefsRowTab extends PrefsRowBase {
   /** 分段选择行标识。 */
   type: "tab";
-  /** 当前选中项索引；可使用 `-1` 表示不选中。 */
+  /** 当前选中项索引；默认为表示不选中的 `-1`。 */
   value?: number;
   /** 分段选择器项目。 */
   items: string[];
@@ -266,7 +266,7 @@ export const selectableTypes = [
 export const excludedTypes = ["info", "interactive-info", "link", "symbol-action", "action"];
 
 /** 以偏好设置行键名索引的值集合。 */
-type PreferenceValues = { [key: string]: any };
+type PreferenceValues = Record<string, unknown>;
 
 /** 静态偏好列表支持的所有内部 Cell 实例。 */
 type AllCells =
@@ -287,38 +287,31 @@ type AllCells =
   | ActionCell;
 
 /** 静态偏好设置行的基础 CView Cell。 */
-abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
+abstract class Cell<TValue> extends Base<UIView, UiTypes.ViewOptions> {
   abstract _type: string;
   _key?: string;
   _title?: string;
-  _value?: any;
+  _value: TValue;
   _values: PreferenceValues;
+  _collectsValue: boolean;
   _titleColor: UIColor;
   _changedEvent?: () => void;
   _defineView: () => UiTypes.ViewOptions;
   constructor(
-    {
-      key,
-      title,
-      value,
-      titleColor = $color("primaryText"),
-      changedEvent,
-    }: {
-      key?: string;
-      title?: string;
-      value?: any;
-      titleColor?: UIColor;
-      changedEvent?: () => void;
-    },
+    { key, title, titleColor = $color("primaryText"), changedEvent }: Omit<PrefsRowBase, "type">,
+    value: TValue,
     values: PreferenceValues,
+    collectsValue = true,
   ) {
     super();
     this._key = key;
     this._title = title;
     this._value = value;
+    this._collectsValue = collectsValue;
     this._titleColor = titleColor;
     this._changedEvent = changedEvent;
     this._values = values;
+    if (this._key && this._collectsValue) this._values[this._key] = value;
     this._defineView = () => {
       return {
         type: "view",
@@ -331,14 +324,22 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
     };
   }
 
-  set value(value) {
-    if (this._handleValue) value = this._handleValue(value);
-    if (this._key) this._values[this._key] = value;
-    this._value = value;
+  set value(value: TValue) {
+    const handledValue = this._handleValue(value);
+    if (this._key && this._collectsValue) this._values[this._key] = handledValue;
+    this._value = handledValue;
   }
 
-  get value() {
+  get value(): TValue {
     return this._value;
+  }
+
+  /**
+   * 在运行时键查找丢失具体 Cell 类型后更新值。
+   * @param value - 待交给具体 Cell 规范化的值。
+   */
+  _setValue(value: unknown) {
+    this.value = value as TValue;
   }
 
   get type() {
@@ -349,7 +350,7 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
     return this._key;
   }
 
-  abstract _handleValue(value: any): any;
+  abstract _handleValue(value: TValue): TValue;
 
   abstract _defineValueView(): UiTypes.AllViewOptions;
 
@@ -371,13 +372,40 @@ abstract class Cell extends Base<UIView, UiTypes.ViewOptions> {
   }
 }
 
+function normalizeOptionalNumber(value: number | undefined, min?: number, max?: number) {
+  if (value === undefined || !Number.isFinite(value)) return;
+  if (min !== undefined && value < min) return;
+  if (max !== undefined && value > max) return;
+  return value;
+}
+
+function normalizeOptionalInteger(value: number | undefined, min?: number, max?: number) {
+  if (value === undefined || !Number.isFinite(value)) return;
+  return normalizeOptionalNumber(Math.trunc(value), min, max);
+}
+
+function clampNumber(value: number, min: number, max?: number) {
+  if (!Number.isFinite(value)) return min;
+  if (value < min) return min;
+  if (max !== undefined && value > max) return max;
+  return value;
+}
+
+function normalizeSliderValue(value: number, decimal: number, min: number, max: number) {
+  return Number(clampNumber(value, min, max).toFixed(decimal));
+}
+
 /** 文本、密码和数字输入行共享的基础 Cell。 */
-abstract class BaseStringCell extends Cell {
+abstract class BaseStringCell<TValue extends string | number | undefined> extends Cell<TValue> {
   abstract _type: string;
   _placeholder?: string;
   _textColor?: UIColor;
-  constructor(props: PrefsRowString | PrefsRowSecure | PrefsRowNumber | PrefsRowInteger, values: PreferenceValues) {
-    super(props, values);
+  constructor(
+    props: PrefsRowString | PrefsRowSecure | PrefsRowNumber | PrefsRowInteger,
+    value: TValue,
+    values: PreferenceValues,
+  ) {
+    super(props, value, values);
     const { placeholder, textColor } = props;
     this._placeholder = placeholder;
     this._textColor = textColor;
@@ -410,7 +438,7 @@ abstract class BaseStringCell extends Cell {
           type: "label",
           props: {
             id: "label",
-            text: this._handleText(this._value)?.toString(),
+            text: this._displayValue(this._value),
             align: $align.right,
             font: $font(17),
             textColor: this._textColor,
@@ -427,102 +455,92 @@ abstract class BaseStringCell extends Cell {
     };
   }
 
-  _handleValue(text: string) {
-    const result = this._handleText(text);
+  _handleValue(value: TValue) {
+    const result = this._normalizeValue(value);
     const label = this.view.get("label") as UILabelView;
-    if (result === undefined) label.text = "";
-    else label.text = result.toString();
+    label.text = this._displayValue(result);
     return result;
   }
 
-  abstract _handleText(text: string): string | number | undefined;
+  _displayValue(value: TValue) {
+    return value?.toString() ?? "";
+  }
+
+  abstract _normalizeValue(value: TValue): TValue;
 }
 
 /** 普通文本输入 Cell。 */
-class StringCell extends BaseStringCell {
+class StringCell extends BaseStringCell<string | undefined> {
   readonly _type = "string";
   constructor(props: PrefsRowString, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values);
   }
 
-  _handleText(text: string) {
-    return text;
+  _normalizeValue(value: string | undefined) {
+    return value;
   }
 }
 
 /** 使用掩码展示值的文本输入 Cell。 */
-class SecureCell extends BaseStringCell {
+class SecureCell extends BaseStringCell<string | undefined> {
   readonly _type = "secure";
   constructor(props: PrefsRowSecure, values: PreferenceValues) {
-    super({ ...props, textColor: props.textColor ?? $color("secondaryText") }, values);
+    super({ ...props, textColor: props.textColor ?? $color("secondaryText") }, props.value, values);
   }
 
-  _handleText(text: string) {
-    if (text) return "******";
-    else return "";
+  _displayValue(value: string | undefined) {
+    return value ? "******" : "";
   }
 
-  _handleValue(text: string): string | undefined {
-    const label = this.view.get("label") as UILabelView;
-    label.text = this._handleText(text);
-    return text;
+  _normalizeValue(value: string | undefined) {
+    return value;
   }
 }
 
 /** 浮点数输入 Cell。 */
-class NumberCell extends BaseStringCell {
+class NumberCell extends BaseStringCell<number | undefined> {
   readonly _type = "number";
   _min?: number;
   _max?: number;
   constructor(props: PrefsRowNumber, values: PreferenceValues) {
-    super(props, values);
     const { min, max } = props;
+    super(props, normalizeOptionalNumber(props.value, min, max), values);
     this._min = min;
     this._max = max;
   }
 
-  _handleText(text: string): number | undefined {
-    if (!text) return;
-    const result = parseFloat(text);
-    if (isNaN(result)) return;
-    if (this._min !== undefined && result < this._min) return;
-    if (this._max !== undefined && result > this._max) return;
-    return result;
+  _normalizeValue(value: number | undefined) {
+    return normalizeOptionalNumber(value, this._min, this._max);
   }
 }
 
 /** 整数输入 Cell。 */
-class IntegerCell extends BaseStringCell {
+class IntegerCell extends BaseStringCell<number | undefined> {
   readonly _type = "integer";
-  _min: number;
+  _min?: number;
   _max?: number;
   constructor(props: PrefsRowInteger, values: PreferenceValues) {
-    super(props, values);
     const { min, max } = props;
-    this._min = min || 0;
+    super(props, normalizeOptionalInteger(props.value, min, max), values);
+    this._min = min;
     this._max = max;
   }
 
-  _handleText(text: string): number | undefined {
-    if (!text) return;
-    const result = parseInt(text);
-    if (isNaN(result)) return;
-    if (this._min !== undefined && result < this._min) return;
-    if (this._max !== undefined && result > this._max) return;
-    return result;
+  _normalizeValue(value: number | undefined) {
+    return normalizeOptionalInteger(value, this._min, this._max);
   }
 }
 
 /** 步进器 Cell。 */
-class StepperCell extends Cell {
+class StepperCell extends Cell<number> {
   readonly _type = "stepper";
   _max?: number;
   _min: number;
   constructor(props: PrefsRowStepper, values: PreferenceValues) {
-    super(props, values);
-    const { max, min } = props;
+    const { max, min = 0 } = props;
+    super(props, clampNumber(props.value ?? min, min, max), values);
     this._max = max;
-    this._min = min || 0;
+    this._min = min;
   }
 
   _defineValueView(): UiTypes.ViewOptions {
@@ -534,7 +552,7 @@ class StepperCell extends Cell {
           type: "stepper",
           props: {
             id: "stepper",
-            value: this._value || this._min,
+            value: this._value,
             max: this._max,
             min: this._min,
           },
@@ -553,7 +571,7 @@ class StepperCell extends Cell {
           type: "label",
           props: {
             id: "label",
-            text: this._value || this._min,
+            text: this._value.toString(),
             align: $align.right,
           },
           layout: (make, view) => {
@@ -572,9 +590,7 @@ class StepperCell extends Cell {
   }
 
   _handleValue(num: number) {
-    if (isNaN(num)) num = this._min;
-    if (this._min !== undefined && num < this._min) num = this._min;
-    if (this._max !== undefined && num > this._max) num = this._max;
+    num = clampNumber(num, this._min, this._max);
     const label = this.view.get("label") as UILabelView;
     label.text = num.toString();
     const stepper = this.view.get("stepper") as UIStepperView;
@@ -584,12 +600,12 @@ class StepperCell extends Cell {
 }
 
 /** 布尔开关 Cell。 */
-class BooleanCell extends Cell {
+class BooleanCell extends Cell<boolean> {
   readonly _type = "boolean";
   _onColor: UIColor;
   _thumbColor?: UIColor;
   constructor(props: PrefsRowBoolean, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value ?? false, values);
     const { onColor = $color("#34C85A"), thumbColor } = props;
     this._onColor = onColor;
     this._thumbColor = thumbColor;
@@ -626,7 +642,7 @@ class BooleanCell extends Cell {
 }
 
 /** 数值滑块 Cell。 */
-class SliderCell extends Cell {
+class SliderCell extends Cell<number> {
   readonly _type = "slider";
   _decimal: number;
   _min: number;
@@ -635,8 +651,8 @@ class SliderCell extends Cell {
   _maxColor?: UIColor;
   _thumbColor?: UIColor;
   constructor(props: PrefsRowSlider, values: PreferenceValues) {
-    super(props, values);
     const { decimal = 1, min = 0, max = 1, minColor = $color("systemLink"), maxColor, thumbColor } = props;
+    super(props, normalizeSliderValue(props.value ?? min, decimal, min, max), values);
     this._decimal = decimal;
     this._min = min;
     this._max = max;
@@ -680,7 +696,7 @@ class SliderCell extends Cell {
           },
           events: {
             changed: (sender) => {
-              const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
+              const adjustedValue = normalizeSliderValue(sender.value, this._decimal, this._min, this._max);
               const label = sender.prev as UILabelView;
               label.text = adjustedValue.toString();
               if (this._key) {
@@ -689,7 +705,7 @@ class SliderCell extends Cell {
               }
             },
             touchesEnded: (sender) => {
-              const adjustedValue = parseFloat(sender.value.toFixed(this._decimal));
+              const adjustedValue = normalizeSliderValue(sender.value, this._decimal, this._min, this._max);
               this.value = adjustedValue;
               if (this._changedEvent) this._changedEvent();
             },
@@ -706,10 +722,7 @@ class SliderCell extends Cell {
   }
 
   _handleValue(num: number) {
-    if (isNaN(num)) num = this._min;
-    if (this._min !== undefined && num < this._min) num = this._min;
-    if (this._max !== undefined && num > this._max) num = this._max;
-    const adjustedValue = parseFloat(num.toFixed(this._decimal));
+    const adjustedValue = normalizeSliderValue(num, this._decimal, this._min, this._max);
     const label = this.view.get("label") as UILabelView;
     label.text = adjustedValue.toString();
     const slider = this.view.get("slider") as UISliderView;
@@ -719,12 +732,12 @@ class SliderCell extends Cell {
 }
 
 /** 菜单选择 Cell。 */
-class ListCell extends Cell {
+class ListCell extends Cell<number | undefined> {
   readonly _type = "list";
   _items: string[];
   constructor(props: PrefsRowList, values: PreferenceValues) {
-    super(props, values);
     const { items } = props;
+    super(props, props.value, values);
     this._items = items;
   }
 
@@ -755,7 +768,7 @@ class ListCell extends Cell {
           type: "label",
           props: {
             id: "label",
-            text: this._items[this._value],
+            text: this._value === undefined ? "" : (this._items[this._value] ?? ""),
             textColor: $color("secondaryText"),
             align: $align.right,
           },
@@ -769,22 +782,21 @@ class ListCell extends Cell {
     };
   }
 
-  _handleValue(num: number) {
+  _handleValue(num: number | undefined) {
     const label = this.view.get("label") as UILabelView;
-    label.text = this._items[num];
+    label.text = num === undefined ? "" : (this._items[num] ?? "");
     return num;
   }
 }
 
 /** 分段选择器 Cell。 */
-class TabCell extends Cell {
+class TabCell extends Cell<number> {
   readonly _type = "tab";
   _items: string[];
   constructor(props: PrefsRowTab, values: PreferenceValues) {
-    super(props, values);
     const { items, value = -1 } = props;
+    super(props, value, values);
     this._items = items;
-    this._value = value;
   }
 
   _defineValueView(): UiTypes.TabOptions {
@@ -841,16 +853,16 @@ export function dateToString(mode: number, date?: Date) {
 }
 
 /** 日期选择 Cell。 */
-class DateCell extends Cell {
+class DateCell extends Cell<Date | undefined> {
   readonly _type = "date";
   _mode: number;
   _interval?: number;
   _min?: Date;
   _max?: Date;
   constructor(props: PrefsRowDate, values: PreferenceValues) {
-    super(props, values);
     const { mode, min, max, interval } = props;
-    this._mode = mode || 2;
+    super(props, props.value, values);
+    this._mode = mode ?? 2;
     this._min = min;
     this._max = max;
     this._interval = interval;
@@ -897,7 +909,7 @@ class DateCell extends Cell {
     };
   }
 
-  _handleValue(date: Date) {
+  _handleValue(date: Date | undefined) {
     const label = this.view.get("label") as UILabelView;
     label.text = dateToString(this._mode, date);
     return date;
@@ -905,10 +917,10 @@ class DateCell extends Cell {
 }
 
 /** 只读信息 Cell。 */
-class InfoCell extends Cell {
+class InfoCell extends Cell<string | undefined> {
   readonly _type = "info";
   constructor(props: PrefsRowInfo, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values, false);
   }
 
   _defineValueView(): UiTypes.LabelOptions {
@@ -916,7 +928,7 @@ class InfoCell extends Cell {
       type: "label",
       props: {
         id: "label",
-        text: this._value,
+        text: this._value ?? "",
         textColor: $color("secondaryText"),
         align: $align.right,
       },
@@ -928,19 +940,19 @@ class InfoCell extends Cell {
     };
   }
 
-  _handleValue(text: string) {
+  _handleValue(text: string | undefined) {
     const label = this.view.get("label") as UILabelView;
-    label.text = text;
+    label.text = text ?? "";
     return text;
   }
 }
 
 /** 点击后用弹窗展开内容的只读信息 Cell。 */
-class InteractiveInfoCell extends Cell {
+class InteractiveInfoCell extends Cell<string | undefined> {
   readonly _type = "interactive-info";
   _copyable: boolean;
   constructor(props: PrefsRowInteractiveInfo, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values, false);
     const { copyable = false } = props;
     this._copyable = copyable;
   }
@@ -950,7 +962,7 @@ class InteractiveInfoCell extends Cell {
       type: "label",
       props: {
         id: "label",
-        text: this._value,
+        text: this._value ?? "",
         textColor: $color("secondaryText"),
         align: $align.right,
       },
@@ -962,32 +974,33 @@ class InteractiveInfoCell extends Cell {
     };
   }
 
-  _handleValue(text: string) {
+  _handleValue(text: string | undefined) {
     const label = this.view.get("label") as UILabelView;
-    label.text = text;
+    label.text = text ?? "";
     return text;
   }
 }
 
 /** 使用 Safari 打开 URL 的链接 Cell。 */
-class LinkCell extends Cell {
+class LinkCell extends Cell<string | undefined> {
   readonly _type = "link";
   constructor(props: PrefsRowLink, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values, false);
   }
 
   _defineValueView(): UiTypes.LabelOptions {
+    const value = this._value ?? "";
     return {
       type: "label",
       props: {
         id: "label",
         styledText: {
-          text: this._value,
+          text: value,
           font: $font(17),
           styles: [
             {
-              range: $range(0, this._value.length),
-              link: this._value,
+              range: $range(0, value.length),
+              link: value,
             },
           ],
         },
@@ -1001,15 +1014,16 @@ class LinkCell extends Cell {
     };
   }
 
-  _handleValue(text: string) {
+  _handleValue(text: string | undefined) {
+    const value = text ?? "";
     const label = this.view.get("label") as UILabelView;
     label.styledText = {
-      text,
+      text: value,
       font: $font(17),
       styles: [
         {
-          range: $range(0, text.length),
-          link: text,
+          range: $range(0, value.length),
+          link: value,
         },
       ],
     };
@@ -1018,14 +1032,14 @@ class LinkCell extends Cell {
 }
 
 /** 在右侧显示 SF Symbol 的操作 Cell。 */
-class SymbolActionCell extends Cell {
+class SymbolActionCell extends Cell<(() => void) | undefined> {
   readonly _type = "symbol-action";
   _symbol: string;
   _tintColor: UIColor;
   _contentMode: number;
   _symbolSize: JBSize;
   constructor(props: PrefsRowSymbolAction, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values, false);
     this._symbol = props.symbol || "";
     this._tintColor = props.tintColor ?? $color("primaryText");
     this._contentMode = props.contentMode ?? 1;
@@ -1049,20 +1063,19 @@ class SymbolActionCell extends Cell {
     };
   }
 
-  _handleValue() {
-    return;
+  _handleValue(action: (() => void) | undefined) {
+    return action;
   }
 }
 
 /** 可操作的 Cell。 */
-class ActionCell extends Cell {
+class ActionCell extends Cell<(() => void) | undefined> {
   readonly _type = "action";
   _destructive: boolean;
   constructor(props: PrefsRowAction, values: PreferenceValues) {
-    super(props, values);
+    super(props, props.value, values, false);
     const { destructive = false } = props;
     this._destructive = destructive;
-    this._values = values;
   }
 
   _defineTitleView(): UiTypes.LabelOptions {
@@ -1088,8 +1101,8 @@ class ActionCell extends Cell {
     };
   }
 
-  _handleValue() {
-    return;
+  _handleValue(action: (() => void) | undefined) {
+    return action;
   }
 }
 
@@ -1116,7 +1129,8 @@ export type PreferenceListViewEvents<TValues extends object = Record<string, unk
  * - 选择器：`list`、`date`。
  * - 展示与操作：`info`、`interactive-info`、`link`、`symbol-action`、`action`。
  *
- * 带 `key` 且不是展示或操作类型的行会写入 `values`。用户修改值后，`changed` 事件会收到完整值对象；
+ * 带 `key` 且不是展示或操作类型的行会写入 `values`。未提供 `value` 时，步进器、开关、滑块和分段选择器
+ * 会分别写入各自的控件默认值；其他可空行保留 `undefined`。用户修改值后，`changed` 事件会收到完整值对象；
  * `set` 用于程序化更新所有匹配键的 Cell，但不会触发 `changed`。List 的 `data` 和行点击处理由组件生成，
  * 不应通过 `props` 或其他事件覆盖。
  * @example
@@ -1180,13 +1194,6 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
     super();
     this._sections = sections;
     this._values = {};
-    sections.forEach((section) => {
-      section.rows.forEach((row) => {
-        if (row.key && !excludedTypes.includes(row.type)) {
-          this._values[row.key] = row.value;
-        }
-      });
-    });
     this._props = props;
     this._layout = layout;
     this._cells = this._sections.map((section) => ({
@@ -1241,7 +1248,7 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
               }
               case "number": {
                 $input.text({
-                  text: cell.value,
+                  text: cell.value?.toString(),
                   type: $kbType.decimal,
                   placeholder: cell._placeholder,
                   handler: (text) => {
@@ -1253,7 +1260,7 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
               }
               case "integer": {
                 $input.text({
-                  text: cell.value,
+                  text: cell.value?.toString(),
                   type: $kbType.number,
                   placeholder: cell._placeholder,
                   handler: (text) => {
@@ -1274,11 +1281,17 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
                 break;
               }
               case "date": {
-                const props: any = {};
+                const props: {
+                  date?: Date;
+                  min?: Date;
+                  max?: Date;
+                  mode?: number;
+                  interval?: number;
+                } = {};
                 if (cell.value) props.date = cell.value;
                 if (cell._min) props.min = cell._min;
                 if (cell._max) props.max = cell._max;
-                if (cell._mode) props.mode = cell._mode;
+                props.mode = cell._mode;
                 if (cell._interval) props.interval = cell._interval;
                 $picker.date({
                   props: props,
@@ -1293,7 +1306,7 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
                 if (cell._copyable) {
                   $ui.alert({
                     title: cell._title,
-                    message: cell.value,
+                    message: cell.value ?? "",
                     actions: [
                       {
                         title: "取消",
@@ -1301,7 +1314,7 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
                       {
                         title: "复制",
                         handler: () => {
-                          $clipboard.text = cell.value;
+                          $clipboard.text = cell.value ?? "";
                         },
                       },
                     ],
@@ -1309,13 +1322,13 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
                 } else {
                   $ui.alert({
                     title: cell._title,
-                    message: cell.value,
+                    message: cell.value ?? "",
                   });
                 }
                 break;
               }
               case "link": {
-                $safari.open({ url: cell.value });
+                if (cell.value) $safari.open({ url: cell.value });
                 break;
               }
               case "symbol-action": {
@@ -1341,7 +1354,7 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
    * @returns 与行类型对应的 Cell 实例。
    * @throws 行类型不受支持时抛出错误。
    */
-  private _createCell(props: PrefsRow) {
+  private _createCell(props: PrefsRow): AllCells {
     switch (props.type) {
       case "string":
         return new StringCell(props, this._values);
@@ -1395,10 +1408,10 @@ export class PreferenceListView<TValues extends object = Record<string, unknown>
    * @param key - 目标行键名。
    * @param value - 新值。
    */
-  set(key: string, value: any) {
+  set<TKey extends Extract<keyof TValues, string>>(key: TKey, value: TValues[TKey]) {
     this._cells.forEach((section) => {
       section.rows.forEach((row) => {
-        if (row.key === key) row.value = value;
+        if (row.key === key) row._setValue(value);
       });
     });
   }

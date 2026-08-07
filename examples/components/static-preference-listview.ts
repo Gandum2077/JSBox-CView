@@ -53,9 +53,9 @@ const sections: PreferenceSection[] = [
         type: "slider",
         title: "slider",
         key: "slider",
-        value: 1,
-        decimal: 0,
-        min: 0,
+        value: 50,
+        decimal: 1,
+        min: 10,
         max: 100,
       },
       {
@@ -130,7 +130,17 @@ const sections: PreferenceSection[] = [
 ];
 const v = new PreferenceListView({
   props: {},
-  sections: sections,
+  sections: [
+    ...sections,
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+    sections[2],
+  ],
   layout: $layout.fill,
   events: {
     changed: (values: any) => console.info(values),
