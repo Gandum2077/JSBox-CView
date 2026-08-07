@@ -5,7 +5,30 @@ const recommendedTsdoc = jsdoc.configs["flat/recommended-tsdoc"];
 
 export default [
   {
-    ignores: ["dist/**", "dist-debug/**", "node_modules/**", "test.js", "test.ts"],
+    ignores: ["dist/**", "dist-debug/**", "examples-dist/**", "node_modules/**", "test.js", "test.ts"],
+  },
+  ...tseslint.configs.recommended,
+  {
+    name: "jsbox-cview/typescript-compatibility",
+    files: ["index.ts", "components/**/*.ts", "controller/**/*.ts", "utils/**/*.ts", "examples/**/*.ts"],
+    rules: {
+      // JSBox callback signatures often require parameters that a particular handler does not use.
+      "@typescript-eslint/no-unused-vars": "off",
+      // Objective-C bridge values and heterogeneous JSBox definitions do not have complete static types.
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unsafe-function-type": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      // Short-circuit callback dispatch is an established JSBox pattern in this codebase.
+      "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true }],
+    },
+  },
+  {
+    name: "jsbox-cview/commonjs-tests",
+    files: ["tests/**/*.cjs"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-this-alias": "off",
+    },
   },
   {
     ...recommendedTsdoc,

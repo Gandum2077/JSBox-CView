@@ -1,95 +1,216 @@
 # JSBox-CView
 
-为 JSBox 设计的微型框架。CView 主要实现 MVC 架构中 View、Controller 两部分。
+[![CI](https://github.com/Gandum2077/JSBox-CView/actions/workflows/ci.yml/badge.svg)](https://github.com/Gandum2077/JSBox-CView/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/jsbox-cview)](https://www.npmjs.com/package/jsbox-cview)
+[![license](https://img.shields.io/npm/l/jsbox-cview)](./LICENSE)
 
-CView 的含义是“组件化视图”。设计目的是：
+为 JSBox 设计的 TypeScript 组件与页面控制框架。CView 把 JSBox 的视图定义和实际 UIView 绑定为可复用组件，
+并提供页面生命周期、导航容器、响应式网格、设置表单、Dialog、图片浏览和 WebView 等常用能力。
 
-- 通过组件化的方式，将 JSBox view 的定义和实例绑定，简化使用
-- 方便地创建自定义组件
+## 特点
 
-## View
+- 与原生 JSBox View Definition 兼容，可以整页使用，也可以只采用一个组件。
+- 使用 `Base` 和 `BaseController` 分离可复用视图行为与页面状态、数据加载和生命周期。
+- 通过 TypeScript 类型约束组件属性、事件和表单结果。
+- 包含可独立编译并在 JSBox 中运行的示例。
 
-CView 的视图组件是非侵入式的。换言之，你可以全部使用 CView 开发，也可以只使用你喜欢的某一个组件或方法。
+## 安装
 
-它实现了 JSBox 原本的视图组件，同时增加了一些新的自定义组件。通过继承和组合，还可以创建更多的自定义组件。
+```sh
+npm install jsbox-cview
+```
 
-[Base](./components/base.ts): 所有 CView 组件的抽象基类，负责绑定视图定义、实例与通用的子视图操作。
+项目需要 JSBox 运行环境。TypeScript 全局类型由生产依赖 `jsbox-types` 提供；构建输出为 CommonJS，适合使用
+Browserify 等工具打包为 JSBox 可执行脚本。
 
-[SingleView 与基础视图](./components/single-views.ts): 将 JSBox 原生视图统一封装为可组合的 CView 组件。
+## 快速开始
 
-[CustomNavigationBar](./components/custom-navigation-bar.ts): 提供支持多种高度模式、自定义标题和左右按钮的导航栏。
+```ts
+import { BaseController, Label } from "jsbox-cview";
 
-[TabBar](./components/tabbar.ts): 提供可配置图标、标题和选中状态的 iOS 风格标签栏。
+const message = new Label({
+  props: {
+    text: "Hello, CView",
+    align: $align.center,
+    font: $font("bold", 24),
+  },
+  layout: $layout.fill,
+});
 
-[PageViewer](./components/pageviewer.ts): 提供可横向滑动翻页并报告连续滚动进度的页面容器。
+const controller = new BaseController();
+controller.rootView.views = [message];
+controller.uirender({ title: "CView" });
+```
 
-[PageViewerTitleBar](./components/pageviewer-titlebar.ts): 提供与 PageViewer 联动的可点击、可滑动标题栏。
+`definition` 用于把组件加入 JSBox 页面，`view` 用于在视图加载后访问对应的 UIView：
 
-[Flowlayout](./components/flowlayout.ts): 将不同宽度的项目按固定间距左对齐排列并自动换行。
+```ts
+$ui.render({ views: [message.definition] });
+$delay(1, () => (message.view.text = "视图已加载"));
+```
 
-[DynamicItemSizeMatrix](./components/dynamic-itemsize-matrix.ts): 根据容器宽度、最小项目宽度和间距动态计算矩阵的列数与项目尺寸。
+不要在组件加入界面前访问 `.view`；此时 JSBox 还无法通过组件 ID 找到真实视图。
 
-[DynamicItemSizeSectionMatrix](./components/dynamic-itemsize-section-matrix.ts): 在动态尺寸矩阵中加入分组标题并自动转换数据与索引。
+## 组件与控制器
 
-[DynamicRowHeightList](./components/dynamic-rowheight-list.ts): 根据每行 CView 报告的宽高关系自动计算并更新列表行高。
+CView 使用两层职责：
 
-[DynamicContextMenuView](./components/dynamic-contextmenu-view.ts): 通过 Objective-C Runtime 为视图动态生成和更新上下文菜单。
+| 层         | 基类             | 负责内容                                     |
+| ---------- | ---------------- | -------------------------------------------- |
+| Component  | `Base`           | 可复用视图、局部交互、公开的属性与方法       |
+| Controller | `BaseController` | 页面组合、数据请求、导航、生命周期与资源释放 |
 
-[DynamicPreferenceListView](./components/dynamic-preference-listview.ts): 提供可动态替换分组和数据的设置列表。
+常见场景可以从这些高层组件开始：
 
-[PreferenceListView](./components/static-preference-listview.ts): 提供由独立静态单元格组成、支持多种输入类型的设置列表。
+| 场景                       | 推荐 API                                                |
+| -------------------------- | ------------------------------------------------------- |
+| 普通页面                   | `BaseController` + `CustomNavigationBar`                |
+| 底部或侧边 Tab             | `TabBarController`                                      |
+| 横向分页页面               | `PageViewerController`                                  |
+| 主内容与侧栏               | `SplitViewController`                                   |
+| 动态设置或表单             | `DynamicPreferenceListView`                             |
+| 静态精细设置布局           | `PreferenceListView`                                    |
+| 响应式网格                 | `DynamicItemSizeMatrix`                                 |
+| 带分区标题的响应式网格     | `DynamicItemSizeSectionMatrix`                          |
+| 动态图片分页               | `ImagePager`                                            |
+| 登录或 Cloudflare Web 流程 | `OCWebView`                                             |
+| 简单弹窗或表单             | `listDialog`、`formDialog`、`textDialog`、Alert helpers |
 
-[EnhancedImageView](./components/enhanced-imageview.ts): 提供缩放浏览以及获取点击相对位置的增强图片视图。
+## 示例：动态的设置列表
 
-[ImagePager](./components/image-pager.ts): 提供适合大量或动态图片数据的可刷新分页浏览器。
+```ts
+import { DynamicPreferenceListView } from "jsbox-cview";
 
-[OCWebView](./components/oc-webview.ts): 基于 WKWebView 提供网页加载、导航和脚本执行能力，并支持 Cloudflare 人机检测流程。
+interface Settings {
+  name: string;
+  enabled: boolean;
+  volume: number;
+}
 
-[SearchBar](./components/searchbar.ts): 提供多种样式以及焦点、取消和文本变化事件的搜索框。
+const preferences = new DynamicPreferenceListView<Settings>({
+  props: {},
+  sections: [
+    {
+      title: "通用",
+      rows: [
+        { type: "string", key: "name", title: "名称", value: "CView" },
+        { type: "boolean", key: "enabled", title: "启用", value: true },
+        { type: "slider", key: "volume", title: "音量", min: 0, max: 100, value: 50, decimal: 0 },
+      ],
+    },
+  ],
+  layout: $layout.fill,
+  events: {
+    changed: (values) => $cache.set("settings", values),
+  },
+});
 
-[PageControl](./components/page-control.ts): 基于 Objective-C Runtime 封装可交互的原生页面指示器。
+const current: Settings = preferences.values;
+```
 
-[SymbolButton](./components/symbol-button.ts): 提供统一图标尺寸与边距的 SF Symbol 或图片按钮。
+未提供 `value` 时，Stepper、Switch、Slider 和 Tab 会分别采用 `min ?? 0`、`false`、`min ?? 0` 和 `-1`。
+`info`、`link`、`action` 等展示或操作行不会进入 `values`。
 
-[RefreshButton](./components/refresh-button.ts): 在刷新图标和加载动画之间自动切换状态的按钮。
+## 示例：响应式网格
 
-[RotatingView](./components/rotating-view.ts): 为图片或自定义 CView 提供可控制方向与速度的连续旋转效果。
+```ts
+import { DynamicItemSizeMatrix } from "jsbox-cview";
 
-## 表单与弹窗
+const matrix = new DynamicItemSizeMatrix({
+  props: {
+    data: cards,
+    template: {
+      views: [{ type: "label", props: { id: "title" }, layout: $layout.fill }],
+    },
+    itemLayoutOptions: {
+      minItemWidth: 120,
+      maxColumns: 4,
+      spacing: 8,
+      itemHeight: (width) => width * 0.75,
+    },
+  },
+  layout: $layout.fill,
+  events: {
+    didSelect: (_sender, indexPath) => console.log(indexPath.item),
+  },
+});
+```
 
-[Sheet](./components/sheet.ts): 使用独立 UIViewController 以 pageSheet 或 formSheet 方式呈现任意 CView。
+组件会在 JSBox 报告容器宽度变化时重新计算列数和尺寸。需要把网格嵌入动态高度布局时，可调用
+`matrix.heightToWidth(width)` 获取完整内容高度。
 
-[DialogSheet](./components/dialogs/dialog-sheet.ts): 在带导航栏和完成按钮的 Sheet 中呈现自定义 CView，并支持结果验证与 Promise 回调。
+## 更多示例
 
-[formDialog](./components/dialogs/form-dialog.ts): 根据 PreferenceListView 分组定义展示表单，并在校验后返回填写结果。
+完整目录见 [`examples`](./examples/README.md)。一次性验证并打包全部示例：
 
-[listDialog](./components/dialogs/list-dialog.ts): 以列表弹窗提供单选或多选，并返回所选项目的索引。
+```sh
+npm install
+npm run build:examples
+```
 
-[textDialog](./components/dialogs/text-dialog.ts): 以可编辑文本视图收集或展示文本，并通过 Promise 返回内容。
+产物位于忽略提交的 `examples-dist/`。也可以指定单个编译入口生成 `test.js`：
 
-[UIAlertController 与 UIAlertAction](./components/alert/uialert.ts): 封装原生 UIAlertController、操作按钮和输入框的底层构建能力。
+```sh
+npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm run build:debug
+```
 
-[plainAlert](./components/alert/plain-alert.ts): 显示包含标题、正文以及确认和取消操作的文字提示框。
+## API 导览
 
-[inputAlert](./components/alert/input-alert.ts): 显示单个文本输入框，并通过 Promise 返回用户输入。
+### 基础视图与复合组件
 
-[loginAlert](./components/alert/login-alert.ts): 显示用户名与密码输入框，并通过 Promise 返回登录信息。
+- [`Base`](./components/base.ts) 与 [`single-views`](./components/single-views.ts)：组件基类及原生视图包装器。
+- [`CustomNavigationBar`](./components/custom-navigation-bar.ts)、[`TabBar`](./components/tabbar.ts)、
+  [`PageViewer`](./components/pageviewer.ts) 与 [`PageViewerTitleBar`](./components/pageviewer-titlebar.ts)：页面导航和分页。
+- [`DynamicItemSizeMatrix`](./components/dynamic-itemsize-matrix.ts)、
+  [`DynamicItemSizeSectionMatrix`](./components/dynamic-itemsize-section-matrix.ts)、
+  [`DynamicRowHeightList`](./components/dynamic-rowheight-list.ts) 与 [`Flowlayout`](./components/flowlayout.ts)：动态列表与网格。
+- [`PreferenceListView`](./components/static-preference-listview.ts) 与
+  [`DynamicPreferenceListView`](./components/dynamic-preference-listview.ts)：设置和表单。
+- [`EnhancedImageView`](./components/enhanced-imageview.ts)、[`ImagePager`](./components/image-pager.ts)、
+  [`PageControl`](./components/page-control.ts) 与 [`OCWebView`](./components/oc-webview.ts)：图片、分页与网页。
+- [`SearchBar`](./components/searchbar.ts)、[`SymbolButton`](./components/symbol-button.ts)、
+  [`RefreshButton`](./components/refresh-button.ts)、[`RotatingView`](./components/rotating-view.ts) 与
+  [`AndroidStyleSpinner`](./components/android-style-spinner.ts)：常用交互组件。
 
-## Controller
+### Dialog、Sheet 与 Alert
 
-View 组件是收敛的，而 Controller 负责页面的构成和更新。
-它可以实现一些常用的页面构建形式，比如底部 Tab 分页，左侧滑动分页，弹出式页面等。
+- [`Sheet`](./components/sheet.ts) 与 [`DialogSheet`](./components/dialogs/dialog-sheet.ts)：展示任意 CView 的模态页面。
+- [`formDialog`](./components/dialogs/form-dialog.ts)、[`listDialog`](./components/dialogs/list-dialog.ts) 和
+  [`textDialog`](./components/dialogs/text-dialog.ts)：常用 Promise 风格 Dialog。
+- [`inputAlert`](./components/alert/input-alert.ts)、[`loginAlert`](./components/alert/login-alert.ts)、
+  [`plainAlert`](./components/alert/plain-alert.ts) 与 [`UIAlertController`](./components/alert/uialert.ts)：原生 Alert 封装。
 
-[BaseController](./controller/base-controller.ts): 提供根视图、生命周期、路由注册以及页面渲染和入栈能力的控制器基类。
+### Controller
 
-[PageViewerController](./controller/pageviewer-controller.ts): 组合导航栏、标题栏和 PageViewer 来管理可横向切换的子控制器。
+- [`BaseController`](./controller/base-controller.ts)：页面组合、生命周期和路由登记。
+- [`PageViewerController`](./controller/pageviewer-controller.ts)：横向分页子控制器。
+- [`TabBarController`](./controller/tabbar-controller.ts)：Tab 子控制器切换。
+- [`SplitViewController`](./controller/splitview-controller.ts)：主页面与侧栏。
+- [`PresentedPageController`](./controller/presented-page-controller.ts)：带生命周期的模态控制器。
 
-[PresentedPageController](./controller/presented-page-controller.ts): 管理以 Sheet 形式呈现和关闭的页面及其生命周期。
+## 从 1.x 升级
 
-[SplitViewController](./controller/splitview-controller.ts): 管理主内容与可滑出侧栏组成的双控制器分栏页面。
+2.0 调整了 `Base`、动态尺寸网格、分区网格和导航栏 API，并移除了 `DualRing`、`Wedges` 和旧的 Spinner
+深层导入路径。完整变更和替代写法见 [`CHANGELOG.md`](./CHANGELOG.md#从-1x-迁移)。
 
-[TabBarController](./controller/tabbar-controller.ts): 通过底部标签栏切换子控制器并同步其显示生命周期。
+## 开发与发布检查
 
-## 示例
+```sh
+npm ci
+npm run check
+```
 
-可运行示例及使用说明见 [`examples`](./examples/README.md)。
+`npm run check` 会依次执行：
+
+1. 严格 TypeScript 类型检查和 ESLint。
+2. Prettier 格式检查。
+3. 构建库并运行 Node 内置测试框架中的回归测试。
+4. 编译并打包全部 JSBox 示例。
+5. 运行 `npm pack --dry-run`，验证 `prepack` 会清理旧 `dist`，并检查发布包的必需和禁止文件。
+
+同一流程配置在 [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)，每次 push 和 pull request 都会自动执行。
+只有 CI 通过、`npm audit --omit=dev` 为零，并且干净检出的 `npm pack --dry-run` 内容正确时才应创建发布标签。
+
+## License
+
+[MIT](./LICENSE)

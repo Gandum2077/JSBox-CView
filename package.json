@@ -1,6 +1,6 @@
 {
   "name": "jsbox-cview",
-  "version": "1.6.11",
+  "version": "2.0.0",
   "description": "为 JSBox 设计的微型框架",
   "repository": {
     "type": "git",
@@ -17,17 +17,28 @@
     "dist/controller",
     "dist/utils",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
     "build:debug": "tsc --outDir ./dist-debug && npx browserify ${npm_config_entry:-./dist-debug/index.js} > test.js",
     "build:examples": "node ./scripts/build-examples.mjs",
     "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint .",
-    "prepack": "npm run build"
+    "test": "npm run build && node --test tests/*.test.cjs",
+    "check:package": "node ./scripts/check-package.mjs",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build:examples && npm run check:package",
+    "prepack": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\" && npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "jsbox",
+    "typescript",
+    "ui",
+    "cview"
+  ],
   "author": "Gandum2077",
   "license": "MIT",
   "dependencies": {
