@@ -3,30 +3,30 @@ import { PreferenceListView, PreferenceSection } from "../static-preference-list
 import { DialogSheet } from "./dialog-sheet";
 
 /** 表单 Dialog 收集的键值对象。 */
-export type FormDialogValues = { [key: string]: any };
+export type FormDialogValues = Record<string, unknown>;
 
 /** 表单 Dialog 的分区、标题和完成验证配置。 */
-export interface FormDialogOptions {
+export interface FormDialogOptions<TValues extends object = FormDialogValues> {
   /** `PreferenceListView` 表单分组。 */
   sections: PreferenceSection[];
   /** 弹出页标题。 */
   title: string;
   /** 完成前调用的值验证函数。 */
-  checkHandler?: (values: FormDialogValues) => boolean;
+  checkHandler?: (values: TValues) => boolean;
 }
 
-class DialogSheetForm extends DialogSheet {
-  private _checkHandler: (values: FormDialogValues) => boolean;
+class DialogSheetForm<TValues extends object> extends DialogSheet {
+  private _checkHandler: (values: TValues) => boolean;
   constructor(
     sheetProps: {
       title: string;
       cview: Base<any, any>;
-      doneHandler?: () => void;
+      doneHandler?: () => TValues;
       presentMode?: number;
       bgcolor?: UIColor;
       doneButtonHidden?: boolean;
     },
-    checkHandler: (values: FormDialogValues) => boolean,
+    checkHandler: (values: TValues) => boolean,
   ) {
     super(sheetProps);
     this._checkHandler = checkHandler;
@@ -52,9 +52,13 @@ class DialogSheetForm extends DialogSheet {
  * @param options - 表单分区、标题和完成验证配置。
  * @returns 在验证通过后解析为表单值对象的 Promise。
  */
-export function formDialog({ sections, title, checkHandler }: FormDialogOptions): Promise<FormDialogValues> {
-  const view = new PreferenceListView({ sections });
-  const sheet = new DialogSheetForm(
+export function formDialog<TValues extends object = FormDialogValues>({
+  sections,
+  title,
+  checkHandler,
+}: FormDialogOptions<TValues>): Promise<TValues> {
+  const view = new PreferenceListView<TValues>({ sections });
+  const sheet = new DialogSheetForm<TValues>(
     {
       title,
       bgcolor: $color("insetGroupedBackground"),

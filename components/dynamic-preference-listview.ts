@@ -27,9 +27,9 @@ export type DynamicPreferenceListProps = Omit<UiTypes.ListProps, "data" | "templ
   DynamicPreferenceListCustomProps;
 
 /** 动态偏好列表的事件接口。 */
-export type DynamicPreferenceListViewEvents = {
+export type DynamicPreferenceListViewEvents<TValues extends object = Record<string, unknown>> = {
   /** 用户修改任意可收集行后接收完整值对象。 */
-  changed?: (values: { [key: string]: any }) => void;
+  changed?: (values: TValues) => void;
 };
 
 /**
@@ -72,7 +72,10 @@ export type DynamicPreferenceListViewEvents = {
  * });
  * ```
  */
-export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
+export class DynamicPreferenceListView<TValues extends object = Record<string, unknown>> extends Base<
+  UIListView,
+  UiTypes.ListOptions
+> {
   /** 根视图定义。 */
   _defineView: () => UiTypes.ListOptions;
   /** 组件内部持有的浅拷贝分区和行数据。 */
@@ -94,7 +97,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
     /** List 布局，默认使用 Base 中未设置的布局。 */
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
     /** 值变化事件。 */
-    events?: DynamicPreferenceListViewEvents;
+    events?: DynamicPreferenceListViewEvents<TValues>;
   }) {
     super();
     this._sections = sections.map((n) => ({
@@ -738,7 +741,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
    * `info`、`interactive-info`、`link`、`symbol-action` 和 `action` 不会包含在结果中。
    * @returns 以行 `key` 为属性名的值对象。
    */
-  get values() {
+  get values(): TValues {
     const values: { [key: string]: any } = {};
     this._sections.forEach((section) => {
       section.rows.forEach((row) => {
@@ -747,7 +750,7 @@ export class DynamicPreferenceListView extends Base<UIListView, UiTypes.ListOpti
         }
       });
     });
-    return values;
+    return values as TValues;
   }
 
   /**

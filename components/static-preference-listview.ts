@@ -1097,9 +1097,9 @@ class ActionCell extends Cell {
 export type PreferenceListViewProps = Omit<UiTypes.ListProps, "data" | "template">;
 
 /** PreferenceListView 事件接口。 */
-export type PreferenceListViewEvents = {
+export type PreferenceListViewEvents<TValues extends object = Record<string, unknown>> = {
   /** 用户修改任意可收集行后接收完整值对象。 */
-  changed?: (values: { [key: string]: any }) => void;
+  changed?: (values: TValues) => void;
 };
 
 /**
@@ -1139,7 +1139,10 @@ export type PreferenceListViewEvents = {
  * });
  * ```
  */
-export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
+export class PreferenceListView<TValues extends object = Record<string, unknown>> extends Base<
+  UIListView,
+  UiTypes.ListOptions
+> {
   /** 根视图定义。 */
   _defineView: () => UiTypes.ListOptions;
   /** 构造时传入的固定分区数据。 */
@@ -1172,7 +1175,7 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
     /** List 布局。 */
     layout?: (make: MASConstraintMaker, view: UIListView) => void;
     /** 值变化事件。 */
-    events?: PreferenceListViewEvents;
+    events?: PreferenceListViewEvents<TValues>;
   }) {
     super();
     this._sections = sections;
@@ -1381,8 +1384,8 @@ export class PreferenceListView extends Base<UIListView, UiTypes.ListOptions> {
    * `info`、`interactive-info`、`link`、`symbol-action` 和 `action` 不会包含在结果中。
    * @returns 以行 `key` 为属性名的当前值对象。
    */
-  get values() {
-    return this._values;
+  get values(): TValues {
+    return this._values as TValues;
   }
 
   /**
