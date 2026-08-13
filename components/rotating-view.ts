@@ -5,7 +5,7 @@ interface RotatingViewBaseProps {
   /** 图片模板色；设置后会使用 `alwaysTemplate` 图片。 */
   tintColor?: UIColor;
   /** 内置 Image 的内容模式，默认为 `1`。 */
-  contentMode?: number;
+  contentMode?: UiTypes.BaseViewProps["contentMode"];
   /** 每秒旋转圈数，默认为 `0.5`。 */
   rps?: number;
   /** 是否顺时针旋转，默认为 `true`。 */

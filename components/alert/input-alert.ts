@@ -13,7 +13,7 @@ export interface InputAlertOptions {
   /** 输入框占位符。 */
   placeholder?: string;
   /** UIKit 键盘类型值。 */
-  type?: number;
+  type?: InputTypes.TextOptions["type"];
   /** 是否使用安全文本输入。 */
   secure?: boolean;
   /** 取消按钮文本，默认为本地化的“取消”。 */

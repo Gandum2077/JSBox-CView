@@ -230,7 +230,7 @@ export interface PrefsRowSymbolAction extends PrefsRowBase {
   /** 图标颜色，默认为系统主文本色。 */
   tintColor?: UIColor;
   /** 图标内容模式，默认为 `1`。 */
-  contentMode?: number;
+  contentMode?: UiTypes.BaseViewProps["contentMode"];
   /** 图标尺寸，默认为 `$size(24, 24)`。 */
   symbolSize?: JBSize;
   /** 点击该行时执行的操作。 */
@@ -1036,7 +1036,7 @@ class SymbolActionCell extends Cell<(() => void) | undefined> {
   readonly _type = "symbol-action";
   _symbol: string;
   _tintColor: UIColor;
-  _contentMode: number;
+  _contentMode: UiTypes.BaseViewProps["contentMode"];
   _symbolSize: JBSize;
   constructor(props: PrefsRowSymbolAction, values: PreferenceValues) {
     super(props, props.value, values, false);

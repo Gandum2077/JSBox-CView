@@ -13,7 +13,7 @@ export interface SymbolButtonProps {
   /** 图片模板色，默认为系统主文本色。 */
   tintColor: UIColor;
   /** 图片内容模式，默认为 `1`。 */
-  contentMode: number;
+  contentMode: UiTypes.BaseViewProps["contentMode"];
   /** 图片相对按钮边缘的内边距，默认四边 `12.5`。 */
   insets: JBInsets;
   /** 按钮上下文菜单。 */

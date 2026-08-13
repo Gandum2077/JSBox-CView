@@ -42,7 +42,7 @@
   "author": "Gandum2077",
   "license": "MIT",
   "dependencies": {
-    "jsbox-types": "^2.0.3"
+    "jsbox-types": "^2.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
