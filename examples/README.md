@@ -67,6 +67,7 @@ npm run build:examples
 ## 控制器
 
 - [`base-controller.ts`](./controller/base-controller.ts)：页面组合、生命周期、Router 登记与状态查询。
+- [`keyboard-avoidance-controller.ts`](./controller/keyboard-avoidance-controller.ts)：根据键盘有效高度调整页面，并让底部输入框滚动到可见区域。
 - [`pageviewer-controller.ts`](./controller/pageviewer-controller.ts)：组合页面视图、标题栏和导航栏的分页控制器。
 - [`presented-page-controller.ts`](./controller/presented-page-controller.ts)：拥有控制器生命周期的原生模态页面。
 - [`splitview-controller.ts`](./controller/splitview-controller.ts)：主内容与侧边栏组成的分栏控制器。

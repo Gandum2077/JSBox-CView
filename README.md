@@ -65,6 +65,7 @@ CView 使用两层职责：
 | 场景                       | 推荐 API                                                |
 | -------------------------- | ------------------------------------------------------- |
 | 普通页面                   | `BaseController` + `CustomNavigationBar`                |
+| 带输入框的页面             | `KeyboardAvoidanceController`                           |
 | 底部或侧边 Tab             | `TabBarController`                                      |
 | 横向分页页面               | `PageViewerController`                                  |
 | 主内容与侧栏               | `SplitViewController`                                   |
@@ -183,6 +184,7 @@ npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm
 ### Controller
 
 - [`BaseController`](./controller/base-controller.ts)：页面组合、生命周期和路由登记。
+- [`KeyboardAvoidanceController`](./controller/keyboard-avoidance-controller.ts)：根据键盘有效高度缩小页面根视图，避免底部内容被停靠键盘遮挡。
 - [`PageViewerController`](./controller/pageviewer-controller.ts)：横向分页子控制器。
 - [`TabBarController`](./controller/tabbar-controller.ts)：Tab 子控制器切换。
 - [`SplitViewController`](./controller/splitview-controller.ts)：主页面与侧栏。

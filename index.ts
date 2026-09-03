@@ -25,6 +25,7 @@ export * from "./components/tabbar";
 export * from "./controller/controller-status";
 export * from "./controller/base-controller";
 export * from "./controller/controller-router";
+export * from "./controller/keyboard-avoidance-controller";
 export * from "./controller/pageviewer-controller";
 export * from "./controller/presented-page-controller";
 export * from "./controller/splitview-controller";
