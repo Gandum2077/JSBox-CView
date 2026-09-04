@@ -40,6 +40,7 @@ npm run build:examples
 - [`enhanced-imageview.ts`](./components/enhanced-imageview.ts)：支持缩放、相对点击位置和手势资源释放的图片视图。
 - [`flowlayout.ts`](./components/flowlayout.ts)：按内容宽度排列的流式布局。
 - [`image-pager.ts`](./components/image-pager.ts)：支持缩放和动态图片地址的分页器。
+- [`loadable-content-view.ts`](./components/loadable-content-view.ts)：在加载、内容、空结果和错误状态之间切换的页面容器。
 - [`oc-webview.ts`](./components/oc-webview.ts)：基于 `WKWebView` 的网页加载、导航和脚本执行。
 - [`page-control.ts`](./components/page-control.ts)：与 `PageViewer` 双向联动的原生分页指示器。
 - [`pageviewer-titlebar.ts`](./components/pageviewer-titlebar.ts)：与页面切换联动的标题栏。

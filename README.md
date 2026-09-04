@@ -169,6 +169,7 @@ npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm
   [`DynamicPreferenceListView`](./components/dynamic-preference-listview.ts)：设置和表单。
 - [`EnhancedImageView`](./components/enhanced-imageview.ts)、[`ImagePager`](./components/image-pager.ts)、
   [`PageControl`](./components/page-control.ts) 与 [`OCWebView`](./components/oc-webview.ts)：图片、分页与网页。
+- [`LoadableContentView`](./components/loadable-content-view.ts)：加载、内容、空结果与错误四态页面容器。
 - [`SearchBar`](./components/searchbar.ts)、[`SymbolButton`](./components/symbol-button.ts)、
   [`RefreshButton`](./components/refresh-button.ts)、[`RotatingView`](./components/rotating-view.ts) 与
   [`AndroidStyleSpinner`](./components/android-style-spinner.ts)：常用交互组件。

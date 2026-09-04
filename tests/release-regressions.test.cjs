@@ -231,3 +231,42 @@ test("CustomNavigationBar hides its tool area after restoring normal state", () 
   assert.equal(navigationBar.style, NavBarState.Normal);
   assert.equal(navigationBar.cviews.toolViewWrapper.view.hidden, true);
 });
+
+test("LoadableContentView switches one visible state and pauses its default spinner", () => {
+  const { Label } = require("../dist/components/single-views");
+  const { LoadableContentView } = require("../dist/components/loadable-content-view");
+  const changed = [];
+  const content = new Label({ props: { text: "Content" } });
+  const loadable = new LoadableContentView({
+    props: { content, state: "loading" },
+    events: { stateChanged: (_sender, state) => changed.push(state) },
+  });
+
+  materialize(loadable.definition);
+  loadable.showContent();
+
+  for (const state of ["loading", "content", "empty", "error"]) {
+    assert.equal(viewRegistry.get(`${loadable.id}_${state}`).hidden, state !== "content");
+  }
+  assert.equal(viewRegistry.get(`${loadable.id}_loading_spinner`).loading, false);
+  assert.deepEqual(changed, ["content"]);
+
+  loadable.showContent();
+  assert.deepEqual(changed, ["content"], "setting the current state is a no-op");
+});
+
+test("KeyboardAvoidanceController normalizes and reports effective keyboard heights", () => {
+  const { KeyboardAvoidanceController } = require("../dist/controller/keyboard-avoidance-controller");
+  const heights = [];
+  const controller = new KeyboardAvoidanceController({
+    events: { keyboardHeightChanged: (_controller, height) => heights.push(height) },
+  });
+
+  materialize(controller.rootView.definition);
+  controller.updateKeyboardHeight(302);
+  assert.equal(controller.keyboardHeight, 302);
+
+  controller.updateKeyboardHeight(-1);
+  assert.equal(controller.keyboardHeight, 0);
+  assert.deepEqual(heights, [302, 0]);
+});

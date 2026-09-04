@@ -26,6 +26,10 @@ const strings: Record<string, Record<string, string>> = {
     CANCEL: "取消",
     CLIPBOARD: "剪贴板",
     OK: "好的",
+    LOADING: "正在加载…",
+    NO_CONTENT: "暂无内容",
+    UNABLE_TO_LOAD: "加载失败",
+    RETRY: "重试",
   },
   "zh-Hant": {
     DUPLICATE_VALUES: "值重複",
@@ -42,6 +46,10 @@ const strings: Record<string, Record<string, string>> = {
     CANCEL: "取消",
     CLIPBOARD: "剪貼簿",
     OK: "確定",
+    LOADING: "正在載入…",
+    NO_CONTENT: "暫無內容",
+    UNABLE_TO_LOAD: "載入失敗",
+    RETRY: "重試",
   },
   en: {
     DUPLICATE_VALUES: "Duplicate values",
@@ -58,6 +66,10 @@ const strings: Record<string, Record<string, string>> = {
     CANCEL: "Cancel",
     CLIPBOARD: "Clipboard",
     OK: "OK",
+    LOADING: "Loading…",
+    NO_CONTENT: "No Content",
+    UNABLE_TO_LOAD: "Unable to Load",
+    RETRY: "Retry",
   },
 };
 
