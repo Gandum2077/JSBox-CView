@@ -64,6 +64,10 @@ export class KeyboardAvoidanceController extends BaseController {
     const normalizedHeight = Math.max(0, height);
     this._keyboardHeight = normalizedHeight;
 
+    // 如果用户在输入框聚焦时退出控制器的页面，那么上级视图将丢失
+    const parent = this.rootView.view?.super;
+    if (!this.rootView.view || !parent) return;
+
     this.rootView.view.remakeLayout((make, view) => {
       make.left.right.top.equalTo(view.super);
       if (normalizedHeight > 0) {
