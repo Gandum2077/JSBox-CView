@@ -32,7 +32,7 @@ npm run build:examples
 
 - [`android-style-spinner.ts`](./components/android-style-spinner.ts)：基于 Lottie 的 Android 风格加载动画。
 - [`custom-navigation-bar.ts`](./components/custom-navigation-bar.ts)：自定义导航栏及左右按钮。
-- [`dynamic-contextmenu-view.ts`](./components/dynamic-contextmenu-view.ts)：运行时动态生成和切换上下文菜单。
+- [`dynamic-contextmenu-view.ts`](./components/dynamic-contextmenu-view.ts)：运行时动态生成菜单，演示 SF Symbol、多层子菜单、inline 分组和危险操作。
 - [`dynamic-itemsize-matrix.ts`](./components/dynamic-itemsize-matrix.ts)：根据容器宽度动态计算矩阵列数与项目尺寸。
 - [`dynamic-itemsize-section-matrix.ts`](./components/dynamic-itemsize-section-matrix.ts)：支持自定义分组标题的动态尺寸矩阵。
 - [`dynamic-preference-listview.ts`](./components/dynamic-preference-listview.ts)：支持动态替换分组的设置列表。

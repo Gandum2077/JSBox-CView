@@ -173,6 +173,8 @@ npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm
 - [`SearchBar`](./components/searchbar.ts)、[`SymbolButton`](./components/symbol-button.ts)、
   [`RefreshButton`](./components/refresh-button.ts)、[`RotatingView`](./components/rotating-view.ts) 与
   [`AndroidStyleSpinner`](./components/android-style-spinner.ts)：常用交互组件。
+- [`DynamicContextMenuView`](./components/dynamic-contextmenu-view.ts)：每次打开时生成最新菜单，支持 JSBox 的 SF Symbol、
+  危险操作、多层子菜单与 inline 分组。
 
 ### Dialog、Sheet 与 Alert
 

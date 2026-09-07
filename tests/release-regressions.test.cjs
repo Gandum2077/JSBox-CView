@@ -16,6 +16,7 @@ const color = () => ({
 Object.assign(globalThis, {
   $: (id) => viewRegistry.get(id),
   $align: { center: 1, left: 0, right: 2 },
+  $block: (_signature, handler) => handler,
   $clipboard: { text: "" },
   $color: color,
   $contentMode: { scaleAspectFit: 1 },
@@ -32,7 +33,13 @@ Object.assign(globalThis, {
     fillSafeArea: () => undefined,
   },
   $l10n: (key) => key,
-  $objc: () => ({ invoke: () => undefined, $new: () => ({ runtimeViewId: ++runtimeViewId }) }),
+  $objc: () => {
+    const bridge = {
+      invoke: () => bridge,
+      $new: () => ({ runtimeViewId: ++runtimeViewId, $addInteraction: () => undefined }),
+    };
+    return bridge;
+  },
   $picker: { date: (options) => (pickerOptions = options) },
   $point: (x, y) => ({ x, y }),
   $range: (location, length) => ({ location, length }),
@@ -286,4 +293,105 @@ test("KeyboardAvoidingView creates a fresh Runtime UIView for every definition",
   assert.notEqual(firstPresentation.props.view, secondPresentation.props.view);
   assert.equal(firstPresentation.views.length, 1);
   assert.equal(secondPresentation.views.length, 1);
+});
+
+test("DynamicContextMenuView builds nested, inline and destructive menu elements", () => {
+  const { DynamicContextMenuView } = require("../dist/components/dynamic-contextmenu-view");
+  const originalObjc = globalThis.$objc;
+  const sender = { id: "source" };
+  const calls = { images: [], actions: [], submenus: [] };
+  const view = new DynamicContextMenuView({
+    props: {},
+    generateContextMenu: () => ({ items: [] }),
+  });
+
+  try {
+    globalThis.$objc = (className) => {
+      if (className === "UIContextMenuConfiguration") {
+        return {
+          $configurationWithIdentifier_previewProvider_actionProvider: (_identifier, _preview, provider) => ({
+            provider,
+          }),
+        };
+      }
+      if (className === "UIImage") {
+        return {
+          $systemImageNamed: (name) => {
+            calls.images.push(name);
+            return { image: name };
+          },
+        };
+      }
+      if (className === "UIAction") {
+        return {
+          $actionWithTitle_image_identifier_handler: (title, image, _identifier, handler) => {
+            const action = {
+              kind: "action",
+              title,
+              image,
+              handler,
+              attributes: 0,
+              $setAttributes(attributes) {
+                this.attributes = attributes;
+              },
+            };
+            calls.actions.push(action);
+            return action;
+          },
+        };
+      }
+      if (className === "UIMenu") {
+        return {
+          $menuWithChildren: (children) => ({ kind: "root", title: undefined, children }),
+          $menuWithTitle_children: (title, children) => ({ kind: "root", title, children }),
+          $menuWithTitle_image_identifier_options_children: (title, image, _identifier, options, children) => {
+            const submenu = { kind: "submenu", title, image, options, children };
+            calls.submenus.push(submenu);
+            return submenu;
+          },
+        };
+      }
+      throw new Error(`Unexpected Objective-C class: ${className}`);
+    };
+
+    let handledSender;
+    const configuration = view.createContextMenuConfiguration(
+      {
+        title: "Root",
+        items: [
+          { title: "Share", symbol: "square.and.arrow.up", handler: (value) => (handledSender = value) },
+          {
+            title: "Danger",
+            symbol: "ellipsis",
+            inline: true,
+            destructive: true,
+            items: [{ title: "Delete", symbol: "trash", destructive: true }],
+          },
+        ],
+      },
+      sender,
+    );
+    const menu = configuration.provider([]);
+
+    assert.equal(menu.title, "Root");
+    assert.equal(menu.children.length, 2);
+    assert.deepEqual(calls.images, ["square.and.arrow.up", "ellipsis", "trash"]);
+    assert.equal(calls.submenus[0].options, (1 << 0) | (1 << 1));
+    assert.equal(calls.actions[1].attributes, 1 << 1);
+
+    calls.actions[0].handler(calls.actions[0]);
+    assert.equal(handledSender, sender);
+  } finally {
+    globalThis.$objc = originalObjc;
+  }
+});
+
+test("DynamicContextMenuView creates a fresh Runtime UIView for every definition", () => {
+  const { DynamicContextMenuView } = require("../dist/components/dynamic-contextmenu-view");
+  const view = new DynamicContextMenuView({
+    props: {},
+    generateContextMenu: () => ({ items: [] }),
+  });
+
+  assert.notEqual(view.definition.props.view, view.definition.props.view);
 });

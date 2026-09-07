@@ -13,12 +13,29 @@ const menuList = [
         },
       },
       {
-        title: "变成菜单2",
-        symbol: "plus",
-        destructive: true,
-        handler: () => {
-          menuIndex = 1;
-        },
+        title: "更多操作",
+        symbol: "ellipsis.circle",
+        items: [
+          {
+            title: "切换菜单",
+            symbol: "arrow.triangle.2.circlepath",
+            handler: () => {
+              menuIndex = 1;
+            },
+          },
+          {
+            title: "危险操作",
+            inline: true,
+            items: [
+              {
+                title: "删除",
+                symbol: "trash",
+                destructive: true,
+                handler: () => $ui.toast("已触发删除"),
+              },
+            ],
+          },
+        ],
       },
     ],
   },
@@ -32,6 +49,7 @@ const menuList = [
       },
       {
         title: "变成菜单2",
+        symbol: "2.circle",
         handler: () => {
           menuIndex = 1;
         },
