@@ -6,6 +6,7 @@ const test = require("node:test");
 const viewRegistry = new Map();
 const uiErrors = [];
 let pickerOptions;
+let runtimeViewId = 0;
 
 const color = () => ({
   components: { red: 0, green: 0, blue: 0, alpha: 1 },
@@ -20,7 +21,7 @@ Object.assign(globalThis, {
   $contentMode: { scaleAspectFit: 1 },
   $define: () => undefined,
   $delay: () => undefined,
-  $device: { info: { language: "en" }, isIpad: false },
+  $device: { info: { language: "en", version: "26.0" }, isIpad: false },
   $font: (...args) => ({ args }),
   $insets: (top, left, bottom, right) => ({ top, left, bottom, right }),
   $input: { text: () => undefined },
@@ -31,7 +32,7 @@ Object.assign(globalThis, {
     fillSafeArea: () => undefined,
   },
   $l10n: (key) => key,
-  $objc: () => ({ invoke: () => undefined }),
+  $objc: () => ({ invoke: () => undefined, $new: () => ({ runtimeViewId: ++runtimeViewId }) }),
   $picker: { date: (options) => (pickerOptions = options) },
   $point: (x, y) => ({ x, y }),
   $range: (location, length) => ({ location, length }),
@@ -263,10 +264,26 @@ test("KeyboardAvoidanceController normalizes and reports effective keyboard heig
   });
 
   materialize(controller.rootView.definition);
+  viewRegistry.get(controller.rootView.id).super = { safeAreaBottom: {} };
   controller.updateKeyboardHeight(302);
   assert.equal(controller.keyboardHeight, 302);
 
   controller.updateKeyboardHeight(-1);
   assert.equal(controller.keyboardHeight, 0);
   assert.deepEqual(heights, [302, 0]);
+});
+
+test("KeyboardAvoidingView creates a fresh Runtime UIView for every definition", () => {
+  const { KeyboardAvoidingView } = require("../dist/components/keyboard-avoiding-view");
+  const { ContentView } = require("../dist/components/single-views");
+  const avoidingView = new KeyboardAvoidingView({
+    props: { content: new ContentView({ props: {} }) },
+  });
+
+  const firstPresentation = avoidingView.definition;
+  const secondPresentation = avoidingView.definition;
+
+  assert.notEqual(firstPresentation.props.view, secondPresentation.props.view);
+  assert.equal(firstPresentation.views.length, 1);
+  assert.equal(secondPresentation.views.length, 1);
 });
