@@ -73,3 +73,5 @@ npm run build:examples
 - [`presented-page-controller.ts`](./controller/presented-page-controller.ts)：拥有控制器生命周期的原生模态页面。
 - [`splitview-controller.ts`](./controller/splitview-controller.ts)：主内容与侧边栏组成的分栏控制器。
 - [`tabbar-controller.ts`](./controller/tabbar-controller.ts)：通过标签栏切换子控制器。
+
+- [`dynamic-contextmenu-collection.ts`](./components/dynamic-contextmenu-collection.ts)：List / Matrix 分开加载，反复长按切换收藏状态；包含 dispose 生命周期示例。

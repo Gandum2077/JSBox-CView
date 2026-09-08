@@ -219,3 +219,71 @@ npm run check
 ## License
 
 [MIT](./LICENSE)
+
+### 动态 List / Matrix ContextMenu
+
+`DynamicContextMenuList` / `DynamicContextMenuMatrix` 的构造参数与原生组件一致（省略 `type`），增加
+`events.ContextMenu: (sender, indexPath, data) => UiTypes.ContextMenuOptions<T> | null | undefined`。
+事件名大小写敏感，必须同步返回；`null`、`undefined` 或空 `items` 禁用该项菜单。
+
+```ts
+const favorites = new Set<string>();
+const list = new DynamicContextMenuList({
+  props: { data: ["Apple", "Banana"] },
+  layout: $layout.fill,
+  events: {
+    ContextMenu: (sender, indexPath, data) => ({
+      items: [
+        {
+          title: favorites.has(data) ? "取消收藏" : "收藏",
+          symbol: favorites.has(data) ? "star.fill" : "star",
+          handler: () => {
+            if (favorites.has(data)) favorites.delete(data);
+            else favorites.add(data);
+          },
+        },
+      ],
+    }),
+  },
+});
+// 将 list.definition 加入视图；页面最终移除时调用 list.dispose()。
+```
+
+实现保留 JSBox `list` / `matrix`，在 `ready` 时添加独立的 `UIContextMenuInteraction`。
+Runtime 对象只实现 `UIContextMenuInteractionDelegate`，不读取或替换 JSBox 的 delegate/dataSource，
+也不覆盖 `respondsToSelector:` / `forwardingTargetForSelector:`。长按时用交互所在视图的本地坐标调用
+`indexPathForRowAtPoint:` / `indexPathForItemAtPoint:`，空白区域返回空菜单配置。
+不修改系统类，不重建 cell。每次请求菜单使用 `sender.object(indexPath)` 读取当前数据，
+因此适用于分区、重新赋值、插入和删除后的数据。菜单 action 的 handler 保持 `(sender, indexPath)` 签名；
+额外业务数据可由 ContextMenu 闭包捕获。菜单已显示期间数据可能移动，请用稳定业务 ID 执行修改，勿依赖旧位置。
+
+| 能力                                                                                        | 实现范围 / 限制                                                                                    |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| data、template、分区、header/footer、cell/object、insert/delete/reload、scrollTo            | 继续使用原生 JSBox 实现；通过 `.view` 调用原生方法                                                 |
+| List 动态/自动行高、分区高度、侧滑 actions；Matrix columns、spacing、方向、自动尺寸、瀑布流 | 原生属性、数据源和 delegate 保留；尚未完成 iOS 真机兼容验证                                        |
+| didSelect、滚动/刷新、forEachItem、highlighted、尺寸事件、排序回调                          | 原样传入 JSBox，原 delegate 不变，需真机回归                                                       |
+| 菜单标题、SF Symbol、destructive、递归子菜单、inline                                        | 支持；子菜单的 handler 与 JSBox 一样忽略                                                           |
+| props.menu                                                                                  | 由 ContextMenu 接管；禁止同时设置，也不要通过 Runtime 另行改菜单或 delegate                        |
+| pullDown / asPrimary                                                                        | 不支持；返回 true 时抛出错误。这两个选项属于 button/navButtons                                     |
+| didLongPress / 长按排序与菜单同时触发                                                       | 回调与属性保留，但手势竞争尚未验证，不保证同一次长按同时生效；示例默认不开启 reorder               |
+| 自定义预览、预览提交、菜单显示/消失回调                                                     | 未提供；使用独立交互的单元格 targeted preview；不复用 JSBox 菜单生命周期                           |
+| Matrix 多选聚合菜单                                                                         | 未实现；按长按位置只生成单项菜单                                                                   |
+| 异步菜单、已打开菜单实时刷新                                                                | 未实现；下次系统请求时重新生成                                                                     |
+| 生命周期                                                                                    | owning controller 的 `events.didRemove` 调用 `dispose()`；幂等移除交互并 release。临时消失不要释放 |
+
+最低要求 iOS 13 的 UIKit Context Menu API。每个加载的视图有独立交互与 delegate；一个组件重复加载的交互会在
+`dispose()` 一并清理。Runtime 类注册持续到脚本退出，但 dispose 清空其业务状态。
+如果 JSBox 将来改变 `ocValue()` 的类型，组件会明确报错。JSBox 自带交互与新增交互之间的手势竞争仍需真机验证，
+不应同时配置静态菜单、模板子视图菜单或依赖同一次长按同时排序。
+
+真机状态：用户已确认独立交互版本运行成功。完整功能组合仍需按实际使用场景验证。
+
+Node mock 回归覆盖菜单重新生成、当前数据读取、分区位置、命中测试、空白区域、action、子菜单、预览目标和释放，
+并禁止实现触碰原 delegate 或定义 NSObject 分发方法。这些测试不验证 JSBox 的 Objective-C 桥接或真实手势。
+
+[收藏示例](./examples/components/dynamic-contextmenu-collection.ts) 分别展示 List / Matrix，共享收藏状态，
+并在页面最终移除时调用 `dispose()`。其他功能组合可按需验证：分区及数据替换/插删、滚动与点击、尺寸回调、
+侧滑编辑、长按排序，以及页面关闭后重新打开。
+
+实现依据：本地 jsbox-docs 的 `component/list.md`、`component/matrix.md`、`uikit/context-menu.md` 和 Runtime 文档；
+[Apple UIContextMenuInteractionDelegate](https://developer.apple.com/documentation/uikit/uicontextmenuinteractiondelegate)。
