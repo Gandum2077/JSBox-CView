@@ -287,3 +287,46 @@ Node mock 回归覆盖菜单重新生成、当前数据读取、分区位置、�
 
 实现依据：本地 jsbox-docs 的 `component/list.md`、`component/matrix.md`、`uikit/context-menu.md` 和 Runtime 文档；
 [Apple UIContextMenuInteractionDelegate](https://developer.apple.com/documentation/uikit/uicontextmenuinteractiondelegate)。
+
+### WelcomeView 自适应欢迎页
+
+`WelcomeView` 组合项目的 `PageViewer` 与 `PageControl`，支持可选的 `leadingSymbol` 和每页独立的 `trailingAction`，
+以及每页独立的主体和 1～2 个底部按钮。完整示例见 [`examples/components/welcome-view.ts`](examples/components/welcome-view.ts)。
+
+每页提供 `content`（根布局为 `$layout.fill`）、`contentHeight` 和 `buttons`。
+`contentHeight` 可以是固定高度，也可以是接收可用宽度的函数；多行文字可以用 `$text.sizeThatFits` 测量，
+自定义表单可提供自身的高度计算函数。组件负责安全区域、宽度上限、垂直居中、滚动范围及旋转后的重新计算。
+主体内容变化后调用 `refreshLayout()`；通过 `buttons[页码][按钮索引].view` 更新按钮标题或禁用状态。
+
+空间充足时主体在底部按钮上方居中；高度不足时主体与按钮共同滚动，避免按钮遮住正文或在极矮窗口中无法点击。
+顶部操作与底部分页指示器保持可见，单页自动收起分页指示器。`page` 和 `scrollToPage(page)` 分别提供无动画及动画切换，
+需在视图加载后调用。关闭、跳过和登录行为由事件回调决定。
+
+右上角操作配置在 `pages[i].trailingAction`，包含 `title`、可选 `titleColor` 和 `tapped(welcome)`。
+不配置时该页隐藏右上角按钮；可分别设置 `{ title: "跳过", tapped: view => view.scrollToPage(2) }` 和
+`{ title: "完成", tapped: () => finish() }`。翻页时自动更新文字、颜色、显隐及点击行为。
+顶部区域在任一页面存在操作时统一保留高度，避免翻页导致主体跳动。原全局 `skipTitle`、`skipTitleColor`、`events.skipped` 已移除。
+
+`PageViewer` 铺满整个 WelcomeView，顶部按钮和 `PageControl` 作为透明浮层叠在上面。
+`pages[i].bgcolor` 应用于每页的全屏背景（包括顶部操作区、分页指示器及安全区域），随页面一起水平滑动；
+省略时依次使用全局 `props.bgcolor` 或 `backgroundColor`。自定义主体若需要透出页面背景，应将自身背景设为 `$color("clear")`。
+
+正文滚动视口单独避开安全区域、顶部操作区和分页指示器，背景不受这些边距限制；拖动到两页之间时，上下背景也沿同一页面边界移动。
+
+常见的“Logo + 说明/表单”页面可以独立配置 Logo：
+
+```ts
+{
+  logo: { props: { src: "assets/logo.png" }, size: 128 },
+  logoSpacing: { min: 24, max: 80 },
+  content: descriptionOrForm,
+  contentHeight: width => measureContent(width),
+  buttons: [...],
+}
+```
+
+`contentHeight` 只包含正文或表单的高度。组件将扣除按钮、固定留白、Logo 和正文后的剩余高度的三分之一
+分配给 Logo 间距，限制在 `min`～`max`（默认 24～80pt）之间，再将 Logo 与正文作为整体居中。
+空间不足时先收缩间距至最小值，再启用滚动；Logo 默认边长 128pt，仅在内容宽度不足时等比缩小。
+不设置 `logo` 则保留原来的正文居中布局，也可以显式指定 `mode: "content"` 或 `mode: "logo-content"`。
+正文变化后调用 `refreshLayout()` 会同步重算间距和滚动范围。

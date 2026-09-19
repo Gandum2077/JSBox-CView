@@ -30,6 +30,8 @@ npm run build:examples
 
 ## 基础视图与交互组件
 
+- [`welcome-view.ts`](./components/welcome-view.ts)：自适应欢迎页、按宽度测量正文、双按钮和分页联动。
+
 - [`android-style-spinner.ts`](./components/android-style-spinner.ts)：基于 Lottie 的 Android 风格加载动画。
 - [`custom-navigation-bar.ts`](./components/custom-navigation-bar.ts)：自定义导航栏及左右按钮。
 - [`dynamic-contextmenu-view.ts`](./components/dynamic-contextmenu-view.ts)：运行时动态生成菜单，演示 SF Symbol、多层子菜单、inline 分组和危险操作。

@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- 新增 `WelcomeView`：安全区域内的顶部操作、每页 1～2 个按钮、按宽度计算主体高度、居中与滚动自适应，复用 `PageViewer` 和 `PageControl`。
+
 ## [2.0.0] - 2026-08-07
 
 ### Added

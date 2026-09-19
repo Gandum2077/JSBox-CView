@@ -48,3 +48,5 @@ export * from "./components/dialogs/form-dialog";
 export * from "./components/dialogs/list-dialog";
 export * from "./components/dialogs/text-dialog";
 export * from "./components/android-style-spinner";
+
+export * from "./components/welcome-view";
