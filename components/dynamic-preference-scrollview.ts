@@ -135,7 +135,7 @@ export class DynamicPreferenceScrollView<TValues extends object = Record<string,
 
   private _measureContent(width: number) {
     const textWidth = Math.max(1, width - 62);
-    let top = 20;
+    let top = 35;
     const sections = this.sections.map((section) => {
       const titleTop = top;
       const titleHeight = section.title ? getTextHeight(section.title, { width: textWidth, font: $font(13) }) : 0;
@@ -150,7 +150,8 @@ export class DynamicPreferenceScrollView<TValues extends object = Record<string,
       top += footerHeight + 35;
       return { titleTop, titleHeight, cardTop, footerTop, footerHeight };
     });
-    return { sections, height: sections.length ? top - 35 + 20 : 0 };
+    // 最后一个分区后的 35 点间距同时作为底部留白。
+    return { sections, height: sections.length ? top : 0 };
   }
 
   private _cloneFooters(sections: PreferenceScrollSection[]): PreferenceScrollSection[] {

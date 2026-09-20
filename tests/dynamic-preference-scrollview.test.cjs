@@ -257,7 +257,7 @@ test("heightToWidth returns frame height when scrolling is enabled, including ru
   assert.equal(component.heightToWidth(200), 123);
   assert.equal(component.heightToWidth(500), 123);
   root.scrollEnabled = false;
-  assert.equal(component.heightToWidth(375), 84);
+  assert.equal(component.heightToWidth(375), 114); // 35 + 44 + 35
   root.scrollEnabled = true;
   assert.equal(component.heightToWidth(375), 123);
 });
