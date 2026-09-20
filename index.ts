@@ -7,6 +7,7 @@ export * from "./components/dynamic-contextmenu-collection";
 export * from "./components/dynamic-itemsize-matrix";
 export * from "./components/dynamic-itemsize-section-matrix";
 export * from "./components/dynamic-preference-listview";
+export * from "./components/dynamic-preference-scrollview";
 export * from "./components/dynamic-rowheight-list";
 export * from "./components/enhanced-imageview";
 export * from "./components/flowlayout";

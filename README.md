@@ -70,6 +70,7 @@ CView 使用两层职责：
 | 横向分页页面               | `PageViewerController`                                  |
 | 主内容与侧栏               | `SplitViewController`                                   |
 | 动态设置或表单             | `DynamicPreferenceListView`                             |
+| 带分区说明的动态设置页     | `DynamicPreferenceScrollView`                           |
 | 静态精细设置布局           | `PreferenceListView`                                    |
 | 响应式网格                 | `DynamicItemSizeMatrix`                                 |
 | 带分区标题的响应式网格     | `DynamicItemSizeSectionMatrix`                          |
@@ -155,6 +156,41 @@ npm run build:examples
 npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm run build:debug
 ```
 
+## 带分区说明的设置列表
+
+`DynamicPreferenceScrollView` 使用 ScrollView 和普通视图呈现 `style: 2` 的圆角分组，
+支持 `DynamicPreferenceListView` 的全部 15 种行类型及 `sections`、`values`、`set`、`changed` 接口。
+
+```ts
+import { DynamicPreferenceScrollView } from "jsbox-cview";
+
+const preferences = new DynamicPreferenceScrollView<{ enabled: boolean }>({
+  sections: [
+    {
+      title: "显示",
+      rows: [{ type: "boolean", title: "降低透明度", key: "enabled" }],
+      footer: {
+        text: "通过降低部分背景的透明度和模糊度来增强对比度，以提高易读性。",
+        // color: $color("systemLink"),
+        // tapped: () => $ui.alert("帮助说明"),
+      },
+    },
+  ],
+  props: {},
+  layout: $layout.fill,
+  events: { changed: (values) => console.info(values) },
+});
+```
+
+`footer` 是可选的 `{ text: string; color?: UIColor; tapped?: () => void }`。
+说明默认使用次要文字颜色，有点击回调时默认使用链接颜色；长文字自动换行，旋转或宽度变化时重新测量。
+`props` 接收 Scroll 属性、原动态列表的五项行布局选项及 `rowHeight`（默认 44），不接收 List 专用属性，
+内容尺寸由组件计算。`sections` 替换和 `set` 不触发 `changed`，也支持在视图加载前调用。
+`heightToWidth(width)` 在 `scrollEnabled: false` 时纯计算指定宽度下的完整内容高度，可在加载前调用，不创建视图或触发布局；
+启用滚动时直接返回当前视图的 `frame.height`，需先加载视图。运行时修改 `view.scrollEnabled` 也会影响该方法。
+每行创建独立视图，适合设置页和中小型表单，不适合需要单元格复用的海量列表。
+完整示例见 [`dynamic-preference-scrollview.ts`](./examples/components/dynamic-preference-scrollview.ts)。
+
 ## API 导览
 
 ### 基础视图与复合组件
@@ -167,6 +203,7 @@ npm_config_entry=./dist-debug/examples/components/dynamic-itemsize-matrix.js npm
   [`DynamicRowHeightList`](./components/dynamic-rowheight-list.ts) 与 [`Flowlayout`](./components/flowlayout.ts)：动态列表与网格。
 - [`PreferenceListView`](./components/static-preference-listview.ts) 与
   [`DynamicPreferenceListView`](./components/dynamic-preference-listview.ts)：设置和表单。
+- [`DynamicPreferenceScrollView`](./components/dynamic-preference-scrollview.ts)：支持分区说明与点击的 ScrollView 设置列表。
 - [`EnhancedImageView`](./components/enhanced-imageview.ts)、[`ImagePager`](./components/image-pager.ts)、
   [`PageControl`](./components/page-control.ts) 与 [`OCWebView`](./components/oc-webview.ts)：图片、分页与网页。
 - [`LoadableContentView`](./components/loadable-content-view.ts)：加载、内容、空结果与错误四态页面容器。
