@@ -290,6 +290,7 @@ export class WelcomeView extends Base<UIView, UiTypes.ViewOptions> {
           didScroll: () => restoreCanvasFrame(),
         },
       });
+      configureWelcomeScroll(scroll, false);
       this._refreshers.push((force = false) => {
         if (scroll.view) update(scroll.view, force);
       });
@@ -364,6 +365,7 @@ export class WelcomeView extends Base<UIView, UiTypes.ViewOptions> {
         },
       },
     });
+    configureWelcomeScroll(this.pageViewer.scroll, true);
     this._defineView = () => ({
       type: "view",
       props: { bgcolor: props.bgcolor ?? $color("backgroundColor") },
@@ -417,4 +419,51 @@ export class WelcomeView extends Base<UIView, UiTypes.ViewOptions> {
     if (!Number.isInteger(page) || page < 0 || page >= this._pages.length)
       throw new RangeError("Invalid WelcomeView page");
   }
+}
+
+/**
+ * 欢迎页已经通过约束处理安全区域，禁用额外 inset 并恢复旋转后的有效滚动位置。
+ * 仅包装本组件拥有的 Scroll，不改动调用方正文中的滚动控件。
+ * @param scroll - 内部滚动组件。
+ * @param horizontal - 是否为横向分页器；保留其横向页码位置。
+ */
+function configureWelcomeScroll(scroll: Scroll, horizontal: boolean) {
+  const original = scroll._events ?? {};
+  let width = 0;
+  let correcting = false;
+  const restore = (sender: UIScrollView, resized = false) => {
+    if (correcting || sender.frame.width <= 0 || sender.frame.height <= 0) return;
+    const maxY = Math.max(0, sender.contentSize.height - sender.frame.height);
+    const x = horizontal ? sender.contentOffset.x : 0;
+    const y = horizontal || resized || maxY <= 0.5 ? 0 : Math.min(maxY, Math.max(0, sender.contentOffset.y));
+    if (sender.contentOffset.x === x && sender.contentOffset.y === y) return;
+    correcting = true;
+    try {
+      sender.contentOffset = $point(x, y);
+    } finally {
+      correcting = false;
+    }
+  };
+  scroll._props = { ...scroll._props, contentInset: $insets(0, 0, 0, 0) };
+  scroll._events = {
+    ...original,
+    ready: (sender) => {
+      // UIScrollViewContentInsetAdjustmentNever，避免安全区域被计算两次。
+      sender.ocValue().$setContentInsetAdjustmentBehavior(2);
+      original.ready?.(sender);
+      restore(sender);
+    },
+    layoutSubviews: (sender) => {
+      const nextWidth = sender.frame.width;
+      const resized = width > 0 && nextWidth > 0 && width !== nextWidth;
+      if (nextWidth > 0) width = nextWidth;
+      original.layoutSubviews?.(sender);
+      restore(sender, resized);
+    },
+    didScroll: (sender) => {
+      original.didScroll?.(sender);
+      // 即使内容几何缓存命中，仍需纠正 UIKit 后续恢复的过期偏移。
+      restore(sender);
+    },
+  };
 }

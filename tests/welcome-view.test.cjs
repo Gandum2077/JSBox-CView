@@ -13,6 +13,7 @@ Object.assign(globalThis, {
   $rect: (x, y, width, height) => ({ x, y, width, height }),
   $size: (width, height) => ({ width, height }),
   $point: (x, y) => ({ x, y }),
+  $insets: (top, left, bottom, right) => ({ top, left, bottom, right }),
 });
 const { WelcomeView } = require("../dist/components/welcome-view");
 const { ContentView } = require("../dist/components/single-views");
@@ -21,6 +22,14 @@ function mount(definition) {
     ...definition.props,
     scrollToOffset(offset) {
       this.contentOffset = offset;
+    },
+    contentSize: { width: 0, height: 0 },
+    ocValue() {
+      return {
+        $setContentInsetAdjustmentBehavior: (value) => {
+          this.insetAdjustment = value;
+        },
+      };
     },
     frame: { width: 0, height: 0 },
     contentOffset: { x: 0, y: 0 },
@@ -427,7 +436,7 @@ test("scrolling repairs reset canvas hit bounds without resetting the scroll pos
     point.y >= canvas.frame.y &&
     point.y < canvas.frame.y + canvas.frame.height;
   const footerPoint = { x: footer.frame.x + 20, y: footer.frame.y + 25 };
-  scroll.contentOffset = { x: 0, y: footerPoint.y - 100 };
+  scroll.contentOffset = { x: 0, y: Math.min(footerPoint.y - 100, scroll.contentSize.height - scroll.frame.height) };
   for (const event of ["layoutSubviews", "didScroll"]) {
     canvas.frame = { x: 0, y: 0, width: 1, height: 1 };
     assert.equal(inCanvas(footerPoint), false);
@@ -438,4 +447,76 @@ test("scrolling repairs reset canvas hit bounds without resetting the scroll pos
     assert.ok(inCanvas(footerPoint));
     assert.ok(inCanvas({ x: body.frame.x + 20, y: body.frame.y + 400 }));
   }
+});
+
+test("portrait-landscape-scroll-portrait resets late offsets and disables automatic safe area insets", () => {
+  const page = () => ({
+    content: new ContentView({}),
+    contentHeight: 300,
+    buttons: [{ props: { title: "Continue" }, tapped: () => {} }],
+  });
+  const welcome = new WelcomeView({ props: { page: 1, pages: [page(), page()] }, layout: $layout.fill });
+  const definition = welcome.definition;
+  mount(definition);
+  const pager = definition.views[0].views[0];
+  const vertical = pager.views[1].views[0].views[0];
+  const scroll = registry.get(vertical.props.id);
+  const canvas = vertical.views[0];
+  for (const child of canvas.views) registry.get(child.props.id).updateLayout(child.layout);
+  const resize = (width, height) => {
+    scroll.frame = { width, height };
+    vertical.events.layoutSubviews(scroll);
+  };
+  resize(393, 700);
+  vertical.events.ready(scroll);
+  assert.equal(scroll.insetAdjustment, 2);
+  assert.deepEqual(scroll.contentInset, { top: 0, left: 0, bottom: 0, right: 0 });
+  const positions = canvas.views.map((child) => ({ ...registry.get(child.props.id).frame }));
+  resize(852, 230);
+  scroll.contentOffset = { x: 0, y: 150 };
+  vertical.events.didScroll(scroll);
+  assert.equal(scroll.contentOffset.y, 150);
+  resize(393, 700);
+  assert.deepEqual(scroll.contentOffset, { x: 0, y: 0 });
+  assert.deepEqual(
+    canvas.views.map((child) => registry.get(child.props.id).frame),
+    positions,
+  );
+  // UIKit can restore stale insets/offsets after the geometry has already stabilized.
+  for (const event of ["didScroll", "layoutSubviews"]) {
+    for (const y of [-59, 150]) {
+      scroll.contentOffset = { x: 20, y };
+      vertical.events[event](scroll);
+      assert.deepEqual(scroll.contentOffset, { x: 0, y: 0 });
+    }
+  }
+  // Height-only changes preserve a valid reading position; width changes reset it.
+  resize(852, 230);
+  scroll.contentOffset = { x: 0, y: 80 };
+  resize(852, 240);
+  assert.equal(scroll.contentOffset.y, 80);
+  resize(700, 240);
+  assert.equal(scroll.contentOffset.y, 0);
+  const horizontal = registry.get(pager.props.id);
+  horizontal.frame = { width: 393, height: 852 };
+  pager.events.ready(horizontal);
+  pager.events.layoutSubviews(horizontal);
+  assert.equal(horizontal.insetAdjustment, 2);
+  horizontal.contentOffset = { x: 393, y: -59 };
+  pager.events.didScroll(horizontal);
+  assert.deepEqual(horizontal.contentOffset, { x: 393, y: 0 });
+  assert.equal(welcome.page, 1);
+  // Correcting a scroll position may synchronously trigger another didScroll.
+  let offset = { x: 393, y: -59 };
+  let writes = 0;
+  Object.defineProperty(horizontal, "contentOffset", {
+    get: () => offset,
+    set: (value) => {
+      offset = value;
+      writes++;
+      pager.events.didScroll(horizontal);
+    },
+  });
+  pager.events.didScroll(horizontal);
+  assert.equal(writes, 1);
 });
